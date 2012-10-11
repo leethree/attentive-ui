@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="app_name">SuperMonkey</string>
+    <string name="hello_world">Welcome to Monkey World!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_monkey">Monkey</string>
+
+</resources>
