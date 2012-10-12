@@ -17,6 +17,7 @@
 package com.android.commands.monkey;
 
 import android.view.InputDevice;
+import android.view.MotionEvent;
 
 
 /**

@@ -16,8 +16,6 @@
 
 package com.android.commands.monkey;
 
-import android.os.RemoteException;
-import android.view.IWindowManager;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 
@@ -34,11 +32,5 @@ public class MonkeyHoverEvent extends MonkeyMotionEvent {
     @Override
     protected String getTypeLabel() {
         return "Hover";
-    }
-
-    @Override
-    protected boolean injectMotionEvent(IWindowManager iwm, MotionEvent me)
-            throws RemoteException {
-        return iwm.injectPointerEvent(me, false);
     }
 }
