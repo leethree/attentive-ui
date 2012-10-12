@@ -17,7 +17,7 @@
 package com.android.commands.monkey;
 
 import android.app.IActivityManager;
-import android.os.RemoteException;
+import android.hardware.input.InputManager;
 import android.os.SystemClock;
 import android.util.SparseArray;
 import android.view.IWindowManager;
@@ -210,11 +210,10 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
             System.out.println(msg.toString());
         }
         try {
-            if (!injectMotionEvent(iwm, me)) {
+            if (!InputManager.getInstance().injectInputEvent(me,
+                    InputManager.INJECT_INPUT_EVENT_MODE_WAIT_FOR_RESULT)) {
                 return MonkeyEvent.INJECT_FAIL;
             }
-        } catch (RemoteException ex) {
-            return MonkeyEvent.INJECT_ERROR_REMOTE_EXCEPTION;
         } finally {
             me.recycle();
         }
@@ -222,6 +221,4 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
     }
 
     protected abstract String getTypeLabel();
-    protected abstract boolean injectMotionEvent(IWindowManager iwm, MotionEvent me)
-            throws RemoteException;
 }
