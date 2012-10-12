@@ -16,6 +16,7 @@
 
 package com.example.android.apis.graphics;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -26,6 +27,7 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -59,7 +61,7 @@ import java.util.Random;
  * have a button, which we use to cycle through colors.
  * </p>
  */
-public class TouchPaint extends GraphicsActivity {
+public class TouchPaint extends Activity {
     /** Used as a pulse to gradually fade the contents of the window. */
     private static final int MSG_FADE = 1;
 
@@ -106,7 +108,7 @@ public class TouchPaint extends GraphicsActivity {
             mFading = savedInstanceState.getBoolean("fading", true);
             mColorIndex = savedInstanceState.getInt("color", 0);
         } else {
-            mFading = true;
+            mFading = false;
             mColorIndex = 0;
         }
     }
@@ -218,6 +220,7 @@ public class TouchPaint extends GraphicsActivity {
         Draw,
         Splat,
         Erase,
+        Line,
     }
 
     /**
@@ -360,6 +363,8 @@ public class TouchPaint extends GraphicsActivity {
             } else if (isTouch || (buttonState & MotionEvent.BUTTON_PRIMARY) != 0) {
                 // Draw paint when touching or if the primary button is pressed.
                 mode = PaintMode.Draw;
+            } else if (!isTouch) { 
+            	mode = PaintMode.Line;
             } else {
                 // Otherwise, do not paint anything.
                 return false;
@@ -396,6 +401,7 @@ public class TouchPaint extends GraphicsActivity {
                 }
                 mCurX = event.getX();
                 mCurY = event.getY();
+                //Log.v("TouchPaint", "paint(" + mCurX + "," + mCurY + ")");
             }
             return true;
         }
@@ -442,6 +448,13 @@ public class TouchPaint extends GraphicsActivity {
                         mPaint.setAlpha(64);
                         drawSplat(mCanvas, x, y, orientation, distance, tilt, mPaint);
                         break;
+                        
+                    case Line:
+                        // mPaint.setColor(COLORS[mColorIndex]);
+                    	mPaint.setColor(Color.YELLOW);
+                        mPaint.setAlpha(80);
+                        drawLine(mCanvas, x, y, mPaint);
+                        break;
                 }
             }
             mFadeSteps = 0;
@@ -465,6 +478,10 @@ public class TouchPaint extends GraphicsActivity {
             mReusableOvalRect.bottom = y + major / 2;
             canvas.drawOval(mReusableOvalRect, paint);
             canvas.restore();
+        }
+        
+        private void drawLine(Canvas canvas, float x, float y, Paint paint) {
+        	canvas.drawLine(mCurX, mCurY, x, y, paint);
         }
 
         /**

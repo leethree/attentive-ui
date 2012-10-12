@@ -25,15 +25,15 @@ import android.view.MotionEvent;
 /**
  * monkey touch event
  */
-public class MonkeyTouchEvent extends MonkeyMotionEvent {
-    public MonkeyTouchEvent(int action) {
-        super(MonkeyEvent.EVENT_TYPE_TOUCH, InputDevice.SOURCE_TOUCHSCREEN, action);
-        setToolType(MotionEvent.TOOL_TYPE_FINGER);
+public class MonkeyHoverEvent extends MonkeyMotionEvent {
+    public MonkeyHoverEvent(int action) {
+        super(MonkeyEvent.EVENT_TYPE_HOVER, InputDevice.SOURCE_STYLUS, action);
+        setToolType(MotionEvent.TOOL_TYPE_STYLUS);
     }
 
     @Override
     protected String getTypeLabel() {
-        return "Touch";
+        return "Hover";
     }
 
     @Override

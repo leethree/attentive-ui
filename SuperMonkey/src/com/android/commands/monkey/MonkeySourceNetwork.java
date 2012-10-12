@@ -169,6 +169,51 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
             return EARG;
         }
     }
+    
+    /**
+     * Command to send hover events to the input system.
+     */
+    private static class HoverCommand implements MonkeyCommand {
+        // hover [enter|exit|move] [x] [y]
+        // hover enter 120 120
+        // hover move 140 140
+        // hover exit 140 140
+        public MonkeyCommandReturn translateCommand(List<String> command,
+                                                    CommandQueue queue) {
+            if (command.size() == 4) {
+                String actionName = command.get(1);
+                int x = 0;
+                int y = 0;
+                try {
+                    x = Integer.parseInt(command.get(2));
+                    y = Integer.parseInt(command.get(3));
+                } catch (NumberFormatException e) {
+                    // Ok, it wasn't a number
+                    Log.e(TAG, "Got something that wasn't a number", e);
+                    return EARG;
+                }
+
+                // figure out the action
+                int action = -1;
+                if ("enter".equals(actionName)) {
+                    action = MotionEvent.ACTION_HOVER_ENTER;
+                } else if ("exit".equals(actionName)) {
+                    action = MotionEvent.ACTION_HOVER_EXIT;
+                } else if ("move".equals(actionName)) {
+                    action = MotionEvent.ACTION_HOVER_MOVE;
+                }
+                if (action == -1) {
+                    Log.e(TAG, "Got a bad action: " + actionName);
+                    return EARG;
+                }
+
+                queue.enqueueEvent(new MonkeyHoverEvent(action)
+                        .addPointer(0, x, y));
+                return OK;
+            }
+            return EARG;
+        }
+    }
 
     /**
      * Command to send Trackball events to the input system.
@@ -353,6 +398,46 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
             return EARG;
         }
     }
+    
+    /**
+     * Command to "float" at a location (Sends a enter and exit hover
+     * event with t ms sleep between them).
+     */
+    private static class FloatCommand implements MonkeyCommand {
+        // float x y t
+        public MonkeyCommandReturn translateCommand(List<String> command,
+                                                    CommandQueue queue) {
+            if (command.size() == 4) {
+                int x = 0;
+                int y = 0;
+                long t = 0;
+                try {
+                    x = Integer.parseInt(command.get(1));
+                    y = Integer.parseInt(command.get(2));
+                    t = Long.parseLong(command.get(3));
+                } catch (NumberFormatException e) {
+                    // Ok, it wasn't a number
+                    Log.e(TAG, "Got something that wasn't a number", e);
+                    return EARG;
+                }
+
+                // Set the default parameters
+                long enterTime = SystemClock.uptimeMillis();
+                
+                queue.enqueueEvent(new MonkeyHoverEvent(MotionEvent.ACTION_HOVER_ENTER)
+		                .setDownTime(enterTime)
+		                .setEventTime(enterTime)        
+		                .addPointer(0, x, y));
+                queue.enqueueEvent(new MonkeyWaitEvent(t));
+                queue.enqueueEvent(new MonkeyHoverEvent(MotionEvent.ACTION_HOVER_EXIT)
+		                .setDownTime(enterTime + t)
+		                .setEventTime(enterTime + t)       
+		                .addPointer(0, x, y));
+                return OK;
+            }
+            return EARG;
+        }
+    }
 
     /**
      * Command to "press" a buttons (Sends an up and down key event.)
@@ -448,11 +533,13 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         // Add in all the commands we support
         COMMAND_MAP.put("flip", new FlipCommand());
         COMMAND_MAP.put("touch", new TouchCommand());
+        COMMAND_MAP.put("hover", new HoverCommand());
         COMMAND_MAP.put("trackball", new TrackballCommand());
         COMMAND_MAP.put("key", new KeyCommand());
         COMMAND_MAP.put("sleep", new SleepCommand());
         COMMAND_MAP.put("wake", new WakeCommand());
         COMMAND_MAP.put("tap", new TapCommand());
+        COMMAND_MAP.put("float", new FloatCommand());
         COMMAND_MAP.put("press", new PressCommand());
         COMMAND_MAP.put("type", new TypeCommand());
         COMMAND_MAP.put("listvar", new MonkeySourceNetworkVars.ListVarCommand());
@@ -675,6 +762,26 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
     }
 
 
+    private MonkeyEvent batchQueuedMotionEvents(MonkeyMotionEvent oldEvent) {
+    	if (oldEvent.getAction() == MotionEvent.ACTION_MOVE 
+    			|| oldEvent.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+    		MonkeyEvent queuedEvent = commandQueue.getNextQueuedEvent();
+    		while (queuedEvent != null) {
+	    		if (queuedEvent instanceof MonkeyMotionEvent) {
+	        		MonkeyMotionEvent newEvent = (MonkeyMotionEvent) queuedEvent;
+	            	if (newEvent.getAction() == oldEvent.getAction() &&
+	            			newEvent.getEventType() == oldEvent.getEventType()) {
+	            		// TODO add new coordinates to old one
+	            		queuedEvent = commandQueue.getNextQueuedEvent();
+	            		continue;
+	            	}
+	            }
+	            return queuedEvent; 	// found new event type, discard old one
+    		}
+    	}
+    	return oldEvent;
+    }
+    
     public MonkeyEvent getNextEvent() {
         if (!started) {
             try {
@@ -694,7 +801,12 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
                 // more input from the user.
                 MonkeyEvent queuedEvent = commandQueue.getNextQueuedEvent();
                 if (queuedEvent != null) {
-                    // dispatch the event
+                    
+                	// batching move action events
+                	if (queuedEvent instanceof MonkeyMotionEvent) {
+                		batchQueuedMotionEvents((MonkeyMotionEvent) queuedEvent);
+                    }
+                	// dispatch the event
                     return queuedEvent;
                 }
 
