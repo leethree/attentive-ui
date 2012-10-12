@@ -20,6 +20,7 @@ import android.content.ComponentName;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.Surface;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -28,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.NoSuchElementException;
 import java.util.Random;
-import android.util.Log;
 
 /**
  * monkey event queue. It takes a script to produce events sample script format:
@@ -85,6 +85,8 @@ public class MonkeySourceScript implements MonkeyEventSource {
 
     private static final String EVENT_KEYWORD_TRACKBALL = "DispatchTrackball";
 
+    private static final String EVENT_KEYWORD_ROTATION = "RotateScreen";
+
     private static final String EVENT_KEYWORD_KEY = "DispatchKey";
 
     private static final String EVENT_KEYWORD_FLIP = "DispatchFlip";
@@ -122,6 +124,11 @@ public class MonkeySourceScript implements MonkeyEventSource {
     private static final String EVENT_KEYWORD_START_FRAMERATE_CAPTURE = "StartCaptureFramerate";
 
     private static final String EVENT_KEYWORD_END_FRAMERATE_CAPTURE = "EndCaptureFramerate";
+
+    private static final String EVENT_KEYWORD_START_APP_FRAMERATE_CAPTURE =
+            "StartCaptureAppFramerate";
+
+    private static final String EVENT_KEYWORD_END_APP_FRAMERATE_CAPTURE = "EndCaptureAppFramerate";
 
     // a line at the end of the header
     private static final String STARTING_DATA_LINE = "start data >>";
@@ -294,6 +301,23 @@ public class MonkeySourceScript implements MonkeyEventSource {
                         .setEdgeFlags(edgeFlags)
                         .addPointer(0, x, y, pressure, size);
                 mQ.addLast(e);
+            } catch (NumberFormatException e) {
+            }
+            return;
+        }
+
+        // Handle screen rotation events
+        if ((s.indexOf(EVENT_KEYWORD_ROTATION) >= 0) && args.length == 2) {
+            try {
+                int rotationDegree = Integer.parseInt(args[0]);
+                int persist = Integer.parseInt(args[1]);
+                if ((rotationDegree == Surface.ROTATION_0) ||
+                    (rotationDegree == Surface.ROTATION_90) ||
+                    (rotationDegree == Surface.ROTATION_180) ||
+                    (rotationDegree == Surface.ROTATION_270)) {
+                    mQ.addLast(new MonkeyRotationEvent(rotationDegree,
+                                                       persist != 0));
+                }
             } catch (NumberFormatException e) {
             }
             return;
@@ -515,7 +539,7 @@ public class MonkeySourceScript implements MonkeyEventSource {
             return;
         }
 
-       // Handle launch instrumentation events
+        // Handle launch instrumentation events
         if (s.indexOf(EVENT_KEYWORD_INSTRUMENTATION) >= 0 && args.length == 2) {
             String test_name = args[0];
             String runner_name = args[1];
@@ -547,6 +571,9 @@ public class MonkeySourceScript implements MonkeyEventSource {
         if (s.indexOf(EVENT_KEYWORD_KEYPRESS) >= 0 && args.length == 1) {
             String key_name = args[0];
             int keyCode = MonkeySourceRandom.getKeyCode(key_name);
+            if (keyCode == KeyEvent.KEYCODE_UNKNOWN) {
+                return;
+            }
             MonkeyKeyEvent e = new MonkeyKeyEvent(KeyEvent.ACTION_DOWN, keyCode);
             mQ.addLast(e);
             e = new MonkeyKeyEvent(KeyEvent.ACTION_UP, keyCode);
@@ -586,7 +613,7 @@ public class MonkeySourceScript implements MonkeyEventSource {
             mQ.addLast(e);
         }
 
-      //Run the shell command
+        //Run the shell command
         if (s.indexOf(EVENT_KEYWORD_RUNCMD) >= 0 && args.length == 1) {
             String cmd = args[0];
             MonkeyCommandEvent e = new MonkeyCommandEvent(cmd);
@@ -615,6 +642,20 @@ public class MonkeySourceScript implements MonkeyEventSource {
             return;
         }
 
+        if (s.indexOf(EVENT_KEYWORD_START_APP_FRAMERATE_CAPTURE) >= 0 && args.length == 1) {
+            String app = args[0];
+            MonkeyGetAppFrameRateEvent e = new MonkeyGetAppFrameRateEvent("start", app);
+            mQ.addLast(e);
+            return;
+        }
+
+        if (s.indexOf(EVENT_KEYWORD_END_APP_FRAMERATE_CAPTURE) >= 0 && args.length == 2) {
+            String app = args[0];
+            String label = args[1];
+            MonkeyGetAppFrameRateEvent e = new MonkeyGetAppFrameRateEvent("end", app, label);
+            mQ.addLast(e);
+            return;
+        }
 
 
     }
@@ -706,6 +747,7 @@ public class MonkeySourceScript implements MonkeyEventSource {
      *
      * @return True if the file exists and the header is valid, false otherwise.
      */
+    @Override
     public boolean validate() {
         boolean validHeader;
         try {
@@ -721,6 +763,7 @@ public class MonkeySourceScript implements MonkeyEventSource {
         return validHeader;
     }
 
+    @Override
     public void setVerbose(int verbose) {
         mVerbose = verbose;
     }
@@ -765,17 +808,24 @@ public class MonkeySourceScript implements MonkeyEventSource {
     /**
      * Adjust motion downtime and eventtime according to current system time.
      *
-     * @param e A KeyEvent
+     * @param e A MotionEvent
      */
     private void adjustMotionEventTime(MonkeyMotionEvent e) {
-        long updatedDownTime = 0;
+        long thisEventTime = SystemClock.uptimeMillis();
+        long thisDownTime = e.getDownTime();
 
-        if (e.getEventTime() < 0) {
-            return;
-        }      
-        updatedDownTime = SystemClock.uptimeMillis();
-        e.setDownTime(updatedDownTime);
-        e.setEventTime(updatedDownTime);
+        if (thisDownTime == mLastRecordedDownTimeMotion) {
+            // this event is the same batch as previous one
+            e.setDownTime(mLastExportDownTimeMotion);
+        } else {
+            // this event is the start of a new batch
+            mLastRecordedDownTimeMotion = thisDownTime;
+            // update down time to match current time
+            e.setDownTime(thisEventTime);
+            mLastExportDownTimeMotion = thisEventTime;
+        }
+        // always refresh event time
+        e.setEventTime(thisEventTime);
     }
 
     /**
@@ -788,6 +838,7 @@ public class MonkeySourceScript implements MonkeyEventSource {
      * @return The first event in the event queue or null if the end of the file
      *         is reached or if an error is encountered reading the file.
      */
+    @Override
     public MonkeyEvent getNextEvent() {
         long recordedEventTime = -1;
         MonkeyEvent ev;

@@ -17,88 +17,78 @@
 package com.android.commands.monkey;
 
 import android.app.IActivityManager;
-import android.os.RemoteException;
+import android.hardware.input.InputManager;
+import android.os.SystemClock;
 import android.view.IWindowManager;
+import android.view.InputDevice;
+import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 /**
  * monkey key event
  */
 public class MonkeyKeyEvent extends MonkeyEvent {
-    private long mDownTime = -1;
-    private int mMetaState = -1;
-    private int mAction = -1;
-    private int mKeyCode = -1;
-    private int mScancode = -1;
-    private int mRepeatCount = -1;
-    private int mDeviceId = -1;
-    private long mEventTime = -1;
+    private int mDeviceId;
+    private long mEventTime;
+    private long mDownTime;
+    private int mAction;
+    private int mKeyCode;
+    private int mScanCode;
+    private int mMetaState;
+    private int mRepeatCount;
 
-    private KeyEvent keyEvent = null;
+    private KeyEvent mKeyEvent;
 
-    public MonkeyKeyEvent(int action, int keycode) {
+    public MonkeyKeyEvent(int action, int keyCode) {
+        this(-1, -1, action, keyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0);
+    }
+
+    public MonkeyKeyEvent(long downTime, long eventTime, int action,
+            int keyCode, int repeatCount, int metaState,
+            int device, int scanCode) {
         super(EVENT_TYPE_KEY);
+        mDownTime = downTime;
+        mEventTime = eventTime;
         mAction = action;
-        mKeyCode = keycode;
+        mKeyCode = keyCode;
+        mRepeatCount = repeatCount;
+        mMetaState = metaState;
+        mDeviceId = device;
+        mScanCode = scanCode;
     }
 
     public MonkeyKeyEvent(KeyEvent e) {
         super(EVENT_TYPE_KEY);
-        keyEvent = e;
-    }
-
-    public MonkeyKeyEvent(long downTime, long eventTime, int action,
-            int code, int repeat, int metaState,
-            int device, int scancode) {
-        super(EVENT_TYPE_KEY);
-
-        mAction = action;
-        mKeyCode = code;
-        mMetaState = metaState;
-        mScancode = scancode;
-        mRepeatCount = repeat;
-        mDeviceId = device;
-        mDownTime = downTime;
-        mEventTime = eventTime;
+        mKeyEvent = e;
     }
 
     public int getKeyCode() {
-        return mKeyCode;
+        return mKeyEvent != null ? mKeyEvent.getKeyCode() : mKeyCode;
     }
 
     public int getAction() {
-        return mAction;
+        return mKeyEvent != null ? mKeyEvent.getAction() : mAction;
     }
 
     public long getDownTime() {
-        return mDownTime;
+        return mKeyEvent != null ? mKeyEvent.getDownTime() : mDownTime;
     }
 
     public long getEventTime() {
-        return mEventTime;
+        return mKeyEvent != null ? mKeyEvent.getEventTime() : mEventTime;
     }
 
     public void setDownTime(long downTime) {
+        if (mKeyEvent != null) {
+            throw new IllegalStateException("Cannot modify down time of this key event.");
+        }
         mDownTime = downTime;
     }
 
     public void setEventTime(long eventTime) {
-        mEventTime = eventTime;
-    }
-
-    /**
-     * @return the key event
-     */
-    private KeyEvent getEvent() {
-        if (keyEvent == null) {
-            if (mDeviceId < 0) {
-                keyEvent = new KeyEvent(mAction, mKeyCode);
-            } else {
-                // for scripts
-                keyEvent = new KeyEvent(mDownTime, mEventTime, mAction,
-                                        mKeyCode, mRepeatCount, mMetaState, mDeviceId, mScancode);
-            }
+        if (mKeyEvent != null) {
+            throw new IllegalStateException("Cannot modify event time of this key event.");
         }
-        return keyEvent;
+        mEventTime = eventTime;
     }
 
     @Override
@@ -126,15 +116,24 @@ public class MonkeyKeyEvent extends MonkeyEvent {
             }
         }
 
-        // inject key event
-        try {
-            if (!iwm.injectKeyEvent(getEvent(), false)) {
-                return MonkeyEvent.INJECT_FAIL;
+        KeyEvent keyEvent = mKeyEvent;
+        if (keyEvent == null) {
+            long eventTime = mEventTime;
+            if (eventTime <= 0) {
+                eventTime = SystemClock.uptimeMillis();
             }
-        } catch (RemoteException ex) {
-            return MonkeyEvent.INJECT_ERROR_REMOTE_EXCEPTION;
+            long downTime = mDownTime;
+            if (downTime <= 0) {
+                downTime = eventTime;
+            }
+            keyEvent = new KeyEvent(downTime, eventTime, mAction, mKeyCode,
+                    mRepeatCount, mMetaState, mDeviceId, mScanCode,
+                    KeyEvent.FLAG_FROM_SYSTEM, InputDevice.SOURCE_KEYBOARD);
         }
-
+        if (!InputManager.getInstance().injectInputEvent(keyEvent,
+                InputManager.INJECT_INPUT_EVENT_MODE_WAIT_FOR_RESULT)) {
+            return MonkeyEvent.INJECT_FAIL;
+        }
         return MonkeyEvent.INJECT_SUCCESS;
     }
 }
