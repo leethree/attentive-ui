@@ -250,6 +250,7 @@ public class TouchPaint extends Activity {
             setFocusable(true);
 
             mPaint = new Paint();
+            mPaint.setColor(BACKGROUND_COLOR);
             mPaint.setAntiAlias(true);
 
             mFadePaint = new Paint();
@@ -375,6 +376,7 @@ public class TouchPaint extends Activity {
                     || action == MotionEvent.ACTION_HOVER_MOVE) {
                 final int N = event.getHistorySize();
                 final int P = event.getPointerCount();
+                Log.v("TouchPaint", "NP(" + N + "," + P + ")");
                 for (int i = 0; i < N; i++) {
                     for (int j = 0; j < P; j++) {
                         paint(getPaintModeForTool(event.getToolType(j), mode),
@@ -386,6 +388,9 @@ public class TouchPaint extends Activity {
                                 event.getHistoricalOrientation(j, i),
                                 event.getHistoricalAxisValue(MotionEvent.AXIS_DISTANCE, j, i),
                                 event.getHistoricalAxisValue(MotionEvent.AXIS_TILT, j, i));
+                        mCurX = event.getHistoricalX(j, i);
+                        mCurY = event.getHistoricalY(j, i);
+                        Log.v("TouchPaint", "save(" + mCurX + "," + mCurY + ")");
                     }
                 }
                 for (int j = 0; j < P; j++) {
@@ -398,10 +403,10 @@ public class TouchPaint extends Activity {
                             event.getOrientation(j),
                             event.getAxisValue(MotionEvent.AXIS_DISTANCE, j),
                             event.getAxisValue(MotionEvent.AXIS_TILT, j));
+                    mCurX = event.getX();
+                    mCurY = event.getY();
+                    Log.v("TouchPaint", "save(" + mCurX + "," + mCurY + ")");
                 }
-                mCurX = event.getX();
-                mCurY = event.getY();
-                //Log.v("TouchPaint", "paint(" + mCurX + "," + mCurY + ")");
             }
             return true;
         }
@@ -424,6 +429,8 @@ public class TouchPaint extends Activity {
         private void paint(PaintMode mode, float x, float y, float pressure,
                 float major, float minor, float orientation,
                 float distance, float tilt) {
+        	Log.v("PaintView.paint", mode + "(" + mCurX + "," + mCurY + ")" + 
+        			"(" + x + "," + y + ")");
             if (mBitmap != null) {
                 if (major <= 0 || minor <= 0) {
                     // If size is not available, use a default value.
