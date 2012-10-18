@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 public class MonkeyActivity extends Activity {
@@ -31,7 +31,22 @@ public class MonkeyActivity extends Activity {
         return true;
     }
     
-    public void startTouchPaint(View view) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	// Handle settings
+        if (item.getItemId() == R.id.menu_settings) {
+        	updateSettings();
+        	return true;
+        }
+        else
+        	return super.onOptionsItemSelected(item);
+    }
+    
+    public void startTouchPaint() {
     	startActivity(new Intent(getBaseContext(), TouchPaint.class));
+    }
+    
+    public void updateSettings() {
+    	startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 }

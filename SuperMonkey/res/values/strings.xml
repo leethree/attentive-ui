@@ -8,5 +8,8 @@
     <string name="m_status_label">Monkey status:</string>
     <string name="et_status_label">Eye Tracker Status:</string>
     <string name="title_activity_tp">TouchPaint</string>
+    <string name="pref_m_cat">Monkey</string>
+    <string name="pref_et_cat">Eye Tracker</string>
+    <string name="title_activity_settings">Settings</string>
 
 </resources>

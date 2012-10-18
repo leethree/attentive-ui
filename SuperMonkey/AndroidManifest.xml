@@ -4,7 +4,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="-16"
+        android:minSdkVersion="16"
         android:targetSdkVersion="16" />
 
     <application
@@ -26,6 +26,13 @@
             android:name="com.example.android.apis.graphics.TouchPaint"
             android:label="@string/title_activity_tp"
             android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hk.hku.cs.srli.supermonkey.MonkeyActivity" />
         </activity>
     </application>
 

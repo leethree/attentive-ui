@@ -47,11 +47,4 @@
         android:onClick="startTouchPaint"
         android:text="@string/tp_start" />
 
-    <ImageButton
-        android:id="@+id/settingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/menu_settings"
-        android:src="@android:drawable/ic_menu_preferences" />
-
 </LinearLayout>
