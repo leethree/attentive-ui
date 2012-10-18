@@ -8,18 +8,25 @@
         android:targetSdkVersion="16" />
 
     <application
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MonkeyActivity"
-            android:label="@string/title_activity_monkey" ><intent-filter>
+            android:label="@string/title_activity_monkey"
+            android:theme="@style/AppTheme" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.android.apis.graphics.TouchPaint" android:theme="@android:style/Theme"></activity>
+        <activity
+            android:name="com.example.android.apis.graphics.TouchPaint"
+            android:label="@string/title_activity_tp"
+            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" >
+        </activity>
     </application>
 
 </manifest>

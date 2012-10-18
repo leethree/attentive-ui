@@ -7,13 +7,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 
 public class MonkeyActivity extends Activity {
 
+	private EditText monkeyStatus;
+	private EditText etStatus;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monkey);
+        monkeyStatus = (EditText) findViewById(R.id.mStatusEditText);
+        etStatus = (EditText) findViewById(R.id.etStatusEditText);
+        
+        monkeyStatus.setText("unknown");
+        etStatus.setText("unknown");
     }
 
     @Override

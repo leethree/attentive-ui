@@ -1,34 +1,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/button1"
-    android:layout_marginTop="196dp"
-    android:layout_toRightOf="@+id/button1"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/welcomeTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/hello_world"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/mStatusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="@string/m_status_label" />
 
-    <LinearLayout
-        android:id="@+id/h_layout"
+    <EditText
+        android:id="@+id/mStatusEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/etStatusTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:text="@string/et_status_label" />
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Monkey status" />
-
-        <ToggleButton
-            android:id="@+id/toggleButton1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ToggleButton" />
-    </LinearLayout>
+    <EditText
+        android:id="@+id/etStatusEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="text" >
+    </EditText>
 
     <Button
         android:id="@+id/tpStartButton"
@@ -36,5 +46,12 @@
         android:layout_height="wrap_content"
         android:onClick="startTouchPaint"
         android:text="@string/tp_start" />
+
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/menu_settings"
+        android:src="@android:drawable/ic_menu_preferences" />
 
 </LinearLayout>
