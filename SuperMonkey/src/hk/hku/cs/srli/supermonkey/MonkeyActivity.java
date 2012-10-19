@@ -5,8 +5,10 @@ import com.example.android.apis.graphics.TouchPaint;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 public class MonkeyActivity extends Activity {
@@ -21,8 +23,8 @@ public class MonkeyActivity extends Activity {
         monkeyStatus = (EditText) findViewById(R.id.mStatusEditText);
         etStatus = (EditText) findViewById(R.id.etStatusEditText);
 
-        monkeyStatus.setText("unknown");
-        etStatus.setText("unknown");
+        monkeyStatus.setText("ready");
+        etStatus.setText("ready");
     }
 
     @Override
@@ -42,11 +44,20 @@ public class MonkeyActivity extends Activity {
             return super.onOptionsItemSelected(item);
     }
 
-    public void startTouchPaint() {
-        startActivity(new Intent(getBaseContext(), TouchPaint.class));
-    }
-
     public void updateSettings() {
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+    }
+    
+    public void onTestButtonClicked(View view) {
+        // start TouchPaint
+        startActivity(new Intent(getBaseContext(), TouchPaint.class));
+    }
+    
+    public void onMToggleClicked(View view) {
+        Log.i("MonkeyActivity", "onMToggleClicked");
+    }
+    
+    public void onEtToggleClicked(View view) {
+        Log.i("MonkeyActivity", "onEtToggleClicked");
     }
 }
