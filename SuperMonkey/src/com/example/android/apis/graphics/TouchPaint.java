@@ -364,8 +364,8 @@ public class TouchPaint extends Activity {
             } else if (isTouch || (buttonState & MotionEvent.BUTTON_PRIMARY) != 0) {
                 // Draw paint when touching or if the primary button is pressed.
                 mode = PaintMode.Draw;
-            } else if (!isTouch) { 
-            	mode = PaintMode.Line;
+            } else if (!isTouch) {
+                mode = PaintMode.Line;
             } else {
                 // Otherwise, do not paint anything.
                 return false;
@@ -429,8 +429,8 @@ public class TouchPaint extends Activity {
         private void paint(PaintMode mode, float x, float y, float pressure,
                 float major, float minor, float orientation,
                 float distance, float tilt) {
-        	Log.v("PaintView.paint", mode + "(" + mCurX + "," + mCurY + ")" + 
-        			"(" + x + "," + y + ")");
+            Log.v("PaintView.paint", mode + "(" + mCurX + "," + mCurY + ")" +
+                    "(" + x + "," + y + ")");
             if (mBitmap != null) {
                 if (major <= 0 || minor <= 0) {
                     // If size is not available, use a default value.
@@ -455,10 +455,10 @@ public class TouchPaint extends Activity {
                         mPaint.setAlpha(64);
                         drawSplat(mCanvas, x, y, orientation, distance, tilt, mPaint);
                         break;
-                        
+
                     case Line:
                         // mPaint.setColor(COLORS[mColorIndex]);
-                    	mPaint.setColor(Color.YELLOW);
+                        mPaint.setColor(Color.YELLOW);
                         mPaint.setAlpha(80);
                         drawLine(mCanvas, x, y, mPaint);
                         break;
@@ -486,9 +486,9 @@ public class TouchPaint extends Activity {
             canvas.drawOval(mReusableOvalRect, paint);
             canvas.restore();
         }
-        
+
         private void drawLine(Canvas canvas, float x, float y, Paint paint) {
-        	canvas.drawLine(mCurX, mCurY, x, y, paint);
+            canvas.drawLine(mCurX, mCurY, x, y, paint);
         }
 
         /**

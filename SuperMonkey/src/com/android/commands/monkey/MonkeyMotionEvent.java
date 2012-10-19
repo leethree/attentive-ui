@@ -39,7 +39,7 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
     private int mSource;
     private int mFlags;
     private int mEdgeFlags;
-    
+
     private int mButtonState;
     private int mToolType;
 
@@ -124,14 +124,14 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
         mEdgeFlags = edgeFlags;
         return this;
     }
-    
+
     public void setButtonState(int mButtonState) {
-		this.mButtonState = mButtonState;
-	}
-    
+        this.mButtonState = mButtonState;
+    }
+
     public void setToolType(int mToolType) {
-		this.mToolType = mToolType;
-	}
+        this.mToolType = mToolType;
+    }
 
     /**
      * 
@@ -144,16 +144,16 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
         MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[pointerCount];
         for (int i = 0; i < pointerCount; i++) {
             //pointerIds[i] = mPointers.keyAt(i);
-        	pointerProperties[i] = new MotionEvent.PointerProperties();
-        	pointerProperties[i].id = mPointers.keyAt(i);
-        	pointerProperties[i].toolType = mToolType;
+            pointerProperties[i] = new MotionEvent.PointerProperties();
+            pointerProperties[i].id = mPointers.keyAt(i);
+            pointerProperties[i].toolType = mToolType;
             pointerCoords[i] = mPointers.valueAt(i);
         }
 
         MotionEvent ev = MotionEvent.obtain(mDownTime,
                 mEventTime < 0 ? SystemClock.uptimeMillis() : mEventTime,
-                mAction, pointerCount, pointerProperties, pointerCoords,
-                mMetaState, mButtonState, mXPrecision, mYPrecision, mDeviceId, mEdgeFlags, mSource, mFlags);
+                        mAction, pointerCount, pointerProperties, pointerCoords,
+                        mMetaState, mButtonState, mXPrecision, mYPrecision, mDeviceId, mEdgeFlags, mSource, mFlags);
         return ev;
     }
 
