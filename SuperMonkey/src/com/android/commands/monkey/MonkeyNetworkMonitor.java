@@ -1,18 +1,18 @@
 /**
-** Copyright 2007, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ ** Copyright 2007, The Android Open Source Project
+ **
+ ** Licensed under the Apache License, Version 2.0 (the "License");
+ ** you may not use this file except in compliance with the License.
+ ** You may obtain a copy of the License at
+ **
+ **     http://www.apache.org/licenses/LICENSE-2.0
+ **
+ ** Unless required by applicable law or agreed to in writing, software
+ ** distributed under the License is distributed on an "AS IS" BASIS,
+ ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ** See the License for the specific language governing permissions and
+ ** limitations under the License.
+ */
 
 package com.android.commands.monkey;
 
@@ -38,12 +38,12 @@ public class MonkeyNetworkMonitor extends IIntentReceiver.Stub {
     private long mWifiElapsedTime = 0;  // accumulated time spent on wifi since start()
     private long mMobileElapsedTime = 0; // accumulated time spent on mobile since start()
     private long mElapsedTime = 0; // amount of time spent between start() and stop()
-    
+
     public void performReceive(Intent intent, int resultCode, String data, Bundle extras,
             boolean ordered, boolean sticky) throws RemoteException {
         NetworkInfo ni = (NetworkInfo) intent.getParcelableExtra(
                 ConnectivityManager.EXTRA_NETWORK_INFO);
-        if (LDEBUG) System.out.println("Network state changed: " 
+        if (LDEBUG) System.out.println("Network state changed: "
                 + "type=" + ni.getType() + ", state="  + ni.getState());
         updateNetworkStats();
         if (NetworkInfo.State.CONNECTED == ni.getState()) {
@@ -84,22 +84,22 @@ public class MonkeyNetworkMonitor extends IIntentReceiver.Stub {
 
     public void register(IActivityManager am) throws RemoteException {
         if (LDEBUG) System.out.println("registering Receiver");
-        am.registerReceiver(null, null, this, filter, null); 
+        am.registerReceiver(null, null, this, filter, null);
     }
-    
+
     public void unregister(IActivityManager am) throws RemoteException {
         if (LDEBUG) System.out.println("unregistering Receiver");
         am.unregisterReceiver(this);
     }
-    
+
     public void stop() {
         updateNetworkStats();
     }
-    
+
     public void dump() {
-        System.out.println("## Network stats: elapsed time=" + mElapsedTime + "ms (" 
+        System.out.println("## Network stats: elapsed time=" + mElapsedTime + "ms ("
                 + mMobileElapsedTime + "ms mobile, "
                 + mWifiElapsedTime + "ms wifi, "
                 + (mElapsedTime - mMobileElapsedTime - mWifiElapsedTime) + "ms not connected)");
     }
- }
+}

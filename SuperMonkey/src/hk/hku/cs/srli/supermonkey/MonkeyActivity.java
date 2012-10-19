@@ -11,16 +11,16 @@ import android.widget.EditText;
 
 public class MonkeyActivity extends Activity {
 
-	private EditText monkeyStatus;
-	private EditText etStatus;
-	
+    private EditText monkeyStatus;
+    private EditText etStatus;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monkey);
         monkeyStatus = (EditText) findViewById(R.id.mStatusEditText);
         etStatus = (EditText) findViewById(R.id.etStatusEditText);
-        
+
         monkeyStatus.setText("unknown");
         etStatus.setText("unknown");
     }
@@ -30,23 +30,23 @@ public class MonkeyActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_monkey, menu);
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	// Handle settings
+        // Handle settings
         if (item.getItemId() == R.id.menu_settings) {
-        	updateSettings();
-        	return true;
+            updateSettings();
+            return true;
         }
         else
-        	return super.onOptionsItemSelected(item);
+            return super.onOptionsItemSelected(item);
     }
-    
+
     public void startTouchPaint() {
-    	startActivity(new Intent(getBaseContext(), TouchPaint.class));
+        startActivity(new Intent(getBaseContext(), TouchPaint.class));
     }
-    
+
     public void updateSettings() {
-    	startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 }
