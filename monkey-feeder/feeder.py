@@ -11,12 +11,12 @@ import tobii.sdk.mainloop
 
 class EyetrackerFeed(object):
 
-    def __init__(self, queue, mctrl):
+    def __init__(self, queue, callback):
         self.eyetracker = None
         self.eyetrackers = {}
         self.browser = None
         self._q = queue
-        self._m = mctrl
+        self._data_callback = callback
 
         tobii.sdk.init()
         self.mainloop_thread = tobii.sdk.mainloop.MainloopThread(
@@ -63,7 +63,6 @@ class EyetrackerFeed(object):
             return False
 
         self.eyetracker = eyetracker
-
         print "   --- Connected!"
 
         if self.eyetracker is not None:
@@ -85,7 +84,8 @@ class EyetrackerFeed(object):
             y = (y + right.y) / 2 if y is not None else right.y
 
         if (x is not None) and (y is not None):
-            self._m.move(x, y)
+            if self._data_callback is not None:
+                self._data_callback(x, y)
         return False
 
 
@@ -130,6 +130,8 @@ class MonkeyController(object):
     _WIDTH = 480
     _HEIGHT = 800
 
+    _DRY_RUN = True
+
     def __init__(self):
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._entered = False
@@ -137,7 +139,9 @@ class MonkeyController(object):
         self._lasty = None
 
     def __enter__(self):
-        self._s.connect((MonkeyController._TCP_IP, MonkeyController._TCP_PORT))
+        if not MonkeyController._DRY_RUN:
+            self._s.connect((MonkeyController._TCP_IP,
+                             MonkeyController._TCP_PORT))
         return self
 
     def __exit__(self, type, value, traceback):
@@ -145,7 +149,8 @@ class MonkeyController(object):
         pass
 
     def _send_command(self, command):
-        self._s.send(command + "\n")
+        if not MonkeyController._DRY_RUN:
+            self._s.send(command + "\n")
         print "Sent: ", command
 
     def move(self, x, y):
@@ -181,7 +186,7 @@ class MonkeyController(object):
 def main():
     queue = CallbackQueue()
     with MonkeyController() as mctrl:
-        with EyetrackerFeed(queue, mctrl):
+        with EyetrackerFeed(queue, mctrl.move):
             try:
                 while True: queue.pop()
             except KeyboardInterrupt:
