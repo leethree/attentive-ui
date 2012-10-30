@@ -118,6 +118,10 @@ class CallbackQueue(object):
             self._q.task_done()
             self._counter += 1
 
+    def popall(self):
+        while not self.empty():
+            self.pop()
+
     @property
     def counter(self):
         return self._counter
@@ -146,7 +150,7 @@ class MonkeyController(object):
 
     def __exit__(self, type, value, traceback):
         self._s.close()
-        pass
+        return False
 
     def _send_command(self, command):
         if not MonkeyController._DRY_RUN:
@@ -183,15 +187,51 @@ class MonkeyController(object):
         return True
 
 
+class MonkeyServer(object):
+
+    _TCP_IP = socket.gethostname()
+    _TCP_PORT = 10800
+
+    def __init__(self):
+        self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #self._s.settimeout(1)
+        self._conn = None
+
+    def __enter__(self):
+        self._s.bind((MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT))
+        self._s.listen(1)
+        print "Listening to ", MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self._s.close()
+        return False
+
+    def mainloop(self):
+        try:
+            if self._conn is not None:
+                data = self._conn.recv(1024)
+                print "Recv: ", data
+            else:
+                self._conn, addr = self._s.accept()
+                print "Connected by", addr
+            return True
+        except (socket.timeout, socket.error):
+            return False
+
+
 def main():
     queue = CallbackQueue()
     with MonkeyController() as mctrl:
         with EyetrackerFeed(queue, mctrl.move):
-            try:
-                while True: queue.pop()
-            except KeyboardInterrupt:
-                print "Interrupted by user."
-                print "%d events processed." % queue.counter
+            with MonkeyServer() as server:
+                try:
+                    while True:
+                        server.mainloop()
+                        queue.popall()
+                except KeyboardInterrupt:
+                    print "Interrupted by user."
+                    print "%d events processed." % queue.counter
 
     print "Script terminated."
 
