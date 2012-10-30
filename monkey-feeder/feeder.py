@@ -125,7 +125,7 @@ class CallbackQueue(object):
 
 class MonkeyController(object):
 
-    _TCP_IP = "127.0.0.1"
+    _TCP_IP = '127.0.0.1'
     _TCP_PORT = 1080
     _WIDTH = 480
     _HEIGHT = 800
@@ -150,7 +150,7 @@ class MonkeyController(object):
 
     def _send_command(self, command):
         if not MonkeyController._DRY_RUN:
-            self._s.send(command + "\n")
+            self._s.send(command + '\n')
         print "Sent: ", command
 
     def move(self, x, y):
@@ -167,14 +167,14 @@ class MonkeyController(object):
             return False
 
         if (x > 0 and x < 1 and y > 0 and y < 1):
-            action = "move" if self._entered else "enter"
-            self._send_command("hover %s %d %d" % (
+            action = 'move' if self._entered else 'enter'
+            self._send_command('hover %s %d %d' % (
                                action, x * width, y * height))
             self._entered = True
 
         elif (self._entered):
-            self._send_command("hover move %d %d" % (x * width, y * height))
-            self._send_command("hover exit %d %d" % (x * width, y * height))
+            self._send_command('hover move %d %d' % (x * width, y * height))
+            self._send_command('hover exit %d %d' % (x * width, y * height))
             self._entered = False
 
         self._lastx = x
@@ -196,5 +196,5 @@ def main():
     print "Script terminated."
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
