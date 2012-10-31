@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import asynchat
+import asyncore
 import functools
 import Queue
 import socket
@@ -187,37 +189,58 @@ class MonkeyController(object):
         return True
 
 
-class MonkeyServer(object):
+class MonkeyServer(asyncore.dispatcher):
 
     _TCP_IP = socket.gethostname()
     _TCP_PORT = 10800
 
     def __init__(self):
-        self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #self._s.settimeout(1)
-        self._conn = None
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def __enter__(self):
-        self._s.bind((MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT))
-        self._s.listen(1)
-        print "Listening to ", MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT
+        self.bind((MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT))
+        self.listen(1)
+        print "Listening to", MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT
         return self
 
     def __exit__(self, type, value, traceback):
-        self._s.close()
+        self.close()
         return False
 
-    def mainloop(self):
-        try:
-            if self._conn is not None:
-                data = self._conn.recv(1024)
-                print "Recv: ", data
-            else:
-                self._conn, addr = self._s.accept()
-                print "Connected by", addr
-            return True
-        except (socket.timeout, socket.error):
-            return False
+    def handle_accept(self):
+        conn, addr = self.accept()
+        MonkeyHandler(conn)
+        print "Connected by", addr
+
+    def handle_close(self):
+        self.close()
+
+    def loop(self):
+        asyncore.loop(timeout=1, count=1)
+
+
+class MonkeyHandler(asynchat.async_chat):
+
+    def __init__(self, sock):
+        asynchat.async_chat.__init__(self, sock)
+        self.ibuffer = []
+        self.set_terminator('\n')
+
+    def collect_incoming_data(self, data):
+        self.ibuffer.append(data)
+
+    def found_terminator(self):
+        message = ''.join(self.ibuffer)
+        self.ibuffer = []
+        self._process_data(message)
+
+    def handle_close(self):
+        print "Connection closed."
+        self.close()
+
+    def _process_data(self, message):
+        print "Received:", message
 
 
 def main():
@@ -227,7 +250,7 @@ def main():
             with MonkeyServer() as server:
                 try:
                     while True:
-                        server.mainloop()
+                        server.loop()
                         queue.popall()
                 except KeyboardInterrupt:
                     print "Interrupted by user."
