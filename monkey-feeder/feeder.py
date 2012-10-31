@@ -11,7 +11,7 @@ import tobii.sdk.eyetracker
 import tobii.sdk.mainloop
 
 
-class EyetrackerFeed(object):
+class EyeTrackerFacade(object):
 
     def __init__(self, queue, callback):
         self.eyetracker = None
@@ -107,7 +107,7 @@ class CallbackQueue(object):
         partial = functools.partial(callback, *args)
         self._q.put(partial)
 
-    def get(self, block=False, timeout=None):
+    def get(self, block=True, timeout=None):
         try:
             return self._q.get(block, timeout)
         except Queue.Empty:
@@ -119,23 +119,27 @@ class CallbackQueue(object):
             p()
             self._q.task_done()
             self._counter += 1
+            return True
+        else:
+            return False
 
     def popall(self):
-        while not self.empty():
-            self.pop()
+        # Pop until queue is empty.
+        while self.pop(): pass
 
     @property
     def counter(self):
         return self._counter
 
 
-class MonkeyController(object):
+class MonkeyFeeder(object):
 
     _TCP_IP = '127.0.0.1'
     _TCP_PORT = 1080
     _WIDTH = 480
     _HEIGHT = 800
 
+    # Debug option for printing commands without doing anything.
     _DRY_RUN = True
 
     def __init__(self):
@@ -145,9 +149,8 @@ class MonkeyController(object):
         self._lasty = None
 
     def __enter__(self):
-        if not MonkeyController._DRY_RUN:
-            self._s.connect((MonkeyController._TCP_IP,
-                             MonkeyController._TCP_PORT))
+        if not MonkeyFeeder._DRY_RUN:
+            self._s.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
         return self
 
     def __exit__(self, type, value, traceback):
@@ -155,13 +158,13 @@ class MonkeyController(object):
         return False
 
     def _send_command(self, command):
-        if not MonkeyController._DRY_RUN:
+        if not MonkeyFeeder._DRY_RUN:
             self._s.send(command + '\n')
         print "Sent: ", command
 
     def move(self, x, y):
-        width = MonkeyController._WIDTH
-        height = MonkeyController._HEIGHT
+        width = MonkeyFeeder._WIDTH
+        height = MonkeyFeeder._HEIGHT
 
         # TODO (LeeThree): Workaround for emulator window.
         # Remove when ready for actual device.
@@ -196,6 +199,7 @@ class MonkeyServer(asyncore.dispatcher):
 
     def __init__(self):
         asyncore.dispatcher.__init__(self)
+        self._handler = None
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def __enter__(self):
@@ -205,19 +209,27 @@ class MonkeyServer(asyncore.dispatcher):
         return self
 
     def __exit__(self, type, value, traceback):
-        self.close()
+        self.handle_close()
         return False
 
     def handle_accept(self):
         conn, addr = self.accept()
-        MonkeyHandler(conn)
+
+        # Drop existing connection.
+        if self._handler is not None:
+            self._handler.handle_close()
+
+        self._handler = MonkeyHandler(conn)
         print "Connected by", addr
 
     def handle_close(self):
+        if self._handler is not None:
+            self._handler.handle_close()
+        print "Server shutdown."
         self.close()
 
     def loop(self):
-        asyncore.loop(timeout=1, count=1)
+        asyncore.loop(timeout=0, count=1)
 
 
 class MonkeyHandler(asynchat.async_chat):
@@ -245,13 +257,13 @@ class MonkeyHandler(asynchat.async_chat):
 
 def main():
     queue = CallbackQueue()
-    with MonkeyController() as mctrl:
-        with EyetrackerFeed(queue, mctrl.move):
-            with MonkeyServer() as server:
+    with MonkeyServer() as server:
+        with MonkeyFeeder() as mfeed:
+            with EyeTrackerFacade(queue, mfeed.move):
                 try:
                     while True:
                         server.loop()
-                        queue.popall()
+                        queue.pop()
                 except KeyboardInterrupt:
                     print "Interrupted by user."
                     print "%d events processed." % queue.counter
