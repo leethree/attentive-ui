@@ -10,12 +10,13 @@ import tobii.sdk.mainloop
 
 class EyeTrackerFacade(object):
 
-    def __init__(self, queue, callback):
+    def __init__(self, callback):
         self.eyetracker = None
         self.eyetrackers = {}
         self.browser = None
-        self._q = queue
-        self._data_callback = callback
+        self._q = CallbackQueue()
+        self._data_callback = functools.partial(callback, 'data')
+        self._event_callback = functools.partial(callback, 'etf')
 
         tobii.sdk.init()
         self.mainloop_thread = tobii.sdk.mainloop.MainloopThread(
@@ -35,10 +36,20 @@ class EyeTrackerFacade(object):
                 self._q.bind(self._on_gazedata)
         if self.mainloop_thread is not None:
             self.mainloop_thread.stop()
+        print "%d events processed." % self._q.count()
         return False
+
+    def loop(self):
+        self._q.pop()
+
+    def _report_event(self, event, *args):
+        self._event_callback(event, *args)
 
     def _on_eyetracker_browser_event(self, event_type, event_name,
                                      eyetracker_info):
+        if self.eyetracker is not None:
+            # already connected.
+            return False
         if event_type == tobii.sdk.browsing.EyetrackerBrowser.FOUND:
             self.eyetrackers[eyetracker_info.product_id] = eyetracker_info
             print ('%s' % eyetracker_info.product_id, eyetracker_info.model,
@@ -64,11 +75,22 @@ class EyeTrackerFacade(object):
         self.eyetracker = eyetracker
         print "   --- Connected!"
 
+        self._report_event('connected')
+        return False
+
+    def start_tracking(self):
         if self.eyetracker is not None:
             self.eyetracker.events.OnGazeDataReceived += \
                 self._q.bind(self._on_gazedata)
             self.eyetracker.StartTracking()
-        return False
+            self._report_event('start_tracking')
+
+    def stop_tracking(self):
+        if self.eyetracker is not None:
+            self.eyetracker.StopTracking()
+            self.eyetracker.events.OnGazeDataReceived -= \
+                self._q.bind(self._on_gazedata)
+            self._report_event('stop_tracking')
 
     def _on_gazedata(self, error, gaze):
         x = None
@@ -124,6 +146,5 @@ class CallbackQueue(object):
         # Pop until queue is empty.
         while self.pop(): pass
 
-    @property
-    def counter(self):
+    def count(self):
         return self._counter

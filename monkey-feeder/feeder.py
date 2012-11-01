@@ -5,7 +5,6 @@ import asyncore
 import socket
 
 from et_facade import EyeTrackerFacade
-from et_facade import CallbackQueue
 
 
 class MonkeyFeeder(object):
@@ -27,6 +26,7 @@ class MonkeyFeeder(object):
     def __enter__(self):
         if not MonkeyFeeder._DRY_RUN:
             self._s.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
+        EventPubSub.subscribe('data', self.move)
         return self
 
     def __exit__(self, type, value, traceback):
@@ -96,7 +96,7 @@ class MonkeyServer(asyncore.dispatcher):
             self._handler.handle_close()
 
         self._handler = MonkeyHandler(conn)
-        print "Connected by", addr
+        EventPubSub.publish('conn', addr, self._handler)
 
     def handle_close(self):
         if self._handler is not None:
@@ -127,25 +127,76 @@ class MonkeyHandler(asynchat.async_chat):
         print "Connection closed."
         self.close()
 
+    def respond(self, data, endline = True):
+        self.push(data)
+        if endline: self.push('\n')
+
     def _process_data(self, message):
-        print "Received:", message
+        strs = message.split()
+        if (len(strs) > 1):
+            EventPubSub.publish('cmd-' + strs[0].lower(), strs[1:])
+        else:
+            EventPubSub.publish('cmd-' + strs[0].lower())
+
+class EventPubSub(object):
+
+    _reg = {}
+
+    @staticmethod
+    def publish(topic, *args):
+        if topic in EventPubSub._reg:
+            for handler in EventPubSub._reg[topic]:
+                handler(*args)
+        else:
+            print "WARNING: Unhandled PubSub topic:", topic, args
+
+    @staticmethod
+    def subscribe(topic, handler):
+        if topic in EventPubSub._reg:
+            EventPubSub._reg[topic].append(handler)
+        else:
+            EventPubSub._reg[topic] = [handler]
 
 
-def main():
-    queue = CallbackQueue()
-    with MonkeyServer() as server:
-        with MonkeyFeeder() as mfeed:
-            with EyeTrackerFacade(queue, mfeed.move):
-                try:
-                    while True:
-                        server.loop()
-                        queue.pop()
-                except KeyboardInterrupt:
-                    print "Interrupted by user."
-                    print "%d events processed." % queue.counter
+class Conductor(object):
 
-    print "Script terminated."
+    def __init__(self):
+        self._etf = EyeTrackerFacade(EventPubSub.publish)
+        self._mserver = MonkeyServer()
+        self._mfeeder = MonkeyFeeder()
+        self._mhandler = None
+        EventPubSub.subscribe('etf', self._handle_etf_event)
+        EventPubSub.subscribe('conn', self._handle_conn)
+        EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
+        EventPubSub.subscribe('cmd-stop', self._handle_cmd_stop)
+
+    def main(self):
+        with self._mserver:
+            with self._mfeeder:
+                with self._etf:
+                    try:
+                        while True:
+                            self._mserver.loop()
+                            self._etf.loop()
+                    except KeyboardInterrupt:
+                        print "Interrupted by user."
+
+    def _handle_etf_event(self, event, *args):
+        print "ETF Event:", event
+        if self._mhandler is not None:
+            self._mhandler.respond(event)
+
+    def _handle_conn(self, addr, mhandler):
+        print "Connected by", addr
+        self._mhandler = mhandler
+
+    def _handle_cmd_start(self):
+        self._etf.start_tracking()
+
+    def _handle_cmd_stop(self):
+        self._etf.stop_tracking()
 
 
 if __name__ == '__main__':
-    main()
+    Conductor().main()
+    print "Script terminated."
