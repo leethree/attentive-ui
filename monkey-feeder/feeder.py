@@ -1,134 +1,21 @@
 #!/usr/bin/python
 
-import functools
-import Queue
+import asynchat
+import asyncore
 import socket
 
-import tobii.sdk.browsing
-import tobii.sdk.eyetracker
-import tobii.sdk.mainloop
+from et_facade import EyeTrackerFacade
 
 
-class EyetrackerFeed(object):
+class MonkeyFeeder(object):
 
-    def __init__(self, queue, mctrl):
-        self.eyetracker = None
-        self.eyetrackers = {}
-        self.browser = None
-        self._q = queue
-        self._m = mctrl
-
-        tobii.sdk.init()
-        self.mainloop_thread = tobii.sdk.mainloop.MainloopThread(
-            mainloop=None, delay_start=True)
-
-    def __enter__(self):
-        self.mainloop_thread.start()
-        self.browser = tobii.sdk.browsing.EyetrackerBrowser(
-            self.mainloop_thread,
-            self._q.bind(self._on_eyetracker_browser_event))
-        return self
-
-    def __exit__(self, type, value, traceback):
-        if self.eyetracker is not None:
-            self.eyetracker.StopTracking()
-            self.eyetracker.events.OnGazeDataReceived -= \
-                self._q.bind(self._on_gazedata)
-        if self.mainloop_thread is not None:
-            self.mainloop_thread.stop()
-        return False
-
-    def _on_eyetracker_browser_event(self, event_type, event_name,
-                                     eyetracker_info):
-        if event_type == tobii.sdk.browsing.EyetrackerBrowser.FOUND:
-            self.eyetrackers[eyetracker_info.product_id] = eyetracker_info
-            print ('%s' % eyetracker_info.product_id, eyetracker_info.model,
-                  eyetracker_info.status)
-            print "Connecting to:", eyetracker_info
-            tobii.sdk.eyetracker.Eyetracker.create_async(
-                self.mainloop_thread, eyetracker_info,
-                self._q.bind(self._on_eyetracker_created))
-
-        return False
-
-    def _on_eyetracker_created(self, error, eyetracker):
-        if error:
-            print "Connection failed because of an exception: %s" % (error)
-            if error == 0x20000402:
-                print ("The selected unit is too old, a unit which supports "
-                       "protocol version 1.0 is required.\n\n<b>Details:</b> "
-                       "<i>%s</i>" % error)
-            else:
-                print "Could not connect to eye tracker."
-            return False
-
-        self.eyetracker = eyetracker
-
-        print "   --- Connected!"
-
-        if self.eyetracker is not None:
-            self.eyetracker.events.OnGazeDataReceived += \
-                self._q.bind(self._on_gazedata)
-            self.eyetracker.StartTracking()
-        return False
-
-    def _on_gazedata(self, error, gaze):
-        x = None
-        y = None
-        if gaze.LeftValidity < 2:
-            left = gaze.LeftGazePoint2D
-            x = left.x
-            y = left.y
-        if gaze.RightValidity < 2:
-            right = gaze.RightGazePoint2D
-            x = (x + right.x) / 2 if x is not None else right.x
-            y = (y + right.y) / 2 if y is not None else right.y
-
-        if (x is not None) and (y is not None):
-            self._m.move(x, y)
-        return False
-
-
-class CallbackQueue(object):
-
-    def __init__(self):
-        self._q = Queue.Queue()
-        self._counter = 0
-
-    def bind(self, callback):
-        return functools.partial(self.put, callback)
-
-    def empty(self):
-        return self._q.empty()
-
-    def put(self, callback, *args):
-        partial = functools.partial(callback, *args)
-        self._q.put(partial)
-
-    def get(self, block=False, timeout=None):
-        try:
-            return self._q.get(block, timeout)
-        except Queue.Empty:
-            return None
-
-    def pop(self):
-        p = self.get(True, 1)
-        if p is not None:
-            p()
-            self._q.task_done()
-            self._counter += 1
-
-    @property
-    def counter(self):
-        return self._counter
-
-
-class MonkeyController(object):
-
-    _TCP_IP = "127.0.0.1"
+    _TCP_IP = '127.0.0.1'
     _TCP_PORT = 1080
     _WIDTH = 480
     _HEIGHT = 800
+
+    # Debug option for printing commands without doing anything.
+    _DRY_RUN = True
 
     def __init__(self):
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -137,20 +24,23 @@ class MonkeyController(object):
         self._lasty = None
 
     def __enter__(self):
-        self._s.connect((MonkeyController._TCP_IP, MonkeyController._TCP_PORT))
+        if not MonkeyFeeder._DRY_RUN:
+            self._s.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
+        EventPubSub.subscribe('data', self.move)
         return self
 
     def __exit__(self, type, value, traceback):
         self._s.close()
-        pass
+        return False
 
     def _send_command(self, command):
-        self._s.send(command + "\n")
+        if not MonkeyFeeder._DRY_RUN:
+            self._s.send(command + '\n')
         print "Sent: ", command
 
     def move(self, x, y):
-        width = MonkeyController._WIDTH
-        height = MonkeyController._HEIGHT
+        width = MonkeyFeeder._WIDTH
+        height = MonkeyFeeder._HEIGHT
 
         # TODO (LeeThree): Workaround for emulator window.
         # Remove when ready for actual device.
@@ -162,14 +52,14 @@ class MonkeyController(object):
             return False
 
         if (x > 0 and x < 1 and y > 0 and y < 1):
-            action = "move" if self._entered else "enter"
-            self._send_command("hover %s %d %d" % (
+            action = 'move' if self._entered else 'enter'
+            self._send_command('hover %s %d %d' % (
                                action, x * width, y * height))
             self._entered = True
 
         elif (self._entered):
-            self._send_command("hover move %d %d" % (x * width, y * height))
-            self._send_command("hover exit %d %d" % (x * width, y * height))
+            self._send_command('hover move %d %d' % (x * width, y * height))
+            self._send_command('hover exit %d %d' % (x * width, y * height))
             self._entered = False
 
         self._lastx = x
@@ -178,18 +68,137 @@ class MonkeyController(object):
         return True
 
 
-def main():
-    queue = CallbackQueue()
-    with MonkeyController() as mctrl:
-        with EyetrackerFeed(queue, mctrl):
-            try:
-                while True: queue.pop()
-            except KeyboardInterrupt:
-                print "Interrupted by user."
-                print "%d events processed." % queue.counter
+class MonkeyServer(asyncore.dispatcher):
 
+    _TCP_IP = socket.gethostname()
+    _TCP_PORT = 10800
+
+    def __init__(self):
+        asyncore.dispatcher.__init__(self)
+        self._handler = None
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    def __enter__(self):
+        self.bind((MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT))
+        self.listen(1)
+        print "Listening to", MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.handle_close()
+        return False
+
+    def handle_accept(self):
+        conn, addr = self.accept()
+
+        # Drop existing connection.
+        if self._handler is not None:
+            self._handler.handle_close()
+
+        self._handler = MonkeyHandler(conn)
+        EventPubSub.publish('conn', addr, self._handler)
+
+    def handle_close(self):
+        if self._handler is not None:
+            self._handler.handle_close()
+        print "Server shutdown."
+        self.close()
+
+    def loop(self):
+        asyncore.loop(timeout=0, count=1)
+
+
+class MonkeyHandler(asynchat.async_chat):
+
+    def __init__(self, sock):
+        asynchat.async_chat.__init__(self, sock)
+        self.ibuffer = []
+        self.set_terminator('\n')
+
+    def collect_incoming_data(self, data):
+        self.ibuffer.append(data)
+
+    def found_terminator(self):
+        message = ''.join(self.ibuffer)
+        self.ibuffer = []
+        self._process_data(message)
+
+    def handle_close(self):
+        print "Connection closed."
+        self.close()
+
+    def respond(self, data, endline = True):
+        self.push(data)
+        if endline: self.push('\n')
+
+    def _process_data(self, message):
+        strs = message.split()
+        if (len(strs) > 1):
+            EventPubSub.publish('cmd-' + strs[0].lower(), strs[1:])
+        else:
+            EventPubSub.publish('cmd-' + strs[0].lower())
+
+class EventPubSub(object):
+
+    _reg = {}
+
+    @staticmethod
+    def publish(topic, *args):
+        if topic in EventPubSub._reg:
+            for handler in EventPubSub._reg[topic]:
+                handler(*args)
+        else:
+            print "WARNING: Unhandled PubSub topic:", topic, args
+
+    @staticmethod
+    def subscribe(topic, handler):
+        if topic in EventPubSub._reg:
+            EventPubSub._reg[topic].append(handler)
+        else:
+            EventPubSub._reg[topic] = [handler]
+
+    # TODO (LeeThree): Unsubscribe is needed for completeness.
+
+
+class Conductor(object):
+
+    def __init__(self):
+        self._etf = EyeTrackerFacade(EventPubSub.publish)
+        self._mserver = MonkeyServer()
+        self._mfeeder = MonkeyFeeder()
+        self._mhandler = None
+        EventPubSub.subscribe('etf', self._handle_etf_event)
+        EventPubSub.subscribe('conn', self._handle_conn)
+        EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
+        EventPubSub.subscribe('cmd-stop', self._handle_cmd_stop)
+
+    def main(self):
+        with self._mserver:
+            with self._mfeeder:
+                with self._etf:
+                    try:
+                        while True:
+                            self._mserver.loop()
+                            self._etf.loop()
+                    except KeyboardInterrupt:
+                        print "Interrupted by user."
+
+    def _handle_etf_event(self, event, *args):
+        print "ETF Event:", event
+        if self._mhandler is not None:
+            self._mhandler.respond(event)
+
+    def _handle_conn(self, addr, mhandler):
+        print "Connected by", addr
+        self._mhandler = mhandler
+
+    def _handle_cmd_start(self):
+        self._etf.start_tracking()
+
+    def _handle_cmd_stop(self):
+        self._etf.stop_tracking()
+
+
+if __name__ == '__main__':
+    Conductor().main()
     print "Script terminated."
-
-
-if __name__ == "__main__":
-    main()
