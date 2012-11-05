@@ -157,6 +157,8 @@ class EventPubSub(object):
         else:
             EventPubSub._reg[topic] = [handler]
 
+    # TODO (LeeThree): Unsubscribe is needed for completeness.
+
 
 class Conductor(object):
 
