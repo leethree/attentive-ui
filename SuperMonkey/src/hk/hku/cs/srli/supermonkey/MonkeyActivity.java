@@ -15,6 +15,8 @@ public class MonkeyActivity extends Activity {
 
     private EditText monkeyStatus;
     private EditText etStatus;
+    
+    private EyeTrackerService etService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,5 +61,15 @@ public class MonkeyActivity extends Activity {
     
     public void onEtToggleClicked(View view) {
         Log.i("MonkeyActivity", "onEtToggleClicked");
+
+        if (etService == null) {
+            etService = new EyeTrackerService(this);
+            etService.connect("10.0.2.2", 10800);
+        } else {
+            if (!etService.write("hello!")) {
+                etService.close();
+                etService = null;
+            }
+        }
     }
 }
