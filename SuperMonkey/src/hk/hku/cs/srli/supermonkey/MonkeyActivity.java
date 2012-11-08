@@ -3,18 +3,24 @@ package hk.hku.cs.srli.supermonkey;
 import com.example.android.apis.graphics.TouchPaint;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class MonkeyActivity extends Activity {
 
     private EditText monkeyStatus;
     private EditText etStatus;
+    
+    private ToggleButton etToggle;
     
     private EyeTrackerService etService;
 
@@ -24,11 +30,26 @@ public class MonkeyActivity extends Activity {
         setContentView(R.layout.activity_monkey);
         monkeyStatus = (EditText) findViewById(R.id.mStatusEditText);
         etStatus = (EditText) findViewById(R.id.etStatusEditText);
+        etToggle = (ToggleButton) findViewById(R.id.etToggleButton);
 
         monkeyStatus.setText("ready");
-        etStatus.setText("ready");
+        etStatus.setText("disconnected");
+        etToggle.setEnabled(false);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        lazyConnect();
+    }
+    
+    @Override
+    protected void onStop() {
+        if (etService != null)
+            etService.close();
+        super.onStop();
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_monkey, menu);
@@ -61,15 +82,54 @@ public class MonkeyActivity extends Activity {
     
     public void onEtToggleClicked(View view) {
         Log.i("MonkeyActivity", "onEtToggleClicked");
-
+        etService.write("hello");
+    }
+    
+    private void lazyConnect() {
         if (etService == null) {
             etService = new EyeTrackerService(this);
-            etService.connect("10.0.2.2", 10800);
-        } else {
-            if (!etService.write("hello!")) {
-                etService.close();
-                etService = null;
+            etService.setCallback(new EyeTrackerCallback());
+        }
+        if (!etService.isConnected()) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            try {
+                String host = sharedPref.getString(SettingsActivity.KEY_PREF_ET_HOST, "");
+                int port = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_PREF_ET_PORT, ""));
+                if (host.length() > 0 && port > 0)
+                    etService.connect(host, port);
+                else
+                    throw new IllegalArgumentException("Wrong host and port format.");
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+    
+    private class EyeTrackerCallback implements EyeTrackerService.Callback {
+
+        @Override
+        public void handleConnected() {
+            etToggle.setEnabled(true);
+            etStatus.setText("connected");
+            Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        }
+        
+        @Override
+        public void handleMessage(String message) {
+            etStatus.setText(message);
+        }
+
+        @Override
+        public void handleDisconnected() {
+            etToggle.setEnabled(false);
+            etStatus.setText("disconnected");
+            Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void handleError(String message) {
+            String text = "Unexpected error: " + message;
+            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
         }
     }
 }
