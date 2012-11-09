@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class EyeTrackerService {
@@ -18,11 +19,8 @@ public class EyeTrackerService {
     private WeakReference<Activity> activityRef;
     private Callback callback;
     
-    private boolean connected;
-    
     public EyeTrackerService(Activity activity) {
         this.activityRef = new WeakReference<Activity>(activity);
-        this.connected = false;
     }
     
     public void connect(String host, int port) {
@@ -39,8 +37,7 @@ public class EyeTrackerService {
     }
     
     public void close() {
-        if (client != null)
-            client.stop();
+        if (client != null) client.stop();
     }
     
     public void setCallback(Callback callback) {
@@ -48,7 +45,7 @@ public class EyeTrackerService {
     }
     
     public boolean isConnected() {
-        return connected;
+        return client != null && client.isConnected();
     }
     
     private void report(ReportType type) {
@@ -106,31 +103,42 @@ public class EyeTrackerService {
         public ClientThread(String host, int port) {
             this.host = host;
             this.port = port;
-            running = false;
+            this.socket = new Socket();
+            this.running = false;
         }
         
         @Override
         public void run() {
             running = true;
+            Log.v("EyeTrackerService.ClientThread", "Start running");
             try {
                 InetAddress dstAddress = InetAddress.getByName(host);
-                socket = new Socket(dstAddress, port);
-                Log.i("EyeTrackerService.ClientThread", "Connected!");
+                InetSocketAddress socketAddr = new InetSocketAddress(dstAddress, port);
+                socket.connect(socketAddr);
+                Log.d("EyeTrackerService.ClientThread", "Connected!");
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                connected = true;
                 report(ReportType.CONNECTED);
                 while (running) {
                     String message = in.readLine();
                     if (message == null) break;     // The socket is disconnected.
                     report(ReportType.MESSAGE, message);
                 }
+                report(ReportType.DISCONNECTED);
             } catch (IOException e) {
-                Log.e("EyeTrackerService.ClientThread", e.getMessage());
+                Log.e("EyeTrackerService.ClientThread.run", e.getMessage());
                 report(ReportType.ERROR, e.getMessage());
             } finally {
-                stop();
-                Log.i("EyeTrackerService.ClientThread", "Stopped.");
+                try {
+                    socket.close();
+                    out.close();
+                    in.close();
+                } catch (NullPointerException e) {
+                } catch (IOException e) {
+                    Log.e("EyeTrackerService.ClientThread.run", e.getMessage());
+                }
+                running = false;
+                Log.d("EyeTrackerService.ClientThread", "Stopped.");
             }
         }
         
@@ -148,21 +156,23 @@ public class EyeTrackerService {
         }
         
         public void stop() {
-            Log.i("EyeTrackerService.ClientThread", "Stopping.");
-            if (connected) {
-                connected = false;
-                report(ReportType.DISCONNECTED);
+            if (!running) return;
+            Log.d("EyeTrackerService.ClientThread", "Stopping...");
+            if (socket.isConnected()) {
+                running = false;
+                send("bye");
+            } else {
+                // Socket is blocked when connecting. We need to close it here.
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    Log.e("EyeTrackerService.ClientThread.stop", e.getMessage());
+                }
             }
-            running = false;
-            try {
-                socket.close();
-                out.close();
-                in.close();
-            } catch (NullPointerException e) {
-            } catch (IOException e) {
-                Log.e("EyeTrackerService.ClientThread", e.getMessage());
-                report(ReportType.ERROR, e.getMessage());
-            }
+        }
+        
+        public boolean isConnected() {
+            return running && socket.isConnected();
         }
     }
     

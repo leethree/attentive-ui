@@ -177,6 +177,7 @@ class Conductor(object):
         EventPubSub.subscribe('conn', self._handle_conn)
         EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
         EventPubSub.subscribe('cmd-stop', self._handle_cmd_stop)
+        EventPubSub.subscribe('cmd-bye', self._handle_cmd_bye)
         EventPubSub.subscribe(EventPubSub.UNHANDLED, self._handle_unhandled)
 
     def main(self):
@@ -204,6 +205,11 @@ class Conductor(object):
 
     def _handle_cmd_stop(self):
         self._etf.stop_tracking()
+
+    def _handle_cmd_bye(self):
+        if self._mhandler is not None:
+            self._mhandler.respond("bye")
+            self._mhandler.handle_close()
 
     def _handle_unhandled(self, topic, *args):
         if self._mhandler is not None:

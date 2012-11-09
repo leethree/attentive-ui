@@ -39,14 +39,19 @@ public class MonkeyActivity extends Activity {
 
     @Override
     protected void onStart() {
+        Log.v("MonkeyActivity", "onStart");
         super.onStart();
         lazyConnect();
     }
     
     @Override
     protected void onStop() {
-        if (etService != null)
+        Log.v("MonkeyActivity", "onStop");
+        if (etService != null) {
             etService.close();
+            etService.setCallback(null);
+            etService = null;
+        }
         super.onStop();
     }
     
@@ -77,11 +82,11 @@ public class MonkeyActivity extends Activity {
     }
     
     public void onMToggleClicked(View view) {
-        Log.i("MonkeyActivity", "onMToggleClicked");
+        Log.v("MonkeyActivity", "onMToggleClicked");
     }
     
     public void onEtToggleClicked(View view) {
-        Log.i("MonkeyActivity", "onEtToggleClicked");
+        Log.v("MonkeyActivity", "onEtToggleClicked");
         etService.write("hello");
     }
     
@@ -95,8 +100,10 @@ public class MonkeyActivity extends Activity {
             try {
                 String host = sharedPref.getString(SettingsActivity.KEY_PREF_ET_HOST, "");
                 int port = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_PREF_ET_PORT, ""));
-                if (host.length() > 0 && port > 0)
+                if (host.length() > 0 && port > 0) {
                     etService.connect(host, port);
+                    etStatus.setText("connecting...");
+                }
                 else
                     throw new IllegalArgumentException("Wrong host and port format.");
             } catch (IllegalArgumentException e) {
@@ -128,7 +135,7 @@ public class MonkeyActivity extends Activity {
 
         @Override
         public void handleError(String message) {
-            String text = "Unexpected error: " + message;
+            String text = "Error: " + message;
             Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
         }
     }
