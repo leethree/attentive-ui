@@ -19,8 +19,10 @@ import android.widget.ToggleButton;
 public class MonkeyActivity extends Activity {
 
     private EditText monkeyStatus;
+    private EditText dStatus;
     private EditText etStatus;
     
+    private ToggleButton dToggle;
     private ToggleButton etToggle;
     private Button caliButton;
     
@@ -31,21 +33,29 @@ public class MonkeyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monkey);
         monkeyStatus = (EditText) findViewById(R.id.mStatusEditText);
+        dStatus = (EditText) findViewById(R.id.dStatusEditText);
         etStatus = (EditText) findViewById(R.id.etStatusEditText);
+        dToggle = (ToggleButton) findViewById(R.id.dToggleButton);
         etToggle = (ToggleButton) findViewById(R.id.etToggleButton);
         caliButton = (Button) findViewById(R.id.calibrateButton);
 
         monkeyStatus.setText("ready");
+        dStatus.setText("disconnected");
         etStatus.setText("disconnected");
         etToggle.setEnabled(false);
         caliButton.setEnabled(false);
+        
+        etService = new EyeTrackerService(this);
     }
 
     @Override
     protected void onStart() {
         Log.v("MonkeyActivity", "onStart");
         super.onStart();
-        lazyConnect();
+        etService.setCallback(new EyeTrackerCallback());
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false))
+            lazyConnect();
     }
     
     @Override
@@ -54,7 +64,6 @@ public class MonkeyActivity extends Activity {
         if (etService != null) {
             etService.close();
             etService.setCallback(null);
-            etService = null;
         }
         super.onStop();
     }
@@ -89,6 +98,16 @@ public class MonkeyActivity extends Activity {
         Log.v("MonkeyActivity", "onMToggleClicked");
     }
     
+    public void onDToggleClicked(View view) {
+        boolean on = dToggle.isChecked();
+        Log.v("MonkeyActivity", "onDToggleClicked:" + on);
+        if (on)
+            lazyConnect();
+        else
+            etService.close();
+        dToggle.setChecked(!on);    // Maintain original state.
+    }
+    
     public void onEtToggleClicked(View view) {
         boolean on = etToggle.isChecked();
         Log.v("MonkeyActivity", "onEtToggleClicked:" + on);
@@ -97,10 +116,6 @@ public class MonkeyActivity extends Activity {
     }
     
     private void lazyConnect() {
-        if (etService == null) {
-            etService = new EyeTrackerService(this);
-            etService.setCallback(new EyeTrackerCallback());
-        }
         if (!etService.isConnected()) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             try {
@@ -108,7 +123,7 @@ public class MonkeyActivity extends Activity {
                 int port = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_PREF_ET_PORT, ""));
                 if (host.length() > 0 && port > 0) {
                     etService.connect(host, port);
-                    etStatus.setText("connecting to daemon...");
+                    dStatus.setText("connecting...");
                 }
                 else
                     throw new IllegalArgumentException("Wrong host and port format.");
@@ -122,25 +137,25 @@ public class MonkeyActivity extends Activity {
 
         @Override
         public void handleConnected() {
+            dToggle.setChecked(true);
             etToggle.setEnabled(true);
             caliButton.setEnabled(true);
-            etStatus.setText("daemon connected");
-            Toast.makeText(getApplicationContext(), "Daemon connected", Toast.LENGTH_SHORT).show();
+            dStatus.setText("connected");
+        }
+
+        @Override
+        public void handleDisconnected() {
+            dToggle.setChecked(false);
+            etToggle.setEnabled(false);
+            caliButton.setEnabled(false);
+            dStatus.setText("disconnected");
         }
         
         @Override
         public void handleMessage(String message) {
             etStatus.setText(message);
         }
-
-        @Override
-        public void handleDisconnected() {
-            etToggle.setEnabled(false);
-            caliButton.setEnabled(false);
-            etStatus.setText("daemon disconnected");
-            Toast.makeText(getApplicationContext(), "Daemon disconnected", Toast.LENGTH_SHORT).show();
-        }
-
+        
         @Override
         public void handleError(String message) {
             String text = "Error: " + message;

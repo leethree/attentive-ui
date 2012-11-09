@@ -29,7 +29,7 @@
                 android:id="@+id/mStatusTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/m_status_label" />
+                android:text="@string/label_m_status" />
 
             <EditText
                 android:id="@+id/mStatusEditText"
@@ -59,10 +59,44 @@
             android:orientation="vertical" >
 
             <TextView
+                android:id="@+id/dStatusTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_d_status" />
+
+            <EditText
+                android:id="@+id/dStatusEditText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:inputType="text" >
+            </EditText>
+        </LinearLayout>
+
+        <ToggleButton
+            android:id="@+id/dToggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:onClick="onDToggleClicked" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" >
+
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
                 android:id="@+id/etStatusTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/et_status_label" />
+                android:text="@string/label_et_status" />
 
             <EditText
                 android:id="@+id/etStatusEditText"
