@@ -29,11 +29,11 @@ public class EyeTrackerService {
         new Thread(client).start();
     }
     
-    public boolean write(String command) {
-        if (client != null)
-            return client.send(command);
+    public void switchTracking(boolean on) {
+        if (on)
+            send("start");
         else
-            return false;
+            send("stop");
     }
     
     public void close() {
@@ -48,6 +48,13 @@ public class EyeTrackerService {
         return client != null && client.isConnected();
     }
     
+    private boolean send(String command) {
+        if (client != null)
+            return client.send(command);
+        else
+            return false;
+    }
+    
     private void report(ReportType type) {
         report(type, null);
     }
@@ -60,8 +67,23 @@ public class EyeTrackerService {
             public void run() {
                 switch (type) {
                 case MESSAGE:
-                    Log.i("EyeTrackerService", message);
-                    callback.handleMessage(message);
+                    Log.v("EyeTrackerService", message);
+                    int spacePos = message.indexOf(' ');
+                    if (spacePos > 0) {
+                        String command = message.substring(0, spacePos);
+                        String opt = message.substring(spacePos + 1);
+                        if (command.equals("msg")) {
+                            if (opt.length() > 0) callback.handleMessage(opt);
+                        } else if (command.equals("tracking_started")) {
+                            callback.handleETStartStop(true);
+                        } else if (command.equals("tracking_stopped")) {
+                            callback.handleETStartStop(false);
+                        } else if (command.equals("error")) {
+                            if (opt.length() > 0) callback.handleError(opt);
+                        }
+                    } else {
+                        Log.e("EyeTrackerService", "Wrong message format:" + message);
+                    }
                     break;
                 case CONNECTED:
                     callback.handleConnected();
@@ -81,6 +103,7 @@ public class EyeTrackerService {
     public interface Callback {
         public void handleConnected();
         public void handleDisconnected();
+        public void handleETStartStop(boolean started);
         public void handleMessage(String message);
         public void handleError(String message);
     }

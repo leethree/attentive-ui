@@ -26,11 +26,11 @@ All requests and responses end with "`\n`".
 
 	Send a message that meaned to be displayed to the user.
 
-- `start_tracking`
+- `tracking_started`
 
 	Indicate that eye tracking has started.
 
-- `stop_tracking`
+- `tracking_stopped`
 
 	Indicate that eye tracking has stopped.
 

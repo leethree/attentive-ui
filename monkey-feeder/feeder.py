@@ -173,6 +173,7 @@ class Conductor(object):
         self._mserver = MonkeyServer()
         self._mfeeder = MonkeyFeeder()
         self._mhandler = None
+        self._etready = False
         EventPubSub.subscribe('etf', self._handle_etf_event)
         EventPubSub.subscribe('conn', self._handle_conn)
         EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
@@ -193,12 +194,21 @@ class Conductor(object):
 
     def _handle_etf_event(self, event, *args):
         print "ETF Event:", event
-        if self._mhandler is not None:
-            self._mhandler.respond(event)
+        if event == 'connected':
+            self._etready = True
+            self._respond('msg', "ready")
+        elif event == 'start_tracking':
+            self._respond('tracking_started')
+        elif event == 'stop_tracking':
+            self._respond('tracking_stopped')
 
     def _handle_conn(self, addr, mhandler):
         print "Connected by", addr
         self._mhandler = mhandler
+        if self._etready:
+            self._respond('msg', "ready")
+        else:
+            self._respond('msg', "not connected")
 
     def _handle_cmd_start(self):
         self._etf.start_tracking()
@@ -208,12 +218,15 @@ class Conductor(object):
 
     def _handle_cmd_bye(self):
         if self._mhandler is not None:
-            self._mhandler.respond("bye")
+            self._mhandler.respond('bye')
             self._mhandler.handle_close()
 
     def _handle_unhandled(self, topic, *args):
+        self._respond('error', "Unknown command: " + topic)
+
+    def _respond(self, command, message=''):
         if self._mhandler is not None:
-            self._mhandler.respond("Unknown command:" + topic)
+            self._mhandler.respond(command + ' ' + message)
 
 
 if __name__ == '__main__':
