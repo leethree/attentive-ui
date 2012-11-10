@@ -26,6 +26,14 @@ All requests and responses end with "`\n`".
 
 	Send a message that meaned to be displayed to the user.
 
+- `ready`
+
+	Indicate that eye tracking is connected and ready.
+
+- `not_connected`
+
+	Indicate that eye tracking is not connected.
+
 - `tracking_started`
 
 	Indicate that eye tracking has started.

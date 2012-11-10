@@ -174,6 +174,7 @@ class Conductor(object):
         self._mfeeder = MonkeyFeeder()
         self._mhandler = None
         self._etready = False
+        self._ettracking = False
         EventPubSub.subscribe('etf', self._handle_etf_event)
         EventPubSub.subscribe('conn', self._handle_conn)
         EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
@@ -196,19 +197,24 @@ class Conductor(object):
         print "ETF Event:", event
         if event == 'connected':
             self._etready = True
-            self._respond('msg', "ready")
+            self._respond('ready')
         elif event == 'start_tracking':
+            self._ettracking = True
             self._respond('tracking_started')
         elif event == 'stop_tracking':
+            self._ettracking = False
             self._respond('tracking_stopped')
 
     def _handle_conn(self, addr, mhandler):
         print "Connected by", addr
         self._mhandler = mhandler
+        # Report current status upon connection.
         if self._etready:
-            self._respond('msg', "ready")
+            self._respond('ready')
+            if self._ettracking:
+                self._respond('tracking_started')
         else:
-            self._respond('msg', "not connected")
+            self._respond('not_connected')
 
     def _handle_cmd_start(self):
         self._etf.start_tracking()

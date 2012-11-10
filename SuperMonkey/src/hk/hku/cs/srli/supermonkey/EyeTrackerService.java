@@ -74,6 +74,10 @@ public class EyeTrackerService {
                         String opt = message.substring(spacePos + 1);
                         if (command.equals("msg")) {
                             if (opt.length() > 0) callback.handleMessage(opt);
+                        } else if (command.equals("ready")) {
+                            callback.handleETStatus(true);
+                        } else if (command.equals("not_connected")) {
+                            callback.handleETStatus(false);
                         } else if (command.equals("tracking_started")) {
                             callback.handleETStartStop(true);
                         } else if (command.equals("tracking_stopped")) {
@@ -86,10 +90,10 @@ public class EyeTrackerService {
                     }
                     break;
                 case CONNECTED:
-                    callback.handleConnected();
+                    callback.handleDConnect(true);
                     break;
                 case DISCONNECTED:
-                    callback.handleDisconnected();
+                    callback.handleDConnect(false);
                     break;
                 case ERROR:
                     callback.handleError(message);
@@ -101,8 +105,8 @@ public class EyeTrackerService {
     }
     
     public interface Callback {
-        public void handleConnected();
-        public void handleDisconnected();
+        public void handleDConnect(boolean connnected);
+        public void handleETStatus(boolean ready);
         public void handleETStartStop(boolean started);
         public void handleMessage(String message);
         public void handleError(String message);

@@ -41,18 +41,21 @@ public class MonkeyActivity extends Activity {
 
         monkeyStatus.setText("ready");
         dStatus.setText("disconnected");
-        etStatus.setText("disconnected");
+        etStatus.setText("unknown");
+        dToggle.setChecked(false);
         etToggle.setEnabled(false);
+        etToggle.setChecked(false);
         caliButton.setEnabled(false);
         
         etService = new EyeTrackerService(this);
+        etService.setCallback(new EyeTrackerCallback());
     }
 
     @Override
     protected void onStart() {
         Log.v("MonkeyActivity", "onStart");
         super.onStart();
-        etService.setCallback(new EyeTrackerCallback());
+        // Auto connect if needed.
         if (PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false))
             lazyConnect();
@@ -61,10 +64,8 @@ public class MonkeyActivity extends Activity {
     @Override
     protected void onStop() {
         Log.v("MonkeyActivity", "onStop");
-        if (etService != null) {
+        if (etService != null)
             etService.close();
-            etService.setCallback(null);
-        }
         super.onStop();
     }
     
@@ -136,19 +137,34 @@ public class MonkeyActivity extends Activity {
     private class EyeTrackerCallback implements EyeTrackerService.Callback {
 
         @Override
-        public void handleConnected() {
-            dToggle.setChecked(true);
-            etToggle.setEnabled(true);
-            caliButton.setEnabled(true);
-            dStatus.setText("connected");
+        public void handleDConnect(boolean connnected) {
+            dToggle.setChecked(connnected);
+            etToggle.setEnabled(false);
+            caliButton.setEnabled(false);
+            if (connnected)
+                dStatus.setText("connected");
+            else
+                dStatus.setText("disconnected");
         }
 
         @Override
-        public void handleDisconnected() {
-            dToggle.setChecked(false);
-            etToggle.setEnabled(false);
-            caliButton.setEnabled(false);
-            dStatus.setText("disconnected");
+        public void handleETStatus(boolean ready) {
+            etToggle.setEnabled(ready);
+            etToggle.setChecked(false);
+            caliButton.setEnabled(ready);
+            if (ready)
+                etStatus.setText("ready");
+            else
+                etStatus.setText("not connected");
+        }
+        
+        @Override
+        public void handleETStartStop(boolean started) {
+            etToggle.setChecked(started);
+            if (started)
+                etStatus.setText("tracking...");
+            else
+                etStatus.setText("tracking stopped");
         }
         
         @Override
@@ -160,15 +176,6 @@ public class MonkeyActivity extends Activity {
         public void handleError(String message) {
             String text = "Error: " + message;
             Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void handleETStartStop(boolean started) {
-            etToggle.setChecked(started);
-            if (started)
-                etStatus.setText("tracking...");
-            else
-                etStatus.setText("tracking stopped");
         }
     }
 }
