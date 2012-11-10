@@ -15,7 +15,7 @@ class MonkeyFeeder(object):
     _HEIGHT = 800
 
     # Debug option for printing commands without doing anything.
-    _DRY_RUN = True
+    _DRY_RUN = False
 
     def __init__(self):
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
