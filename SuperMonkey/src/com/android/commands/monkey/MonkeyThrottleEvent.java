@@ -26,12 +26,12 @@ import android.view.IWindowManager;
  * monkey throttle event
  */
 public class MonkeyThrottleEvent extends MonkeyEvent {
-    private long mThrottle; 
-        
+    private long mThrottle;
+
     public MonkeyThrottleEvent(long throttle) {
         super(MonkeyEvent.EVENT_TYPE_THROTTLE);
         mThrottle = throttle;
-    }  
+    }
 
     @Override
     public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
@@ -45,7 +45,7 @@ public class MonkeyThrottleEvent extends MonkeyEvent {
             System.out.println("** Monkey interrupted in sleep.");
             return MonkeyEvent.INJECT_FAIL;
         }
-        
+
         return MonkeyEvent.INJECT_SUCCESS;
     }
 }

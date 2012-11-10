@@ -4,5 +4,14 @@
     <string name="hello_world">Welcome to Monkey World!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_monkey">Monkey</string>
+    <string name="title_activity_tp">TouchPaint</string><string name="title_activity_settings">Settings</string><string name="label_m_status">Monkey status:</string>
+    <string name="label_d_status">Feeder status:</string><string name="label_et_status">Eye Tracker status:</string>
+    
+    <string name="pref_m_cat">Monkey</string>
+    <string name="pref_et_cat">Eye Tracker</string>
+    
+    <string name="button_calibrate">calibrate</string>
+    <string name="button_test">test</string>
+    
 
 </resources>

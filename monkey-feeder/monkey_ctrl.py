@@ -11,7 +11,7 @@ BUFFER_SIZE = 1024
 
 F_RATE = 10
 
-EMULATOR_NAME = '5554:Hacked_ICS'
+EMULATOR_NAME = '5554:JellyBeam'
 
 OFFSET_X = 30
 OFFSET_Y = 52
@@ -45,8 +45,10 @@ def sendCommand(command):
 print "Frame rate: " + str(F_RATE) + "Hz";
 
 while (True):
-	lastx = x
-	lasty = y
+	lastx = x if x > 0 else 0
+	lasty = y if y > 0 else 0
+	if lastx > MAX_WIDTH: lastx = MAX_WIDTH
+	if lasty > MAX_HEIGHT: lasty = MAX_HEIGHT
 	x, y = getCursorPostion()
 
 	'''
@@ -60,8 +62,11 @@ while (True):
 		continue
 
 	if (x > 0 and x < MAX_WIDTH and y > 0 and y < MAX_HEIGHT):
-		sendCommand("hover " + ("move " if entered else "enter ") + str(x) + " " + str(y))
-		entered = True
+		if not entered:
+			sendCommand("hover enter " + str(lastx) + " " + str(lasty))
+			sendCommand("hover move " + str(lastx) + " " + str(lasty))
+			entered = True
+		sendCommand("hover move " + str(x) + " " + str(y))
 
 	elif (entered):
 		sendCommand("hover move " + str(x) + " " + str(y))

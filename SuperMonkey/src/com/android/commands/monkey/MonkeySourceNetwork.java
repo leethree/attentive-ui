@@ -66,7 +66,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         }
 
         public MonkeyCommandReturn(boolean success,
-                                   String message) {
+                String message) {
             this.success = success;
             this.message = message;
         }
@@ -87,7 +87,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
     public final static MonkeyCommandReturn OK = new MonkeyCommandReturn(true);
     public final static MonkeyCommandReturn ERROR = new MonkeyCommandReturn(false);
     public final static MonkeyCommandReturn EARG = new MonkeyCommandReturn(false,
-                                                                            "Invalid Argument");
+            "Invalid Argument");
 
     /**
      * Interface that MonkeyCommands must implement.
@@ -110,7 +110,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         // flip open
         // flip closed
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() > 1) {
                 String direction = command.get(1);
                 if ("open".equals(direction)) {
@@ -134,7 +134,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         // touch move 140 140
         // touch up 140 140
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 4) {
                 String actionName = command.get(1);
                 int x = 0;
@@ -169,7 +169,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
             return EARG;
         }
     }
-    
+
     /**
      * Command to send hover events to the input system.
      */
@@ -179,7 +179,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         // hover move 140 140
         // hover exit 140 140
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 4) {
                 String actionName = command.get(1);
                 int x = 0;
@@ -223,7 +223,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         // trackball 1 0 -- move right
         // trackball -1 0 -- move left
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 3) {
                 int dx = 0;
                 int dy = 0;
@@ -252,7 +252,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         // key down 82
         // key up 82
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 3) {
                 int keyCode = getKeyCode(command.get(2));
                 if (keyCode < 0) {
@@ -314,7 +314,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
     private static class SleepCommand implements MonkeyCommand {
         // sleep 2000
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 2) {
                 int sleep = -1;
                 String sleepStr = command.get(1);
@@ -337,7 +337,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
     private static class TypeCommand implements MonkeyCommand {
         // wake
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 2) {
                 String str = command.get(1);
 
@@ -365,7 +365,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
     private static class WakeCommand implements MonkeyCommand {
         // wake
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (!wake()) {
                 return ERROR;
             }
@@ -380,7 +380,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
     private static class TapCommand implements MonkeyCommand {
         // tap x y
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 3) {
                 int x = 0;
                 int y = 0;
@@ -402,7 +402,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
             return EARG;
         }
     }
-    
+
     /**
      * Command to "float" at a location (Sends a enter and exit hover
      * event with t ms sleep between them).
@@ -410,7 +410,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
     private static class FloatCommand implements MonkeyCommand {
         // float x y t
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 4) {
                 int x = 0;
                 int y = 0;
@@ -427,16 +427,16 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
 
                 // Set the default parameters
                 long enterTime = SystemClock.uptimeMillis();
-                
+
                 queue.enqueueEvent(new MonkeyHoverEvent(MotionEvent.ACTION_HOVER_ENTER)
-		                .setDownTime(enterTime)
-		                .setEventTime(enterTime)        
-		                .addPointer(0, x, y));
+                        .setDownTime(enterTime)
+                        .setEventTime(enterTime)
+                        .addPointer(0, x, y));
                 queue.enqueueEvent(new MonkeyWaitEvent(t));
                 queue.enqueueEvent(new MonkeyHoverEvent(MotionEvent.ACTION_HOVER_EXIT)
-		                .setDownTime(enterTime + t)
-		                .setEventTime(enterTime + t)       
-		                .addPointer(0, x, y));
+                        .setDownTime(enterTime + t)
+                        .setEventTime(enterTime + t)
+                        .addPointer(0, x, y));
                 return OK;
             }
             return EARG;
@@ -449,7 +449,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
     private static class PressCommand implements MonkeyCommand {
         // press keycode
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() == 2) {
                 int keyCode = getKeyCode(command.get(1));
                 if (keyCode < 0) {
@@ -490,7 +490,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         // deferreturn [event] [timeout (ms)] [command]
         // deferreturn screenchange 100 tap 10 10
         public MonkeyCommandReturn translateCommand(List<String> command,
-                                                    CommandQueue queue) {
+                CommandQueue queue) {
             if (command.size() > 3) {
                 String event = command.get(1);
                 int eventId;
@@ -552,7 +552,7 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         COMMAND_MAP.put("queryview", new MonkeySourceNetworkViews.QueryViewCommand());
         COMMAND_MAP.put("getrootview", new MonkeySourceNetworkViews.GetRootViewCommand());
         COMMAND_MAP.put("getviewswithtext",
-                        new MonkeySourceNetworkViews.GetViewsWithTextCommand());
+                new MonkeySourceNetworkViews.GetViewsWithTextCommand());
         COMMAND_MAP.put("deferreturn", new DeferReturnCommand());
     }
 
@@ -644,8 +644,8 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
         // Only bind this to local host.  This means that you can only
         // talk to the monkey locally, or though adb port forwarding.
         serverSocket = new ServerSocket(port,
-                                        0, // default backlog
-                                        InetAddress.getLocalHost());
+                0, // default backlog
+                InetAddress.getLocalHost());
     }
 
     /**
@@ -767,25 +767,25 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
 
 
     private MonkeyEvent batchQueuedMotionEvents(MonkeyMotionEvent oldEvent) {
-    	if (oldEvent.getAction() == MotionEvent.ACTION_MOVE 
-    			|| oldEvent.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
-    		MonkeyEvent queuedEvent = commandQueue.getNextQueuedEvent();
-    		while (queuedEvent != null) {
-	    		if (queuedEvent instanceof MonkeyMotionEvent) {
-	        		MonkeyMotionEvent newEvent = (MonkeyMotionEvent) queuedEvent;
-	            	if (newEvent.getAction() == oldEvent.getAction() &&
-	            			newEvent.getEventType() == oldEvent.getEventType()) {
-	            		// TODO add new coordinates to old one
-	            		queuedEvent = commandQueue.getNextQueuedEvent();
-	            		continue;
-	            	}
-	            }
-	            return queuedEvent; 	// found new event type, discard old one
-    		}
-    	}
-    	return oldEvent;
+        if (oldEvent.getAction() == MotionEvent.ACTION_MOVE
+                || oldEvent.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+            MonkeyEvent queuedEvent = commandQueue.getNextQueuedEvent();
+            while (queuedEvent != null) {
+                if (queuedEvent instanceof MonkeyMotionEvent) {
+                    MonkeyMotionEvent newEvent = (MonkeyMotionEvent) queuedEvent;
+                    if (newEvent.getAction() == oldEvent.getAction() &&
+                            newEvent.getEventType() == oldEvent.getEventType()) {
+                        // TODO add new coordinates to old one
+                        queuedEvent = commandQueue.getNextQueuedEvent();
+                        continue;
+                    }
+                }
+                return queuedEvent; 	// found new event type, discard old one
+            }
+        }
+        return oldEvent;
     }
-    
+
     public MonkeyEvent getNextEvent() {
         if (!started) {
             try {
@@ -805,12 +805,12 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
                 // more input from the user.
                 MonkeyEvent queuedEvent = commandQueue.getNextQueuedEvent();
                 if (queuedEvent != null) {
-                    
-                	// batching move action events
-                	if (queuedEvent instanceof MonkeyMotionEvent) {
-                		batchQueuedMotionEvents((MonkeyMotionEvent) queuedEvent);
+
+                    // batching move action events
+                    if (queuedEvent instanceof MonkeyMotionEvent) {
+                        batchQueuedMotionEvents((MonkeyMotionEvent) queuedEvent);
                     }
-                	// dispatch the event
+                    // dispatch the event
                     return queuedEvent;
                 }
 
