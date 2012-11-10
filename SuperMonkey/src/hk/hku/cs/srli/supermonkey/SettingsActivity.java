@@ -15,6 +15,11 @@ import android.view.MenuItem;
 
 public class SettingsActivity extends Activity {
 
+    public static final String KEY_PREF_M_PORT = "pref_m_port";
+    public static final String KEY_PREF_ET_HOST = "pref_et_host";
+    public static final String KEY_PREF_ET_PORT = "pref_et_port";
+    public static final String KEY_PREF_ET_AUTOCONNECT = "pref_et_autoconnect";
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -70,7 +70,7 @@ class MonkeyFeeder(object):
 
 class MonkeyServer(asyncore.dispatcher):
 
-    _TCP_IP = socket.gethostname()
+    _TCP_IP = 'localhost' # Use socket.gethostname() for real device.
     _TCP_PORT = 10800
 
     def __init__(self):
@@ -138,7 +138,10 @@ class MonkeyHandler(asynchat.async_chat):
         else:
             EventPubSub.publish('cmd-' + strs[0].lower())
 
+
 class EventPubSub(object):
+
+    UNHANDLED = '~'
 
     _reg = {}
 
@@ -148,7 +151,10 @@ class EventPubSub(object):
             for handler in EventPubSub._reg[topic]:
                 handler(*args)
         else:
-            print "WARNING: Unhandled PubSub topic:", topic, args
+            if topic == EventPubSub.UNHANDLED:
+                print "WARNING: Unhandled PubSub topic:", topic, args
+            else:
+                EventPubSub.publish(EventPubSub.UNHANDLED, topic, *args)
 
     @staticmethod
     def subscribe(topic, handler):
@@ -167,10 +173,14 @@ class Conductor(object):
         self._mserver = MonkeyServer()
         self._mfeeder = MonkeyFeeder()
         self._mhandler = None
+        self._etready = False
+        self._ettracking = False
         EventPubSub.subscribe('etf', self._handle_etf_event)
         EventPubSub.subscribe('conn', self._handle_conn)
         EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
         EventPubSub.subscribe('cmd-stop', self._handle_cmd_stop)
+        EventPubSub.subscribe('cmd-bye', self._handle_cmd_bye)
+        EventPubSub.subscribe(EventPubSub.UNHANDLED, self._handle_unhandled)
 
     def main(self):
         with self._mserver:
@@ -185,18 +195,44 @@ class Conductor(object):
 
     def _handle_etf_event(self, event, *args):
         print "ETF Event:", event
-        if self._mhandler is not None:
-            self._mhandler.respond(event)
+        if event == 'connected':
+            self._etready = True
+            self._respond('ready')
+        elif event == 'start_tracking':
+            self._ettracking = True
+            self._respond('tracking_started')
+        elif event == 'stop_tracking':
+            self._ettracking = False
+            self._respond('tracking_stopped')
 
     def _handle_conn(self, addr, mhandler):
         print "Connected by", addr
         self._mhandler = mhandler
+        # Report current status upon connection.
+        if self._etready:
+            self._respond('ready')
+            if self._ettracking:
+                self._respond('tracking_started')
+        else:
+            self._respond('not_connected')
 
     def _handle_cmd_start(self):
         self._etf.start_tracking()
 
     def _handle_cmd_stop(self):
         self._etf.stop_tracking()
+
+    def _handle_cmd_bye(self):
+        if self._mhandler is not None:
+            self._mhandler.respond('bye')
+            self._mhandler.handle_close()
+
+    def _handle_unhandled(self, topic, *args):
+        self._respond('error', "Unknown command: " + topic)
+
+    def _respond(self, command, message=''):
+        if self._mhandler is not None:
+            self._mhandler.respond(command + ' ' + message)
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@
         android:title="@string/pref_m_cat" >
         <EditTextPreference
             android:defaultValue="1080"
+            android:inputType="number"
             android:key="pref_m_port"
             android:title="Listen Port" />
     </PreferenceCategory>
@@ -13,9 +14,16 @@
         android:key="pref_et_settings"
         android:title="@string/pref_et_cat" >
         <EditTextPreference
-            android:key="pref_et_daddress"
-            android:summary="IP[:Port]"
-            android:title="Daemon address" />
+            android:defaultValue="10.0.2.2"
+            android:key="pref_et_host"
+            android:summary="IP or hostname"
+            android:title="Daemon host" />
+        
+        <EditTextPreference
+            android:defaultValue="10800"
+            android:inputType="number"
+            android:key="pref_et_port"
+            android:title="Daemon Port" />
 
         <SwitchPreference
             android:defaultValue="true"
