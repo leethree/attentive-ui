@@ -1,40 +1,89 @@
 package hk.hku.cs.srli.supermonkey;
 
 import android.os.Bundle;
+import android.widget.Toast;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.view.View;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class CalibrationActivity extends Activity {
 
     private CalibrationView cview;
+    private Choreographer choreographer;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cview = new CalibrationView(this);
         setContentView(cview);
-    }
-
-    public class CalibrationView extends View {
         
-        private ShapeDrawable circle;
-
-        public CalibrationView(Context context) {
-            super(context);
-            
-            circle = new ShapeDrawable(new OvalShape());
-            circle.getPaint().setColor(0xff74AC23);
-            circle.setBounds(100, 100, 150, 150);
+        choreographer = new Choreographer();
+        cview.setListener(choreographer);
+    }
+    
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            // Start animation.
+            choreographer.dance();
+        }
+    }
+    
+    private void onCalibrationFinished() {
+        Toast.makeText(this, "Calibration finished", Toast.LENGTH_LONG).show();
+    }
+    
+    private class Choreographer extends AnimatorListenerAdapter {
+        
+        private Deque<Movement> sequence;
+        
+        public Choreographer() {
+            sequence = new ArrayDeque<Movement>();
+            addPoint(0.1f, 0.1f);
+            addPoint(0.9f, 0.1f);
+            addPoint(0.5f, 0.5f);
+            addPoint(0.1f, 0.9f);
+            addPoint(0.9f, 0.9f);
+        }
+        
+        public void dance() {
+            nextMove();
         }
         
         @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            circle.draw(canvas);
+        public void onAnimationEnd(Animator animation) {
+            nextMove();
         }
+        
+        private void nextMove() {
+            if (sequence.peek() != null)
+                sequence.poll().move();
+            else
+                onCalibrationFinished();
+        }
+        
+        private void addPoint(final float x, final float y) {
+            sequence.add(new Movement() {
+                @Override
+                public void move() {
+                    cview.movePointTo(x, y);
+                }
+            });
+            sequence.add(new Movement() {
+                @Override
+                public void move() {
+                    cview.focusAtPoint();
+                }
+            });
+        }
+        
+    }
+    
+    private interface Movement {
+        public void move();
     }
 }
