@@ -45,7 +45,9 @@ public class MonkeyActivity extends Activity {
         dToggle.setChecked(false);
         etToggle.setEnabled(false);
         etToggle.setChecked(false);
-        caliButton.setEnabled(false);
+        // TODO (LeeThree): Commented for dev purpose. 
+        // Uncomment this before merged to main branch.
+        // caliButton.setEnabled(false);
         
         etService = new EyeTrackerService(this);
         etService.setCallback(new EyeTrackerCallback());
@@ -79,15 +81,16 @@ public class MonkeyActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle settings
         if (item.getItemId() == R.id.menu_settings) {
-            updateSettings();
+            startActivity(new Intent(getBaseContext(), SettingsActivity.class));
             return true;
         }
         else
             return super.onOptionsItemSelected(item);
     }
-
-    public void updateSettings() {
-        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+    
+    public void onCalibrateButtonClicked(View view) {
+        // start calibration
+        startActivity(new Intent(getBaseContext(), CalibrationActivity.class));
     }
     
     public void onTestButtonClicked(View view) {
