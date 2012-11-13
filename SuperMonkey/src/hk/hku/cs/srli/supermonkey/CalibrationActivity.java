@@ -46,8 +46,8 @@ public class CalibrationActivity extends Activity {
             addPoint(0.1f, 0.1f);
             addPoint(0.9f, 0.1f);
             addPoint(0.5f, 0.5f);
-            addPoint(0.1f, 0.9f);
             addPoint(0.9f, 0.9f);
+            addPoint(0.1f, 0.9f);
         }
         
         public void dance() {

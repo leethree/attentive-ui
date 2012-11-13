@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.util.Log;
@@ -17,16 +18,16 @@ import android.view.View;
 
 public class CalibrationView extends View implements ValueAnimator.AnimatorUpdateListener {
     
-    private CircleWrapper circle;
+    private DotWrapper dot;
     
     private AnimatorListener listener;
 
     public CalibrationView(Context context) {
         super(context);
-        circle = new CircleWrapper();
-        circle.setX(0);
-        circle.setY(0);
-        circle.setR(CircleWrapper.DEFAULT_R);
+        dot = new DotWrapper();
+        dot.setX(0);
+        dot.setY(0);
+        dot.setR(dot.DEFAULT_R);
         listener = null;
     }
     
@@ -35,7 +36,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     }
     
     public void movePointTo(float x, float y) {
-        // Convert from relative position to absolute position on screen.
+        // Convert from normalized coordinates to position on screen.
         float destx = x * getWidth();
         float desty = y * getHeight();
         Log.v("CalibrationView", "movePointTo: " + destx + ", " + desty);
@@ -49,12 +50,12 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     
     public void expandPoint() {
         Log.v("CalibrationView", "expandPoint");
-        startAnimation(animatedShrinkExpand(false), 1000);
+        startAnimation(animatedShrinkExpand(false), 500);
     }
     
     private Animator animatedMoveTo(float x, float y) {
-        ObjectAnimator oax = ObjectAnimator.ofFloat(circle, "x", circle.x, x);
-        ObjectAnimator oay = ObjectAnimator.ofFloat(circle, "y", circle.y, y);
+        ObjectAnimator oax = ObjectAnimator.ofFloat(dot, "x", dot.x, x);
+        ObjectAnimator oay = ObjectAnimator.ofFloat(dot, "y", dot.y, y);
         oax.addUpdateListener(this);
         AnimatorSet aset = new AnimatorSet();
         aset.playTogether(oax, oay);
@@ -64,15 +65,16 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     private Animator animatedShrinkExpand(boolean shrink) {
         ObjectAnimator oar = null;
         if (shrink)
-            oar = ObjectAnimator.ofFloat(circle, "r", circle.r, 1);
+            oar = ObjectAnimator.ofFloat(dot, "r", dot.r, 4);
         else
-            oar = ObjectAnimator.ofFloat(circle, "r", circle.r, CircleWrapper.DEFAULT_R);
+            oar = ObjectAnimator.ofFloat(dot, "r", dot.r, dot.DEFAULT_R);
         oar.addUpdateListener(this);
         return oar;
     }
     
     private void startAnimation(Animator ani, long duration) {
         ani.setDuration(duration);
+        ani.setStartDelay(500);
         if (listener != null) ani.addListener(listener);
         ani.start();
     }
@@ -80,7 +82,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        circle.draw(canvas);
+        dot.draw(canvas);
     }
     
     @Override
@@ -96,16 +98,17 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
         invalidate();
     }
     
-    private class CircleWrapper {
+    private class DotWrapper {
         
-        public static final float DEFAULT_R = 20;
+        // Default radius is 20dp.
+        public final float DEFAULT_R = 20 * getResources().getDisplayMetrics().density;
         
         private ShapeDrawable drawable;
         private Paint bgPaint;
         
         private float r, x, y;
         
-        public CircleWrapper() {
+        public DotWrapper() {
             this.r = DEFAULT_R;
             this.x = 0;
             this.y = 0;
@@ -132,7 +135,9 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
         public void draw(Canvas canvas) {
             updateDrawable();
             drawable.draw(canvas);
-            canvas.drawPoint(x, y, bgPaint);
+            
+            // Draw a dot at the center of the shape.
+            canvas.drawOval(new RectF(x - 2, y - 2, x + 2, y + 2), bgPaint);
         }
         
         private void updateDrawable() {
