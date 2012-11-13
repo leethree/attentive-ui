@@ -76,7 +76,13 @@ public class CalibrationActivity extends Activity {
             sequence.add(new Movement() {
                 @Override
                 public void move() {
-                    cview.focusAtPoint();
+                    cview.shrinkPoint();
+                }
+            });
+            sequence.add(new Movement() {
+                @Override
+                public void move() {
+                    cview.expandPoint();
                 }
             });
         }

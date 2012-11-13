@@ -1,11 +1,14 @@
 package hk.hku.cs.srli.supermonkey;
 
+import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -36,34 +39,42 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
         float destx = x * getWidth();
         float desty = y * getHeight();
         Log.v("CalibrationView", "movePointTo: " + destx + ", " + desty);
-        animatedMoveTo(destx, desty, 2000);
+        startAnimation(animatedMoveTo(destx, desty), 2000);
     }
     
-    public void focusAtPoint() {
-        animatedShrinkExpand(1000);
+    public void shrinkPoint() {
+        Log.v("CalibrationView", "shrinkPoint");
+        startAnimation(animatedShrinkExpand(true), 1000);
     }
     
-    private void animatedMoveTo(float x, float y, long duration) {
+    public void expandPoint() {
+        Log.v("CalibrationView", "expandPoint");
+        startAnimation(animatedShrinkExpand(false), 1000);
+    }
+    
+    private Animator animatedMoveTo(float x, float y) {
         ObjectAnimator oax = ObjectAnimator.ofFloat(circle, "x", circle.x, x);
         ObjectAnimator oay = ObjectAnimator.ofFloat(circle, "y", circle.y, y);
         oax.addUpdateListener(this);
         AnimatorSet aset = new AnimatorSet();
         aset.playTogether(oax, oay);
-        aset.setDuration(duration);
-        if (listener != null) aset.addListener(listener);
-        aset.start();
+        return aset;
     }
     
-    private void animatedShrinkExpand(long duration) {
-        ObjectAnimator oars = ObjectAnimator.ofFloat(circle, "r", circle.r, 1);
-        ObjectAnimator oare = ObjectAnimator.ofFloat(circle, "r", 1, circle.r);
-        oars.addUpdateListener(this);
-        oare.addUpdateListener(this);
-        AnimatorSet aset = new AnimatorSet();
-        aset.playSequentially(oars, oare);
-        aset.setDuration(duration);
-        if (listener != null) aset.addListener(listener);
-        aset.start();
+    private Animator animatedShrinkExpand(boolean shrink) {
+        ObjectAnimator oar = null;
+        if (shrink)
+            oar = ObjectAnimator.ofFloat(circle, "r", circle.r, 1);
+        else
+            oar = ObjectAnimator.ofFloat(circle, "r", circle.r, CircleWrapper.DEFAULT_R);
+        oar.addUpdateListener(this);
+        return oar;
+    }
+    
+    private void startAnimation(Animator ani, long duration) {
+        ani.setDuration(duration);
+        if (listener != null) ani.addListener(listener);
+        ani.start();
     }
     
     @Override
@@ -90,6 +101,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
         public static final float DEFAULT_R = 20;
         
         private ShapeDrawable drawable;
+        private Paint bgPaint;
         
         private float r, x, y;
         
@@ -100,6 +112,9 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
 
             drawable = new ShapeDrawable(new OvalShape());
             drawable.getPaint().setColor(0xff74AC23);
+            
+            bgPaint = new Paint();
+            bgPaint.setColor(Color.BLACK);
         }
         
         public void setX(float x) {
@@ -117,6 +132,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
         public void draw(Canvas canvas) {
             updateDrawable();
             drawable.draw(canvas);
+            canvas.drawPoint(x, y, bgPaint);
         }
         
         private void updateDrawable() {
