@@ -5,6 +5,8 @@ import android.widget.Toast;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -20,24 +22,33 @@ public class CalibrationActivity extends Activity {
         cview = new CalibrationView(this);
         setContentView(cview);
         
+        cview.setListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                choreographer.dance();
+            }
+        });
+        
         choreographer = new Choreographer();
-        cview.setListener(choreographer);
-    }
-    
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            // Start animation.
-            choreographer.dance();
-        }
+        new AlertDialog.Builder(this)
+                .setTitle("Calibration")
+                .setMessage("Please follow the green dot until calibration is finished.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Start animation.
+                choreographer.dance();
+            }
+        }).show();
     }
     
     private void onCalibrationFinished() {
         Toast.makeText(this, "Calibration finished", Toast.LENGTH_LONG).show();
     }
     
-    private class Choreographer extends AnimatorListenerAdapter {
+    private class Choreographer {
         
         private Deque<Movement> sequence;
         
@@ -51,11 +62,6 @@ public class CalibrationActivity extends Activity {
         }
         
         public void dance() {
-            nextMove();
-        }
-        
-        @Override
-        public void onAnimationEnd(Animator animation) {
             nextMove();
         }
         

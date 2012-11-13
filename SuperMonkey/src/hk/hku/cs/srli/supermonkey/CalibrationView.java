@@ -1,7 +1,6 @@
 package hk.hku.cs.srli.supermonkey;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -20,18 +19,19 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     
     private DotWrapper dot;
     
-    private AnimatorListener listener;
+    private Animator.AnimatorListener listener;
 
     public CalibrationView(Context context) {
         super(context);
         dot = new DotWrapper();
-        dot.setX(0);
-        dot.setY(0);
+        // Put the dot at the top left corner.
+        dot.setX(dot.DEFAULT_R);
+        dot.setY(dot.DEFAULT_R);
         dot.setR(dot.DEFAULT_R);
         listener = null;
     }
     
-    public void setListener(AnimatorListener listener) {
+    public void setListener(Animator.AnimatorListener listener) {
         this.listener = listener;
     }
     
@@ -83,14 +83,6 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         dot.draw(canvas);
-    }
-    
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = MeasureSpec.getSize(heightMeasureSpec);
-        Log.v("CalibrationView", "onMeasure: " + width + ", " + height);
-        setMeasuredDimension(width, height);
     }
 
     @Override
