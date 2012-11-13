@@ -46,6 +46,7 @@ public class CalibrationActivity extends Activity {
     
     private void onCalibrationFinished() {
         Toast.makeText(this, "Calibration finished", Toast.LENGTH_LONG).show();
+        finish();
     }
     
     private class Choreographer {
@@ -54,11 +55,7 @@ public class CalibrationActivity extends Activity {
         
         public Choreographer() {
             sequence = new ArrayDeque<Movement>();
-            addPoint(0.1f, 0.1f);
-            addPoint(0.9f, 0.1f);
-            addPoint(0.5f, 0.5f);
-            addPoint(0.9f, 0.9f);
-            addPoint(0.1f, 0.9f);
+            prepareSequence();
         }
         
         public void dance() {
@@ -70,6 +67,20 @@ public class CalibrationActivity extends Activity {
                 sequence.poll().move();
             else
                 onCalibrationFinished();
+        }
+        
+        private void prepareSequence() {
+            addPoint(0.1f, 0.1f);
+            addPoint(0.9f, 0.1f);
+            addPoint(0.5f, 0.5f);
+            addPoint(0.9f, 0.9f);
+            addPoint(0.1f, 0.9f);
+            sequence.add(new Movement() {
+                @Override
+                public void move() {
+                    cview.hidePoint();
+                }
+            });
         }
         
         private void addPoint(final float x, final float y) {

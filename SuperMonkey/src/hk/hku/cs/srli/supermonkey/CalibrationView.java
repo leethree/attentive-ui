@@ -24,9 +24,9 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     public CalibrationView(Context context) {
         super(context);
         dot = new DotWrapper();
-        // Put the dot at the top left corner.
-        dot.setX(dot.DEFAULT_R);
-        dot.setY(dot.DEFAULT_R);
+        // Put the dot outside the top left corner.
+        dot.setX(0 - dot.DEFAULT_R);
+        dot.setY(0 - dot.DEFAULT_R);
         dot.setR(dot.DEFAULT_R);
         listener = null;
     }
@@ -45,12 +45,18 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     
     public void shrinkPoint() {
         Log.v("CalibrationView", "shrinkPoint");
-        startAnimation(animatedShrinkExpand(true), 1000);
+        startAnimation(animatedResize(4), 1000);
     }
     
     public void expandPoint() {
         Log.v("CalibrationView", "expandPoint");
-        startAnimation(animatedShrinkExpand(false), 500);
+        startAnimation(animatedResize(dot.DEFAULT_R), 500);
+    }
+    
+    public void hidePoint() {
+        Log.v("CalibrationView", "resetPoint");
+        // Remove the point from view.
+        startAnimation(animatedResize(0), 500);
     }
     
     private Animator animatedMoveTo(float x, float y) {
@@ -62,12 +68,9 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
         return aset;
     }
     
-    private Animator animatedShrinkExpand(boolean shrink) {
+    private Animator animatedResize(float size) {
         ObjectAnimator oar = null;
-        if (shrink)
-            oar = ObjectAnimator.ofFloat(dot, "r", dot.r, 4);
-        else
-            oar = ObjectAnimator.ofFloat(dot, "r", dot.r, dot.DEFAULT_R);
+        oar = ObjectAnimator.ofFloat(dot, "r", dot.r, size);
         oar.addUpdateListener(this);
         return oar;
     }
@@ -82,6 +85,8 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        // Translucent background color.
+        canvas.drawColor(0xAA000000);
         dot.draw(canvas);
     }
 
@@ -106,7 +111,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
             this.y = 0;
 
             drawable = new ShapeDrawable(new OvalShape());
-            drawable.getPaint().setColor(0xff74AC23);
+            drawable.getPaint().setColor(0xFF74AC23);
             
             bgPaint = new Paint();
             bgPaint.setColor(Color.BLACK);
