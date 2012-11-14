@@ -1,6 +1,5 @@
 package hk.hku.cs.srli.supermonkey;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -8,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -16,11 +14,9 @@ import java.net.Socket;
 public class EyeTrackerService {
 
     private ClientThread client;
-    private WeakReference<Activity> activityRef;
     private Callback callback;
     
-    public EyeTrackerService(Activity activity) {
-        this.activityRef = new WeakReference<Activity>(activity);
+    public EyeTrackerService() {
     }
     
     public void connect(String host, int port) {
@@ -61,7 +57,7 @@ public class EyeTrackerService {
     
     private void report(final ReportType type, final String message) {
         if (callback == null) return;
-        activityRef.get().runOnUiThread(new Runnable() {
+        callback.runOnUiThread(new Runnable() {
             
             @Override
             public void run() {
@@ -99,12 +95,12 @@ public class EyeTrackerService {
                     callback.handleError(message);
                     break;
                 }
-                
             }
         });
     }
     
     public interface Callback {
+        public void runOnUiThread(Runnable action);
         public void handleDConnect(boolean connnected);
         public void handleETStatus(boolean ready);
         public void handleETStartStop(boolean started);

@@ -49,7 +49,7 @@ public class MonkeyActivity extends Activity {
         // Uncomment this before merged to main branch.
         // caliButton.setEnabled(false);
         
-        etService = new EyeTrackerService(this);
+        etService = new EyeTrackerService();
         etService.setCallback(new EyeTrackerCallback());
     }
 
@@ -179,6 +179,11 @@ public class MonkeyActivity extends Activity {
         public void handleError(String message) {
             String text = "Error: " + message;
             Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void runOnUiThread(Runnable action) {
+            MonkeyActivity.this.runOnUiThread(action);
         }
     }
 }
