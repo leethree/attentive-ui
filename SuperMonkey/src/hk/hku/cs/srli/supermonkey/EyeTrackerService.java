@@ -19,6 +19,11 @@ public class EyeTrackerService {
     public EyeTrackerService() {
     }
     
+    public EyeTrackerService(EyeTrackerService that) {
+        this.client = that.client;
+        this.callback = that.callback;
+    }
+    
     public void connect(String host, int port) {
         if (client != null) close();    // Close existing connection.
         client = new ClientThread(host, port);
@@ -44,7 +49,7 @@ public class EyeTrackerService {
         return client != null && client.isConnected();
     }
     
-    private boolean send(String command) {
+    protected boolean send(String command) {
         if (client != null)
             return client.send(command);
         else
@@ -68,19 +73,7 @@ public class EyeTrackerService {
                     if (spacePos > 0) {
                         String command = message.substring(0, spacePos);
                         String opt = message.substring(spacePos + 1);
-                        if (command.equals("msg")) {
-                            if (opt.length() > 0) callback.handleMessage(opt);
-                        } else if (command.equals("ready")) {
-                            callback.handleETStatus(true);
-                        } else if (command.equals("not_connected")) {
-                            callback.handleETStatus(false);
-                        } else if (command.equals("tracking_started")) {
-                            callback.handleETStartStop(true);
-                        } else if (command.equals("tracking_stopped")) {
-                            callback.handleETStartStop(false);
-                        } else if (command.equals("error")) {
-                            if (opt.length() > 0) callback.handleError(opt);
-                        }
+                        reportMessage(command, opt);
                     } else {
                         Log.e("EyeTrackerService", "Wrong message format:" + message);
                     }
@@ -97,6 +90,22 @@ public class EyeTrackerService {
                 }
             }
         });
+    }
+    
+    protected void reportMessage(String command, String opt) {
+        if (command.equals("msg")) {
+            if (opt.length() > 0) callback.handleMessage(opt);
+        } else if (command.equals("ready")) {
+            callback.handleETStatus(true);
+        } else if (command.equals("not_connected")) {
+            callback.handleETStatus(false);
+        } else if (command.equals("tracking_started")) {
+            callback.handleETStartStop(true);
+        } else if (command.equals("tracking_stopped")) {
+            callback.handleETStartStop(false);
+        } else if (command.equals("error")) {
+            if (opt.length() > 0) callback.handleError(opt);
+        }
     }
     
     public interface Callback {
@@ -172,6 +181,7 @@ public class EyeTrackerService {
                 protected Void doInBackground(String... params) {
                     String command = params[0];
                     out.println(command);
+                    Log.d("EyeTrackerService.ClientThread", "Send command: " + command);
                     return null;
                 }
             }.execute(command);

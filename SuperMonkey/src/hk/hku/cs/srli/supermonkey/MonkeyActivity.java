@@ -45,11 +45,9 @@ public class MonkeyActivity extends Activity {
         dToggle.setChecked(false);
         etToggle.setEnabled(false);
         etToggle.setChecked(false);
-        // TODO (LeeThree): Commented for dev purpose. 
-        // Uncomment this before merged to main branch.
-        // caliButton.setEnabled(false);
+        caliButton.setEnabled(false);
         
-        etService = new EyeTrackerService();
+        etService = CalibrationActivity.eyeTrackerService;
         etService.setCallback(new EyeTrackerCallback());
     }
 
@@ -164,6 +162,7 @@ public class MonkeyActivity extends Activity {
         @Override
         public void handleETStartStop(boolean started) {
             etToggle.setChecked(started);
+            caliButton.setEnabled(!started);
             if (started)
                 etStatus.setText("tracking...");
             else

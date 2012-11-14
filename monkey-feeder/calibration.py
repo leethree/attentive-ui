@@ -16,17 +16,18 @@ class Calibration(object):
         self._on_calib_done = on_calib_done
         self._tracker.StartCalibration(
             self._q.bind(self._on_calib_start))
+        print "Calibration start."
 
     def add_point(self, x, y):
+        print "Adding point:", x, y
         p = Point2D(x, y)
         self._tracker.AddCalibrationPoint(
-            p, self._q.bind(self.on_add_completed))
+            p, self._q.bind(self._on_add_completed))
 
     def compute(self):
-        self._tracker.ComputeCalibration(self._q.bind(self.on_add_completed))
+        self._tracker.ComputeCalibration(self._q.bind(self._on_calib_compute))
 
     def abort(self):
-        self._tracker.ClearCalibration()
         self._tracker.StopCalibration()
         print "Calibration aborted by user."
         self._on_calib_done(False, "Calibration aborted by user.")
@@ -51,14 +52,15 @@ class Calibration(object):
     def _on_calib_compute(self, error, r):
         self._tracker.StopCalibration()
         if error == 0x20000502:
-            print ("CalibCompute failed because not enough"
+            print ("Calibration failed because not enough"
                    "data was collected:", error)
             self._report_event('error', error)
             self._on_calib_done(False)
         elif error != 0:
-            print "CalibCompute failed because of a server error:", error
+            print "Calibration failed because of a server error:", error
             self._report_event('error', error)
             self._on_calib_done(False)
         else:
+            print "Calibration end."
             self._report_event('done')
             self._on_calib_done(True)

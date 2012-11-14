@@ -134,7 +134,7 @@ class MonkeyHandler(asynchat.async_chat):
     def _process_data(self, message):
         strs = message.split()
         if (len(strs) > 1):
-            EventPubSub.publish('cmd-' + strs[0].lower(), strs[1:])
+            EventPubSub.publish('cmd-' + strs[0].lower(), *strs[1:])
         else:
             EventPubSub.publish('cmd-' + strs[0].lower())
 
@@ -178,7 +178,7 @@ class Conductor(object):
         self._ettracking = False
         self._calib = None
         EventPubSub.subscribe('etf', self._handle_etf_event)
-        EventPubSub.subscribe('calib', self._handle_etf_event)
+        EventPubSub.subscribe('calib', self._handle_calib_event)
         EventPubSub.subscribe('conn', self._handle_conn)
         EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
         EventPubSub.subscribe('cmd-stop', self._handle_cmd_stop)
@@ -213,6 +213,7 @@ class Conductor(object):
             self._ettracking = False
             self._respond('tracking_stopped')
         elif event == 'stop_calib':
+            self._calib = None
             self._respond('calib_stopped')
 
     def _handle_calib_event(self, event, *args):
@@ -255,7 +256,7 @@ class Conductor(object):
 
     def _handle_cmd_calib_add(self, x, y):
         if self._calib is not None:
-            self._calib.add_point(x, y)
+            self._calib.add_point(float(x), float(y))
 
     def _handle_cmd_calib_compute(self):
         if self._calib is not None:

@@ -40,7 +40,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
         float destx = x * getWidth();
         float desty = y * getHeight();
         Log.v("CalibrationView", "movePointTo: " + destx + ", " + desty);
-        startAnimation(animatedMoveTo(destx, desty), 2000);
+        startAnimation(animatedMoveTo(destx, desty), 1000);
     }
     
     public void shrinkPoint() {

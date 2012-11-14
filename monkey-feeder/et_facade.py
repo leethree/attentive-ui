@@ -40,8 +40,10 @@ class EyeTrackerFacade(object):
                 self.eyetracker.StopTracking()
                 self.eyetracker.events.OnGazeDataReceived -= \
                     self._q.bind(self._on_gazedata)
+                self._tracking = False
             if self._calibrating:
-                self._tracker.StopCalibration()
+                self.eyetracker.StopCalibration()
+                self._calibrating = False
         if self.mainloop_thread is not None:
             self.mainloop_thread.stop()
         print "%d events processed." % self._q.count()
@@ -125,12 +127,12 @@ class EyeTrackerFacade(object):
         if self._calibrating or self._tracking:
             return None
         if self.eyetracker is not None:
-            calib = Calibration(_q, self._calib_callback)
-            calib.run(self.tracker, self._on_calib_done)
+            calib = Calibration(self._q, self._calib_callback)
+            calib.run(self.eyetracker, self._on_calib_done)
             self._calibrating = True
             return calib
 
-    def _on_calib_done(self, status, opt_msg):
+    def _on_calib_done(self, status):
         self._calibrating = False
         self._report_event('stop_calib')
 

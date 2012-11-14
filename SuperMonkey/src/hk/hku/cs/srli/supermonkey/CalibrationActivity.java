@@ -1,11 +1,13 @@
 package hk.hku.cs.srli.supermonkey;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 
 import java.util.ArrayDeque;
@@ -13,40 +15,95 @@ import java.util.Deque;
 
 public class CalibrationActivity extends Activity {
 
+    // TODO (LeeThree): Workaround for sharing socket between activities.
+    public static CalibrationService eyeTrackerService = new CalibrationService();
+    
     private CalibrationView cview;
+    private ProgressDialog progressDialog;
+    
     private Choreographer choreographer;
+    private CalibrationService calibService;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cview = new CalibrationView(this);
-        setContentView(cview);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        choreographer = new Choreographer();
+        calibService = eyeTrackerService;
+        calibService.setCalibrationCallback(new CalibrationCallback());
         
         cview.setListener(new AnimatorListenerAdapter() {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                choreographer.dance();
+                choreographer.nextMove();
             }
         });
         
-        choreographer = new Choreographer();
-        new AlertDialog.Builder(this)
-                .setTitle("Calibration")
-                .setMessage("Please follow the green dot until calibration is finished.")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Start animation.
-                choreographer.dance();
-            }
-        }).show();
+        // Show loading indicator.
+        progressDialog.show();
+        
+        calibService.startCalibration();
+        setContentView(cview);
     }
     
-    private void onCalibrationFinished() {
-        Toast.makeText(this, "Calibration finished", Toast.LENGTH_LONG).show();
-        finish();
+    @Override
+    protected void onStop() {
+        Log.v("CalibrationActivity", "onStop");
+        if (calibService != null)
+            calibService.abortCalibration();
+        super.onStop();
+    }
+    
+    private void onDanceFinished() {
+        progressDialog.show();
+        calibService.computeCalibration();
+    }
+    
+    private class CalibrationCallback implements CalibrationService.Callback {
+
+        @Override
+        public void handleStarted() {
+            progressDialog.dismiss();
+            new AlertDialog.Builder(CalibrationActivity.this)
+                .setTitle("Calibration started")
+                .setMessage("Please follow the green dot until calibration is finished.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Start animation.
+                        choreographer.startDance();
+                    }
+                }).show();
+        }
+
+        @Override
+        public void handleAdded() {
+            choreographer.nextMove();
+        }
+
+        @Override
+        public void handleDone() {
+            progressDialog.dismiss();
+            Toast.makeText(CalibrationActivity.this, 
+                           "Calibration finished", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void handleStopped() {
+            finish();
+        }
+
+        @Override
+        public void handleError(String message) {
+            Toast.makeText(CalibrationActivity.this, 
+                           "Error: " + message, Toast.LENGTH_LONG).show();
+        }
+        
     }
     
     private class Choreographer {
@@ -55,21 +112,22 @@ public class CalibrationActivity extends Activity {
         
         public Choreographer() {
             sequence = new ArrayDeque<Movement>();
-            prepareSequence();
         }
         
-        public void dance() {
+        public void startDance() {
+            prepareSequence();
             nextMove();
         }
         
-        private void nextMove() {
+        public void nextMove() {
             if (sequence.peek() != null)
                 sequence.poll().move();
             else
-                onCalibrationFinished();
+                onDanceFinished();
         }
         
         private void prepareSequence() {
+            sequence.clear();
             addPoint(0.1f, 0.1f);
             addPoint(0.9f, 0.1f);
             addPoint(0.5f, 0.5f);
@@ -90,18 +148,26 @@ public class CalibrationActivity extends Activity {
                     cview.movePointTo(x, y);
                 }
             });
-            sequence.add(new Movement() {
-                @Override
-                public void move() {
-                    cview.shrinkPoint();
-                }
-            });
-            sequence.add(new Movement() {
-                @Override
-                public void move() {
-                    cview.expandPoint();
-                }
-            });
+            for (int i = 0; i < 2; i++) {
+                sequence.add(new Movement() {
+                    @Override
+                    public void move() {
+                        cview.shrinkPoint();
+                    }
+                });
+                sequence.add(new Movement() {
+                    @Override
+                    public void move() {
+                        calibService.addCalibrationPoint(x, y);
+                    }
+                });
+                sequence.add(new Movement() {
+                    @Override
+                    public void move() {
+                        cview.expandPoint();
+                    }
+                });
+            }
         }
         
     }
