@@ -85,8 +85,6 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        // Translucent background color.
-        canvas.drawColor(0xAA000000);
         dot.draw(canvas);
     }
 

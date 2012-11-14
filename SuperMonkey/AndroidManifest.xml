@@ -40,7 +40,7 @@
         <activity
             android:name=".CalibrationActivity"
             android:label="@string/title_activity_calibration"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+            android:theme="@style/CalibrationTheme" >
         </activity>
     </application>
 

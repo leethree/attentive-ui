@@ -30,7 +30,7 @@ class Calibration(object):
     def abort(self):
         self._tracker.StopCalibration()
         print "Calibration aborted by user."
-        self._on_calib_done(False, "Calibration aborted by user.")
+        self._on_calib_done(False)
 
     def _report_event(self, event, *args):
         self._callback(event, *args)

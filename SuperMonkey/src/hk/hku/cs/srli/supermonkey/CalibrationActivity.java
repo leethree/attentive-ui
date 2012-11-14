@@ -44,6 +44,7 @@ public class CalibrationActivity extends Activity {
         });
         
         // Show loading indicator.
+        progressDialog.setMessage("Starting...");
         progressDialog.show();
         
         calibService.startCalibration();
@@ -59,6 +60,7 @@ public class CalibrationActivity extends Activity {
     }
     
     private void onDanceFinished() {
+        progressDialog.setMessage("Computing...");
         progressDialog.show();
         calibService.computeCalibration();
     }
