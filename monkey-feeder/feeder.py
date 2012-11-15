@@ -42,11 +42,6 @@ class MonkeyFeeder(object):
         width = MonkeyFeeder._WIDTH
         height = MonkeyFeeder._HEIGHT
 
-        # TODO (LeeThree): Workaround for emulator window.
-        # Remove when ready for actual device.
-        x = (x * 1280 - 150) / width
-        y = (y * 1024 - 115) / height
-
         # Mouse is not moved.
         if (x == self._lastx and y == self._lasty):
             return False

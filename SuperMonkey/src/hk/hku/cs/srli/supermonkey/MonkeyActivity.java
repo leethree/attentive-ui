@@ -7,12 +7,14 @@ import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -26,6 +28,8 @@ public class MonkeyActivity extends Activity {
     private ToggleButton etToggle;
     private Button caliButton;
     
+    private TextView infoText;
+    
     private EyeTrackerService etService;
 
     @Override
@@ -38,6 +42,7 @@ public class MonkeyActivity extends Activity {
         dToggle = (ToggleButton) findViewById(R.id.dToggleButton);
         etToggle = (ToggleButton) findViewById(R.id.etToggleButton);
         caliButton = (Button) findViewById(R.id.calibrateButton);
+        infoText = (TextView) findViewById(R.id.infoTextView);
 
         monkeyStatus.setText("ready");
         dStatus.setText("disconnected");
@@ -46,6 +51,7 @@ public class MonkeyActivity extends Activity {
         etToggle.setEnabled(false);
         etToggle.setChecked(false);
         caliButton.setEnabled(false);
+        infoText.setText(getScreenInfo());
         
         etService = CalibrationActivity.eyeTrackerService;
         etService.setCallback(new EyeTrackerCallback());
@@ -133,6 +139,19 @@ public class MonkeyActivity extends Activity {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    
+    private String getScreenInfo() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        double xinch = dm.widthPixels / dm.xdpi;
+        double yinch = dm.heightPixels / dm.ydpi;
+        String s = "Screen resolution: " + dm.widthPixels + " x " + dm.heightPixels + " px\n";
+        s += "Screen size: " + String.format("%.2f", xinch) + " x "
+                + String.format("%.2f", yinch) + " inch\n";
+        s += "(" + String.format("%.2f", xinch * 2.54) + " x " 
+                + String.format("%.2f", yinch * 2.54) + " cm)\n";
+        return s;
     }
     
     private class EyeTrackerCallback implements EyeTrackerService.Callback {
