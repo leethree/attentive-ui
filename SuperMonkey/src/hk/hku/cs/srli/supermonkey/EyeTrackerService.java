@@ -1,6 +1,5 @@
 package hk.hku.cs.srli.supermonkey;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -8,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -16,11 +14,14 @@ import java.net.Socket;
 public class EyeTrackerService {
 
     private ClientThread client;
-    private WeakReference<Activity> activityRef;
     private Callback callback;
     
-    public EyeTrackerService(Activity activity) {
-        this.activityRef = new WeakReference<Activity>(activity);
+    public EyeTrackerService() {
+    }
+    
+    public EyeTrackerService(EyeTrackerService that) {
+        this.client = that.client;
+        this.callback = that.callback;
     }
     
     public void connect(String host, int port) {
@@ -48,7 +49,7 @@ public class EyeTrackerService {
         return client != null && client.isConnected();
     }
     
-    private boolean send(String command) {
+    protected boolean send(String command) {
         if (client != null)
             return client.send(command);
         else
@@ -61,7 +62,7 @@ public class EyeTrackerService {
     
     private void report(final ReportType type, final String message) {
         if (callback == null) return;
-        activityRef.get().runOnUiThread(new Runnable() {
+        callback.runOnUiThread(new Runnable() {
             
             @Override
             public void run() {
@@ -72,19 +73,7 @@ public class EyeTrackerService {
                     if (spacePos > 0) {
                         String command = message.substring(0, spacePos);
                         String opt = message.substring(spacePos + 1);
-                        if (command.equals("msg")) {
-                            if (opt.length() > 0) callback.handleMessage(opt);
-                        } else if (command.equals("ready")) {
-                            callback.handleETStatus(true);
-                        } else if (command.equals("not_connected")) {
-                            callback.handleETStatus(false);
-                        } else if (command.equals("tracking_started")) {
-                            callback.handleETStartStop(true);
-                        } else if (command.equals("tracking_stopped")) {
-                            callback.handleETStartStop(false);
-                        } else if (command.equals("error")) {
-                            if (opt.length() > 0) callback.handleError(opt);
-                        }
+                        reportMessage(command, opt);
                     } else {
                         Log.e("EyeTrackerService", "Wrong message format:" + message);
                     }
@@ -99,12 +88,28 @@ public class EyeTrackerService {
                     callback.handleError(message);
                     break;
                 }
-                
             }
         });
     }
     
+    protected void reportMessage(String command, String opt) {
+        if (command.equals("msg")) {
+            if (opt.length() > 0) callback.handleMessage(opt);
+        } else if (command.equals("ready")) {
+            callback.handleETStatus(true);
+        } else if (command.equals("not_connected")) {
+            callback.handleETStatus(false);
+        } else if (command.equals("tracking_started")) {
+            callback.handleETStartStop(true);
+        } else if (command.equals("tracking_stopped")) {
+            callback.handleETStartStop(false);
+        } else if (command.equals("error")) {
+            if (opt.length() > 0) callback.handleError(opt);
+        }
+    }
+    
     public interface Callback {
+        public void runOnUiThread(Runnable action);
         public void handleDConnect(boolean connnected);
         public void handleETStatus(boolean ready);
         public void handleETStartStop(boolean started);
@@ -176,6 +181,7 @@ public class EyeTrackerService {
                 protected Void doInBackground(String... params) {
                     String command = params[0];
                     out.println(command);
+                    Log.d("EyeTrackerService.ClientThread", "Send command: " + command);
                     return null;
                 }
             }.execute(command);

@@ -10,15 +10,15 @@ All requests and responses end with "`\n`".
 
 - `start`
 
-	Start sending eye tracking data.
+	Start sending eye tracking data. Expect `tracking_started`.
 
 - `stop`
 
-	Stop sending eye tracking data.
+	Stop sending eye tracking data. Expect `tracking_stopped`.
 
 - `bye`
 
-	Disconnect control channel.
+	Disconnect control channel. Expect `bye`.
 
 ## response
 
@@ -28,11 +28,11 @@ All requests and responses end with "`\n`".
 
 - `ready`
 
-	Indicate that eye tracking is connected and ready.
+	Indicate that eye tracker is connected and ready.
 
 - `not_connected`
 
-	Indicate that eye tracking is not connected.
+	Indicate that eye tracker is not connected.
 
 - `tracking_started`
 
@@ -55,3 +55,39 @@ All requests and responses end with "`\n`".
 - `hover <enter|move|exit> <x> <y>`
 
 	Ask Monkey to inject corresponding event to the system.
+
+## calibration request
+
+- `calib_start`
+
+	Start eye tracker calibration. Expect `calib_started`.
+
+- `calib_add <x> <y>`
+
+	Add a calibration point. Expect `calib_added`.
+
+- `calib_compute`
+
+	Compute and finish calibration. Expect `calib_done` and `calib_stopped`.
+
+- `calib_abort`
+
+	Cancel calibration. Expect `calib_stopped`.
+
+## calibration response
+
+- `calib_started`
+
+	Indicate that eye tracker entered calibration state.
+
+- `calib_added`
+
+	Indicate that a calibration point has added.
+
+- `calib_done`
+
+	Indicate that the calibration is computed and set to eye tracker.
+
+- `calib_stopped`
+
+	Indicate that eye tracker is no longer in calibration state.

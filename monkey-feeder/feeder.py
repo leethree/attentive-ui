@@ -42,11 +42,6 @@ class MonkeyFeeder(object):
         width = MonkeyFeeder._WIDTH
         height = MonkeyFeeder._HEIGHT
 
-        # TODO (LeeThree): Workaround for emulator window.
-        # Remove when ready for actual device.
-        x = (x * 1280 - 150) / width
-        y = (y * 1024 - 115) / height
-
         # Mouse is not moved.
         if (x == self._lastx and y == self._lasty):
             return False
@@ -134,7 +129,7 @@ class MonkeyHandler(asynchat.async_chat):
     def _process_data(self, message):
         strs = message.split()
         if (len(strs) > 1):
-            EventPubSub.publish('cmd-' + strs[0].lower(), strs[1:])
+            EventPubSub.publish('cmd-' + strs[0].lower(), *strs[1:])
         else:
             EventPubSub.publish('cmd-' + strs[0].lower())
 
@@ -167,6 +162,7 @@ class EventPubSub(object):
 
 
 class Conductor(object):
+# TODO (LeeThree): Move Conductor to separate file because it's too long.
 
     def __init__(self):
         self._etf = EyeTrackerFacade(EventPubSub.publish)
@@ -175,10 +171,17 @@ class Conductor(object):
         self._mhandler = None
         self._etready = False
         self._ettracking = False
+        self._calib = None
         EventPubSub.subscribe('etf', self._handle_etf_event)
+        EventPubSub.subscribe('calib', self._handle_calib_event)
         EventPubSub.subscribe('conn', self._handle_conn)
         EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
         EventPubSub.subscribe('cmd-stop', self._handle_cmd_stop)
+        EventPubSub.subscribe('cmd-calib_start', self._handle_cmd_calib_start)
+        EventPubSub.subscribe('cmd-calib_add', self._handle_cmd_calib_add)
+        EventPubSub.subscribe('cmd-calib_compute',
+                              self._handle_cmd_calib_compute)
+        EventPubSub.subscribe('cmd-calib_abort', self._handle_cmd_calib_abort)
         EventPubSub.subscribe('cmd-bye', self._handle_cmd_bye)
         EventPubSub.subscribe(EventPubSub.UNHANDLED, self._handle_unhandled)
 
@@ -204,6 +207,20 @@ class Conductor(object):
         elif event == 'stop_tracking':
             self._ettracking = False
             self._respond('tracking_stopped')
+        elif event == 'stop_calib':
+            self._calib = None
+            self._respond('calib_stopped')
+
+    def _handle_calib_event(self, event, *args):
+        print "Calib Event:", event
+        if event == 'started':
+            self._respond('calib_started')
+        elif event == 'added':
+            self._respond('calib_added')
+        elif event == 'done':
+            self._respond('calib_done')
+        elif event == 'error':
+            self._respond('error', error)
 
     def _handle_conn(self, addr, mhandler):
         print "Connected by", addr
@@ -226,6 +243,23 @@ class Conductor(object):
         if self._mhandler is not None:
             self._mhandler.respond('bye')
             self._mhandler.handle_close()
+
+    def _handle_cmd_calib_start(self):
+        if self._calib is not None:
+            self._calib.abort()
+        self._calib = self._etf.start_calibration()
+
+    def _handle_cmd_calib_add(self, x, y):
+        if self._calib is not None:
+            self._calib.add_point(float(x), float(y))
+
+    def _handle_cmd_calib_compute(self):
+        if self._calib is not None:
+            self._calib.compute()
+
+    def _handle_cmd_calib_abort(self):
+        if self._calib is not None:
+            self._calib.abort()
 
     def _handle_unhandled(self, topic, *args):
         self._respond('error', "Unknown command: " + topic)

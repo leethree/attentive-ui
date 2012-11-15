@@ -37,6 +37,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="hk.hku.cs.srli.supermonkey.MonkeyActivity" />
         </activity>
+        <activity
+            android:name=".CalibrationActivity"
+            android:label="@string/title_activity_calibration"
+            android:theme="@style/CalibrationTheme" >
+        </activity>
     </application>
 
 </manifest>
