@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import tobii.sdk.eyetracker
 
 from tobii.sdk.types import Point2D
