@@ -5,7 +5,7 @@ import socket
 import pubsub
 
 
-class MonkeyFeeder(object):
+class MonkeyFeeder(asynchat.async_chat):
 
     _TCP_IP = '127.0.0.1'
     _TCP_PORT = 1080
@@ -13,27 +13,37 @@ class MonkeyFeeder(object):
     _HEIGHT = 800
 
     # Debug option for printing commands without doing anything.
-    _DRY_RUN = True
+    _DRY_RUN = False
 
     def __init__(self):
-        self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        asynchat.async_chat.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.set_terminator(None)
         self._entered = False
         self._lastx = None
         self._lasty = None
 
-    def __enter__(self):
+    def connectTo(self):
         if not MonkeyFeeder._DRY_RUN:
-            self._s.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
-        pubsub.subscribe('data', self.move)
-        return self
+            self.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
 
-    def __exit__(self, type, value, traceback):
-        self._s.close()
-        return False
+    def handle_connect(self):
+        pubsub.subscribe('data', self.move)
+        print "Feeder connected."
+
+    def handle_close(self):
+        pubsub.unsubscribe('data', self.move)
+        self.close()
+
+    def collect_incoming_data(self, data):
+        pass
+
+    def found_terminator(self):
+        pass
 
     def _send_command(self, command):
         if not MonkeyFeeder._DRY_RUN:
-            self._s.send(command + '\n')
+            self.push(command + '\n')
         print "Sent: ", command
 
     def move(self, x, y):

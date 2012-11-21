@@ -11,7 +11,7 @@ class Conductor(object):
     def __init__(self):
         self._etf = EyeTrackerFacade(pubsub.publish)
         self._mserver = MonkeyServer()
-        self._mfeeder = MonkeyFeeder()
+        self._mfeeder = None
         self._mhandler = None
         self._etready = False
         self._ettracking = False
@@ -30,14 +30,13 @@ class Conductor(object):
 
     def main(self):
         with self._mserver:
-            with self._mfeeder:
-                with self._etf:
-                    try:
-                        while True:
-                            self._mserver.loop()
-                            self._etf.loop()
-                    except KeyboardInterrupt:
-                        print "Interrupted by user."
+            with self._etf:
+                try:
+                    while True:
+                        self._mserver.loop()
+                        self._etf.loop()
+                except KeyboardInterrupt:
+                    print "Interrupted by user."
 
     def _handle_etf_event(self, event, *args):
         print "ETF Event:", event
@@ -77,9 +76,13 @@ class Conductor(object):
             self._respond('not_connected')
 
     def _handle_cmd_start(self):
+        self._mfeeder = MonkeyFeeder()
+        self._mfeeder.connectTo()
         self._etf.start_tracking()
 
     def _handle_cmd_stop(self):
+        self._mfeeder.handle_close()
+        self._mfeeder = None
         self._etf.stop_tracking()
 
     def _handle_cmd_bye(self):
