@@ -2,7 +2,7 @@ import asynchat
 import asyncore
 import socket
 
-from pubsub import EventPubSub
+import pubsub
 
 
 class MonkeyFeeder(object):
@@ -24,7 +24,7 @@ class MonkeyFeeder(object):
     def __enter__(self):
         if not MonkeyFeeder._DRY_RUN:
             self._s.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
-        EventPubSub.subscribe('data', self.move)
+        pubsub.subscribe('data', self.move)
         return self
 
     def __exit__(self, type, value, traceback):
@@ -89,7 +89,7 @@ class MonkeyServer(asyncore.dispatcher):
             self._handler.handle_close()
 
         self._handler = MonkeyHandler(conn)
-        EventPubSub.publish('conn', addr, self._handler)
+        pubsub.publish('conn', addr, self._handler)
 
     def handle_close(self):
         if self._handler is not None:
@@ -127,6 +127,6 @@ class MonkeyHandler(asynchat.async_chat):
     def _process_data(self, message):
         strs = message.split()
         if (len(strs) > 1):
-            EventPubSub.publish('cmd-' + strs[0].lower(), *strs[1:])
+            pubsub.publish('cmd-' + strs[0].lower(), *strs[1:])
         else:
-            EventPubSub.publish('cmd-' + strs[0].lower())
+            pubsub.publish('cmd-' + strs[0].lower())

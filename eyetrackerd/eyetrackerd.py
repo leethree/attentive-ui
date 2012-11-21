@@ -1,32 +1,32 @@
 #!/usr/bin/python
 
+import pubsub
+
 from eyetracker_facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
-from pubsub import EventPubSub
 
 
 class Conductor(object):
 
     def __init__(self):
-        self._etf = EyeTrackerFacade(EventPubSub.publish)
+        self._etf = EyeTrackerFacade(pubsub.publish)
         self._mserver = MonkeyServer()
         self._mfeeder = MonkeyFeeder()
         self._mhandler = None
         self._etready = False
         self._ettracking = False
         self._calib = None
-        EventPubSub.subscribe('etf', self._handle_etf_event)
-        EventPubSub.subscribe('calib', self._handle_calib_event)
-        EventPubSub.subscribe('conn', self._handle_conn)
-        EventPubSub.subscribe('cmd-start', self._handle_cmd_start)
-        EventPubSub.subscribe('cmd-stop', self._handle_cmd_stop)
-        EventPubSub.subscribe('cmd-calib_start', self._handle_cmd_calib_start)
-        EventPubSub.subscribe('cmd-calib_add', self._handle_cmd_calib_add)
-        EventPubSub.subscribe('cmd-calib_compute',
-                              self._handle_cmd_calib_compute)
-        EventPubSub.subscribe('cmd-calib_abort', self._handle_cmd_calib_abort)
-        EventPubSub.subscribe('cmd-bye', self._handle_cmd_bye)
-        EventPubSub.subscribe(EventPubSub.UNHANDLED, self._handle_unhandled)
+        pubsub.subscribe('etf', self._handle_etf_event)
+        pubsub.subscribe('calib', self._handle_calib_event)
+        pubsub.subscribe('conn', self._handle_conn)
+        pubsub.subscribe('cmd-start', self._handle_cmd_start)
+        pubsub.subscribe('cmd-stop', self._handle_cmd_stop)
+        pubsub.subscribe('cmd-calib_start', self._handle_cmd_calib_start)
+        pubsub.subscribe('cmd-calib_add', self._handle_cmd_calib_add)
+        pubsub.subscribe('cmd-calib_compute', self._handle_cmd_calib_compute)
+        pubsub.subscribe('cmd-calib_abort', self._handle_cmd_calib_abort)
+        pubsub.subscribe('cmd-bye', self._handle_cmd_bye)
+        pubsub.subscribe(pubsub.UNHANDLED, self._handle_unhandled)
 
     def main(self):
         with self._mserver:

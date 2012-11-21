@@ -1,25 +1,29 @@
-class EventPubSub(object):
+# Module for publishing and subscribing to events.
 
-    UNHANDLED = '~'
+UNHANDLED = '~'
 
-    _reg = {}
+_reg = {}
 
-    @staticmethod
-    def publish(topic, *args):
-        if topic in EventPubSub._reg:
-            for handler in EventPubSub._reg[topic]:
-                handler(*args)
+
+def publish(topic, *args):
+    if topic in _reg:
+        for handler in _reg[topic]:
+            handler(*args)
+    else:
+        if topic == UNHANDLED:
+            print "WARNING: Unhandled PubSub topic:", topic, args
         else:
-            if topic == EventPubSub.UNHANDLED:
-                print "WARNING: Unhandled PubSub topic:", topic, args
-            else:
-                EventPubSub.publish(EventPubSub.UNHANDLED, topic, *args)
+            publish(UNHANDLED, topic, *args)
 
-    @staticmethod
-    def subscribe(topic, handler):
-        if topic in EventPubSub._reg:
-            EventPubSub._reg[topic].append(handler)
-        else:
-            EventPubSub._reg[topic] = [handler]
 
-    # TODO (LeeThree): Unsubscribe is needed for completeness.
+def subscribe(topic, handler):
+    if topic in _reg:
+        _reg[topic].append(handler)
+    else:
+        _reg[topic] = [handler]
+
+
+def unsubscribe(topic, handler):
+    if topic in _reg:
+        if handler in _reg[topic]:
+            _reg[topic].remove(handler)
