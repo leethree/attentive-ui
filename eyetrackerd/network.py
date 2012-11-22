@@ -23,7 +23,7 @@ class MonkeyFeeder(asynchat.async_chat):
         self._lastx = None
         self._lasty = None
 
-    def connectTo(self):
+    def connect_to(self):
         if not MonkeyFeeder._DRY_RUN:
             self.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
 
@@ -36,6 +36,7 @@ class MonkeyFeeder(asynchat.async_chat):
         self.close()
 
     def collect_incoming_data(self, data):
+        # Ignores all incoming data.
         pass
 
     def found_terminator(self):

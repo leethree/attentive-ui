@@ -35,17 +35,20 @@ public class CalibrationService extends EyeTrackerService {
     
     @Override
     protected void reportMessage(String command, String opt) {
-        Log.v("CalibrationService", command + " " + opt);
-        if (command.equals("calib_started")) {
-            callback.handleStarted();
-        } else if (command.equals("calib_added")) {
-            callback.handleAdded();
-        } else if (command.equals("calib_done")) {
-            callback.handleDone();
-        } else if (command.equals("calib_stopped")) {
-            callback.handleStopped();
-        } else if (command.equals("error")) {
-            if (opt.length() > 0) callback.handleError(opt);
+        if (callback != null) {
+            Log.v("CalibrationService", command + " " + opt);
+            if (command.equals("calib_started")) {
+                callback.handleStarted();
+            } else if (command.equals("calib_added")) {
+                callback.handleAdded();
+            } else if (command.equals("calib_done")) {
+                callback.handleDone();
+            } else if (command.equals("calib_stopped")) {
+                callback.handleStopped();
+            } else if (command.equals("error")) {
+                if (opt.length() > 0) callback.handleError(opt);
+            } else
+                super.reportMessage(command, opt);
         } else
             super.reportMessage(command, opt);
     }

@@ -73,11 +73,9 @@ public class EyeTrackerService {
                     if (spacePos > 0) {
                         String command = message.substring(0, spacePos);
                         String opt = message.substring(spacePos + 1);
-                        if (opt == null) opt = "";
                         reportMessage(command, opt);
-                    } else {
-                        Log.e("EyeTrackerService", "Wrong message format:" + message);
-                    }
+                    } else
+                        reportMessage(message);
                     break;
                 case CONNECTED:
                     callback.handleDConnect(true);
@@ -91,6 +89,10 @@ public class EyeTrackerService {
                 }
             }
         });
+    }
+    
+    private void reportMessage(String command) {
+        reportMessage(command, "");
     }
     
     protected void reportMessage(String command, String opt) {

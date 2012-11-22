@@ -77,7 +77,7 @@ class Conductor(object):
 
     def _handle_cmd_start(self):
         self._mfeeder = MonkeyFeeder()
-        self._mfeeder.connectTo()
+        self._mfeeder.connect_to()
         self._etf.start_tracking()
 
     def _handle_cmd_stop(self):
@@ -108,11 +108,12 @@ class Conductor(object):
             self._calib.abort()
 
     def _handle_unhandled(self, topic, *args):
-        self._respond('error', "Unknown command: " + topic)
+        print "Error: unknown command ", topic
 
     def _respond(self, command, message=''):
         if self._mhandler is not None:
-            self._mhandler.respond(command + ' ' + message)
+            response = command + (' ' + message if len(message) > 0 else '')
+            self._mhandler.respond(response)
 
 
 if __name__ == '__main__':
