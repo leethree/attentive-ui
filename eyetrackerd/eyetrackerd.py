@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import pubsub
-
 from eyetracker_facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
 
@@ -53,7 +52,7 @@ class FeedProcessor(object):
 class Conductor(object):
 
     def __init__(self):
-        self._etf = EyeTrackerFacade(pubsub.publish)
+        self._etf = EyeTrackerFacade()
         self._mserver = MonkeyServer()
         self._mfeeder = None
         self._mhandler = None
@@ -61,17 +60,24 @@ class Conductor(object):
         self._etready = False
         self._ettracking = False
         self._calib = None
-        pubsub.subscribe('etf', self._handle_etf_event)
-        pubsub.subscribe('calib', self._handle_calib_event)
-        pubsub.subscribe('conn', self._handle_conn)
-        pubsub.subscribe('cmd-start', self._handle_cmd_start)
-        pubsub.subscribe('cmd-stop', self._handle_cmd_stop)
-        pubsub.subscribe('cmd-calib_start', self._handle_cmd_calib_start)
-        pubsub.subscribe('cmd-calib_add', self._handle_cmd_calib_add)
-        pubsub.subscribe('cmd-calib_compute', self._handle_cmd_calib_compute)
-        pubsub.subscribe('cmd-calib_abort', self._handle_cmd_calib_abort)
-        pubsub.subscribe('cmd-bye', self._handle_cmd_bye)
-        pubsub.subscribe(pubsub.UNHANDLED, self._handle_unhandled)
+
+        _HANDLERS = {
+            'etf': self._handle_etf_event,
+            'calib': self._handle_calib_event,
+            'conn': self._handle_conn,
+            'cmd-start': self._handle_cmd_start,
+            'cmd-stop': self._handle_cmd_stop,
+            'cmd-calib_start': self._handle_cmd_calib_start,
+            'cmd-calib_add': self._handle_cmd_calib_add,
+            'cmd-calib_compute': self._handle_cmd_calib_compute,
+            'cmd-calib_abort': self._handle_cmd_calib_abort,
+            'cmd-bye': self._handle_cmd_bye,
+            pubsub.UNHANDLED: self._handle_unhandled
+        }
+
+        # Register all handlers.
+        for topic, handler in _HANDLERS.iteritems():
+            pubsub.subscribe(topic, handler)
 
     def main(self):
         with self._mserver:
