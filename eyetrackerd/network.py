@@ -9,8 +9,6 @@ class MonkeyFeeder(asynchat.async_chat):
 
     _TCP_IP = '127.0.0.1'
     _TCP_PORT = 1080
-    _WIDTH = 480
-    _HEIGHT = 800
 
     # Debug option for printing commands without doing anything.
     _DRY_RUN = False
@@ -19,20 +17,15 @@ class MonkeyFeeder(asynchat.async_chat):
         asynchat.async_chat.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_terminator(None)
-        self._entered = False
-        self._lastx = None
-        self._lasty = None
 
     def connect_to(self):
         if not MonkeyFeeder._DRY_RUN:
             self.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
 
     def handle_connect(self):
-        pubsub.subscribe('data', self.move)
         print "Feeder connected."
 
     def handle_close(self):
-        pubsub.unsubscribe('data', self.move)
         self.close()
 
     def collect_incoming_data(self, data):
@@ -42,34 +35,10 @@ class MonkeyFeeder(asynchat.async_chat):
     def found_terminator(self):
         pass
 
-    def _send_command(self, command):
+    def send_data(self, data):
         if not MonkeyFeeder._DRY_RUN:
-            self.push(command + '\n')
-        print "Sent: ", command
-
-    def move(self, x, y):
-        width = MonkeyFeeder._WIDTH
-        height = MonkeyFeeder._HEIGHT
-
-        # Mouse is not moved.
-        if (x == self._lastx and y == self._lasty):
-            return False
-
-        if (x > 0 and x < 1 and y > 0 and y < 1):
-            action = 'move' if self._entered else 'enter'
-            self._send_command('hover %s %d %d' % (
-                               action, x * width, y * height))
-            self._entered = True
-
-        elif (self._entered):
-            self._send_command('hover move %d %d' % (x * width, y * height))
-            self._send_command('hover exit %d %d' % (x * width, y * height))
-            self._entered = False
-
-        self._lastx = x
-        self._lasty = y
-
-        return True
+            self.push(data + '\n')
+        print "Sent: ", data
 
 
 class MonkeyServer(asyncore.dispatcher):

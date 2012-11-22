@@ -6,6 +6,50 @@ from eyetracker_facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
 
 
+class FeedProcessor(object):
+
+    _WIDTH = 480
+    _HEIGHT = 800
+
+    def __init__(self):
+        self._entered = False
+        self._lastx = None
+        self._lasty = None
+        self._send_command = self._default_send_command
+
+    def set_output_method(self, output_method):
+        self._send_command = (output_method if output_method is not None
+                              else self._default_send_command)
+
+    def process(self, x, y):
+        width = FeedProcessor._WIDTH
+        height = FeedProcessor._HEIGHT
+
+        # Point is not moved.
+        if (x == self._lastx and y == self._lasty):
+            return False
+
+        if (x > 0 and x < 1 and y > 0 and y < 1):
+            action = 'move' if self._entered else 'enter'
+            self._send_command('hover %s %d %d' % (
+                               action, x * width, y * height))
+            self._entered = True
+
+        elif (self._entered):
+            self._send_command('hover move %d %d' % (x * width, y * height))
+            self._send_command('hover exit %d %d' % (x * width, y * height))
+            self._entered = False
+
+        self._lastx = x
+        self._lasty = y
+
+        return True
+
+    def _default_send_command(self, command):
+        # Do nothing.
+        pass
+
+
 class Conductor(object):
 
     def __init__(self):
@@ -13,6 +57,7 @@ class Conductor(object):
         self._mserver = MonkeyServer()
         self._mfeeder = None
         self._mhandler = None
+        self._fprocessor = FeedProcessor()
         self._etready = False
         self._ettracking = False
         self._calib = None
@@ -78,11 +123,15 @@ class Conductor(object):
     def _handle_cmd_start(self):
         self._mfeeder = MonkeyFeeder()
         self._mfeeder.connect_to()
+        self._fprocessor.set_output_method(self._mfeeder.send_data)
+        pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
 
     def _handle_cmd_stop(self):
         self._mfeeder.handle_close()
         self._mfeeder = None
+        self._fprocessor.set_output_method(None)
+        pubsub.unsubscribe('data', self._fprocessor.process)
         self._etf.stop_tracking()
 
     def _handle_cmd_bye(self):

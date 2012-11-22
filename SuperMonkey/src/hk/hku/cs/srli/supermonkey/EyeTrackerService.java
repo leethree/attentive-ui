@@ -108,6 +108,8 @@ public class EyeTrackerService {
             callback.handleETStartStop(false);
         } else if (command.equals("error")) {
             if (opt.length() > 0) callback.handleError(opt);
+        } else if (command.equals("bye")) {
+            client.stop();
         }
     }
     
