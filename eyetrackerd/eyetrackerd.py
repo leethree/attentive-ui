@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import functools
+
 import pubsub
 from eyetracker_facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
@@ -14,11 +16,10 @@ class FeedProcessor(object):
         self._entered = False
         self._lastx = None
         self._lasty = None
-        self._send_command = self._default_send_command
+        self._output_method = None
 
     def set_output_method(self, output_method):
-        self._send_command = (output_method if output_method is not None
-                              else self._default_send_command)
+        self._output_method = output_method
 
     def process(self, x, y):
         width = FeedProcessor._WIDTH
@@ -44,9 +45,27 @@ class FeedProcessor(object):
 
         return True
 
-    def _default_send_command(self, command):
-        # Do nothing.
-        pass
+    def _send_command(self, command):
+        if self._output_method is not None:
+            self._output_method(command)
+
+
+class _handles(object):
+    # Decorator for handlers.
+
+    _reg = {}
+
+    def __init__(self, topic):
+        self._topic = topic
+
+    def __call__(self, handler):
+        _handles._reg[self._topic] = handler
+        return handler
+
+    @staticmethod
+    def subscribe_all(instance):
+        for topic, handler in _handles._reg.iteritems():
+            pubsub.subscribe(topic, functools.partial(handler, instance))
 
 
 class Conductor(object):
@@ -61,23 +80,8 @@ class Conductor(object):
         self._ettracking = False
         self._calib = None
 
-        _HANDLERS = {
-            'etf': self._handle_etf_event,
-            'calib': self._handle_calib_event,
-            'conn': self._handle_conn,
-            'cmd-start': self._handle_cmd_start,
-            'cmd-stop': self._handle_cmd_stop,
-            'cmd-calib_start': self._handle_cmd_calib_start,
-            'cmd-calib_add': self._handle_cmd_calib_add,
-            'cmd-calib_compute': self._handle_cmd_calib_compute,
-            'cmd-calib_abort': self._handle_cmd_calib_abort,
-            'cmd-bye': self._handle_cmd_bye,
-            pubsub.UNHANDLED: self._handle_unhandled
-        }
-
         # Register all handlers.
-        for topic, handler in _HANDLERS.iteritems():
-            pubsub.subscribe(topic, handler)
+        _handles.subscribe_all(self)
 
     def main(self):
         with self._mserver:
@@ -89,6 +93,7 @@ class Conductor(object):
                 except KeyboardInterrupt:
                     print "Interrupted by user."
 
+    @_handles('etf')
     def _handle_etf_event(self, event, *args):
         print "ETF Event:", event
         if event == 'connected':
@@ -104,6 +109,7 @@ class Conductor(object):
             self._calib = None
             self._respond('calib_stopped')
 
+    @_handles('calib')
     def _handle_calib_event(self, event, *args):
         print "Calib Event:", event
         if event == 'started':
@@ -115,6 +121,7 @@ class Conductor(object):
         elif event == 'error':
             self._respond('error', args[0])
 
+    @_handles('conn')
     def _handle_conn(self, addr, mhandler):
         print "Connected by", addr
         self._mhandler = mhandler
@@ -126,6 +133,7 @@ class Conductor(object):
         else:
             self._respond('not_connected')
 
+    @_handles('cmd-start')
     def _handle_cmd_start(self):
         self._mfeeder = MonkeyFeeder()
         self._mfeeder.connect_to()
@@ -133,6 +141,7 @@ class Conductor(object):
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
 
+    @_handles('cmd-stop')
     def _handle_cmd_stop(self):
         self._mfeeder.handle_close()
         self._mfeeder = None
@@ -140,30 +149,36 @@ class Conductor(object):
         pubsub.unsubscribe('data', self._fprocessor.process)
         self._etf.stop_tracking()
 
+    @_handles('cmd-bye')
     def _handle_cmd_bye(self):
         if self._mhandler is not None:
             self._mhandler.respond('bye')
             self._mhandler.handle_close()
 
+    @_handles('cmd-calib_start')
     def _handle_cmd_calib_start(self):
         if self._calib is not None:
             self._calib.abort()
         self._calib = self._etf.start_calibration()
 
+    @_handles('cmd-calib_add')
     def _handle_cmd_calib_add(self, x, y):
         if self._calib is not None:
             self._calib.add_point(float(x), float(y))
 
+    @_handles('cmd-calib_compute')
     def _handle_cmd_calib_compute(self):
         if self._calib is not None:
             self._calib.compute()
 
+    @_handles('cmd-calib_abort')
     def _handle_cmd_calib_abort(self):
         if self._calib is not None:
             self._calib.abort()
 
+    @_handles(pubsub.UNHANDLED)
     def _handle_unhandled(self, topic, *args):
-        print "Error: unknown command ", topic
+        print "Error: unhandled topic ", topic
 
     def _respond(self, command, message=''):
         if self._mhandler is not None:
