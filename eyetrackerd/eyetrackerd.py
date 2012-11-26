@@ -161,6 +161,10 @@ class Conductor(object):
             self._mhandler.respond('bye')
             self._mhandler.handle_close()
 
+    @_helper.handles('cmd-status')
+    def _handle_cmd_bye(self):
+        self._respond('status', etf.get_status())
+
     @_helper.handles('cmd-calib_start')
     def _handle_cmd_calib_start(self):
         if self._calib is not None:

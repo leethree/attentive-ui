@@ -42,6 +42,7 @@ class EyeTrackerFacade(object):
             if self._calibrating:
                 self._tracker.StopCalibration()
                 self._calibrating = False
+            self._tracker = None
         if self._mainloop is not None:
             self._mainloop.stop()
         print "%d events processed." % self._q.count()
@@ -49,6 +50,16 @@ class EyeTrackerFacade(object):
 
     def loop(self):
         self._q.pop()
+
+    def get_status(self):
+        if self._tracker is None:
+            return 'disconnected'
+        elif self._tracking:
+            return 'tracking'
+        elif self._calibrating:
+            return 'calibrating'
+        else:
+            return 'ready'
 
     def _report_event(self, event, *args):
         pubsub.publish('etf', event, *args)

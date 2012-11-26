@@ -8,6 +8,10 @@ All requests and responses end with "`\n`".
 
 	Establish data channel connection to given address.
 
+- `status`
+
+	Request for eye tracker status. Expect `status`.
+
 - `start`
 
 	Start sending eye tracking data. Expect `tracking_started`.
@@ -25,6 +29,10 @@ All requests and responses end with "`\n`".
 - `msg <message>`
 
 	Send a message that meaned to be displayed to the user.
+
+- `status <disconnected|ready|tracking|calibrating>`
+
+	Report the current status of eye tracker.
 
 - `ready`
 
