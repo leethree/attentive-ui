@@ -11,8 +11,8 @@ class MonkeyFeeder(object):
 
     _TCP_IP = '127.0.0.1'
     _TCP_PORT = 1080
-    _WIDTH = 480
-    _HEIGHT = 800
+    _WIDTH = 800
+    _HEIGHT = 1205
 
     # Debug option for printing commands without doing anything.
     _DRY_RUN = False
@@ -65,7 +65,7 @@ class MonkeyFeeder(object):
 
 class MonkeyServer(asyncore.dispatcher):
 
-    _TCP_IP = 'localhost' # Use socket.gethostname() for real device.
+    _TCP_IP = socket.gethostname() # Use 'localhost' for emulators.
     _TCP_PORT = 10800
 
     def __init__(self):
