@@ -4,9 +4,10 @@ All requests and responses end with "`\n`".
 
 ## request
 
-- `conn_data <host> <port>`
+- `set <param> <value>`
 
-	Establish data channel connection to given address.
+	Set a configuration parameter to new value.
+	`param` is `monkey_host|monkey_port|display_width|display_height`.
 
 - `status`
 

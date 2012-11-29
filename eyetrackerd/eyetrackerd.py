@@ -145,12 +145,18 @@ class Conductor(object):
         print "Connected by", addr
         self._mhandler = mhandler
         # Report current status upon connection.
+        # TODO (LeeThree): Remove after 'status' command is used.
         if self._etready:
             self._respond('ready')
             if self._ettracking:
                 self._respond('tracking_started')
         else:
             self._respond('not_connected')
+
+    @_helper.handles('cmd-set')
+    def _handle_cmd_set(self, param, value):
+        print "Set parameter", param, "to", value
+        self._config[param] = value
 
     @_helper.handles('cmd-start')
     def _handle_cmd_start(self):
@@ -183,7 +189,7 @@ class Conductor(object):
             self._mhandler.handle_close()
 
     @_helper.handles('cmd-status')
-    def _handle_cmd_bye(self):
+    def _handle_cmd_status(self):
         self._respond('status', etf.get_status())
 
     @_helper.handles('cmd-calib_start')
