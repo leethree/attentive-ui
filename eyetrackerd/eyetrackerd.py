@@ -157,6 +157,11 @@ class Conductor(object):
         self._mfeeder = MonkeyFeeder()
         self._mfeeder.connect_to(self._config['monkey_host'],
                                  self._config['monkey_port'])
+        print "Feeder connecting..."
+
+    @_helper.handles('mfeeder-conn')
+    def _handle_mfeeder_conn(self):
+        print "Feeder connected."
         self._fprocessor = FeedProcessor(self._config['display_width'],
                                          self._config['display_height'])
         self._fprocessor.set_output_method(self._mfeeder.send_data)

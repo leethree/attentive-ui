@@ -16,7 +16,7 @@ class MonkeyFeeder(asynchat.async_chat):
         self.connect((host, port))
 
     def handle_connect(self):
-        print "Feeder connected."
+        pubsub.publish('mfeeder-conn')
 
     def handle_close(self):
         self.close()

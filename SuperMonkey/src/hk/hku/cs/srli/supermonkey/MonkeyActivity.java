@@ -121,6 +121,7 @@ public class MonkeyActivity extends Activity {
         Log.v("MonkeyActivity", "onEtToggleClicked:" + on);
         etService.switchTracking(on);
         etToggle.setChecked(!on);    // Maintain original state.
+        etStatus.setText(on ? "starting..." : "stopping...");
     }
     
     private void lazyConnect() {
@@ -161,10 +162,7 @@ public class MonkeyActivity extends Activity {
             dToggle.setChecked(connnected);
             etToggle.setEnabled(false);
             caliButton.setEnabled(false);
-            if (connnected)
-                dStatus.setText("connected");
-            else
-                dStatus.setText("disconnected");
+            dStatus.setText(connnected ? "connected" : "disconnected");
         }
 
         @Override
@@ -172,20 +170,14 @@ public class MonkeyActivity extends Activity {
             etToggle.setEnabled(ready);
             etToggle.setChecked(false);
             caliButton.setEnabled(ready);
-            if (ready)
-                etStatus.setText("ready");
-            else
-                etStatus.setText("not connected");
+            etStatus.setText(ready ? "ready" : "not connected");
         }
         
         @Override
         public void handleETStartStop(boolean started) {
             etToggle.setChecked(started);
             caliButton.setEnabled(!started);
-            if (started)
-                etStatus.setText("tracking...");
-            else
-                etStatus.setText("tracking stopped");
+            etStatus.setText(started ? "tracking..." : "tracking stopped");
         }
         
         @Override
