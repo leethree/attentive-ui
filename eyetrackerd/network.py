@@ -7,20 +7,13 @@ import pubsub
 
 class MonkeyFeeder(asynchat.async_chat):
 
-    _TCP_IP = '127.0.0.1'
-    _TCP_PORT = 1080
-
-    # Debug option for printing commands without doing anything.
-    _DRY_RUN = False
-
     def __init__(self):
         asynchat.async_chat.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_terminator(None)
 
-    def connect_to(self):
-        if not MonkeyFeeder._DRY_RUN:
-            self.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
+    def connect_to(self, host, port):
+        self.connect((host, port))
 
     def handle_connect(self):
         print "Feeder connected."
@@ -36,25 +29,22 @@ class MonkeyFeeder(asynchat.async_chat):
         pass
 
     def send_data(self, data):
-        if not MonkeyFeeder._DRY_RUN:
-            self.push(data + '\n')
+        self.push(data + '\n')
         print "Sent: ", data
 
 
 class MonkeyServer(asyncore.dispatcher):
 
-    _TCP_IP = 'localhost' # Use socket.gethostname() for real device.
-    _TCP_PORT = 10800
-
-    def __init__(self):
+    def __init__(self, host, port):
         asyncore.dispatcher.__init__(self)
+        self._addr = (host, port)
         self._handler = None
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def __enter__(self):
-        self.bind((MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT))
+        self.bind(self._addr)
         self.listen(1)
-        print "Listening to", MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT
+        print "Listening to", self._addr
         return self
 
     def __exit__(self, type, value, traceback):

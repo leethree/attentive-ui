@@ -9,10 +9,10 @@ from network import MonkeyServer, MonkeyFeeder
 
 class FeedProcessor(object):
 
-    _WIDTH = 480
-    _HEIGHT = 800
+    def __init__(self, width, height):
+        self._width = width
+        self._height = height
 
-    def __init__(self):
         self._entered = False
         self._lastx = None
         self._lasty = None
@@ -22,8 +22,8 @@ class FeedProcessor(object):
         self._output_method = output_method
 
     def process(self, x, y):
-        width = FeedProcessor._WIDTH
-        height = FeedProcessor._HEIGHT
+        width = self._width
+        height = self._height
 
         # Point is not moved.
         if (x == self._lastx and y == self._lasty):
@@ -71,6 +71,7 @@ class PubSubHelper(object):
             ret = func(instance, *args, **kwargs)
             for topic, handler in self._reg.iteritems():
                 pubsub.unsubscribe(topic, handler.__get__(instance))
+            return ret
         return wrapper
 
 
@@ -78,12 +79,24 @@ class Conductor(object):
 
     _helper = PubSubHelper()
 
+    _DEFAULT_CONF = {
+        'server_host': 'localhost', # Use socket.gethostname() for real device.
+        'server_port': 10800,
+        'monkey_host': 'localhost',
+        'monkey_port': 1080,
+        'display_width': 480,
+        'display_height': 800
+        }
+
     def __init__(self):
+        self._config = Conductor._DEFAULT_CONF.copy()
+
         self._etf = EyeTrackerFacade()
-        self._mserver = MonkeyServer()
+        self._mserver = MonkeyServer(self._config['server_host'],
+                                     self._config['server_port'])
         self._mfeeder = None
         self._mhandler = None
-        self._fprocessor = FeedProcessor()
+        self._fprocessor = None
         self._etready = False
         self._ettracking = False
         self._calib = None
@@ -142,7 +155,10 @@ class Conductor(object):
     @_helper.handles('cmd-start')
     def _handle_cmd_start(self):
         self._mfeeder = MonkeyFeeder()
-        self._mfeeder.connect_to()
+        self._mfeeder.connect_to(self._config['monkey_host'],
+                                 self._config['monkey_port'])
+        self._fprocessor = FeedProcessor(self._config['display_width'],
+                                         self._config['display_height'])
         self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
