@@ -24,6 +24,7 @@ public class MonkeyActivity extends Activity {
     private EditText dStatus;
     private EditText etStatus;
     
+    private ToggleButton monkeyToggle;
     private ToggleButton dToggle;
     private ToggleButton etToggle;
     private Button caliButton;
@@ -39,14 +40,16 @@ public class MonkeyActivity extends Activity {
         monkeyStatus = (EditText) findViewById(R.id.mStatusEditText);
         dStatus = (EditText) findViewById(R.id.dStatusEditText);
         etStatus = (EditText) findViewById(R.id.etStatusEditText);
+        monkeyToggle = (ToggleButton) findViewById(R.id.mToggleButton);
         dToggle = (ToggleButton) findViewById(R.id.dToggleButton);
         etToggle = (ToggleButton) findViewById(R.id.etToggleButton);
         caliButton = (Button) findViewById(R.id.calibrateButton);
         infoText = (TextView) findViewById(R.id.infoTextView);
 
-        monkeyStatus.setText("ready");
+        monkeyStatus.setText("not available");
         dStatus.setText("disconnected");
         etStatus.setText("unknown");
+        monkeyToggle.setEnabled(false);
         dToggle.setChecked(false);
         etToggle.setEnabled(false);
         etToggle.setChecked(false);
