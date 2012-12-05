@@ -50,13 +50,14 @@ public class MonkeyActivity extends Activity {
         dStatus.setText("disconnected");
         etStatus.setText("unknown");
         monkeyToggle.setEnabled(false);
+        dToggle.setEnabled(false);
         dToggle.setChecked(false);
         etToggle.setEnabled(false);
         etToggle.setChecked(false);
         caliButton.setEnabled(false);
         infoText.setText(getScreenInfo());
         
-        etService = CalibrationActivity.eyeTrackerService;
+        etService = new EyeTrackerService(this);
         etService.setCallback(new EyeTrackerCallback());
     }
 
@@ -64,17 +65,13 @@ public class MonkeyActivity extends Activity {
     protected void onStart() {
         Log.v("MonkeyActivity", "onStart");
         super.onStart();
-        // Auto connect if needed.
-        if (PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false))
-            lazyConnect();
     }
     
     @Override
     protected void onStop() {
         Log.v("MonkeyActivity", "onStop");
         if (etService != null)
-            etService.close();
+            etService.unbound();
         super.onStop();
     }
     
@@ -197,6 +194,15 @@ public class MonkeyActivity extends Activity {
         @Override
         public void runOnUiThread(Runnable action) {
             MonkeyActivity.this.runOnUiThread(action);
+        }
+
+        @Override
+        public void onServiceBound() {
+            dToggle.setEnabled(true);
+            // Auto connect if needed.
+            if (PreferenceManager.getDefaultSharedPreferences(MonkeyActivity.this)
+                    .getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false))
+                lazyConnect();
         }
     }
 }

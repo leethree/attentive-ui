@@ -14,9 +14,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class CalibrationActivity extends Activity {
-
-    // TODO (LeeThree): Workaround for sharing socket between activities.
-    public static CalibrationService eyeTrackerService = new CalibrationService();
     
     private CalibrationView cview;
     private ProgressDialog progressDialog;
@@ -32,7 +29,8 @@ public class CalibrationActivity extends Activity {
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         choreographer = new Choreographer();
-        calibService = eyeTrackerService;
+        calibService = new CalibrationService(this);
+        calibService.setCallback(new EyeTrackerCallback());
         calibService.setCalibrationCallback(new CalibrationCallback());
         
         cview.setListener(new AnimatorListenerAdapter() {
@@ -47,7 +45,6 @@ public class CalibrationActivity extends Activity {
         progressDialog.setMessage("Starting...");
         progressDialog.show();
         
-        calibService.startCalibration();
         setContentView(cview);
     }
     
@@ -63,6 +60,45 @@ public class CalibrationActivity extends Activity {
         progressDialog.setMessage("Computing...");
         progressDialog.show();
         calibService.computeCalibration();
+    }
+    
+    private class EyeTrackerCallback implements EyeTrackerService.Callback {
+
+        @Override
+        public void runOnUiThread(Runnable action) {
+            CalibrationActivity.this.runOnUiThread(action);
+        }
+
+        @Override
+        public void onServiceBound() {
+            calibService.startCalibration();
+        }
+
+        @Override
+        public void handleDConnect(boolean connnected) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void handleETStatus(boolean ready) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void handleETStartStop(boolean started) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void handleMessage(String message) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void handleError(String message) {
+            // TODO Auto-generated method stub
+        }
+        
     }
     
     private class CalibrationCallback implements CalibrationService.Callback {
