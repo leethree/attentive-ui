@@ -24,8 +24,28 @@ public class SocketService extends Service {
     private ClientThread client;
 
     @Override
+    public void onCreate() {
+        Log.v("SocketService", "onCreate");
+        super.onCreate();
+    }
+    
+    @Override
+    public void onDestroy() {
+        Log.v("SocketService", "onDestroy");
+        if (client != null) client.stop();
+        super.onDestroy();
+    }
+    
+    @Override
     public IBinder onBind(Intent intent) {
+        Log.v("SocketService", "onBind");
         return binder;
+    }
+    
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.v("SocketService", "onUnbind");
+        return super.onUnbind(intent);
     }
     
     public class SocketBinder extends Binder {

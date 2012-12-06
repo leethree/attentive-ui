@@ -24,6 +24,7 @@ public class CalibrationActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("CalibrationActivity", "onCreate");
         cview = new CalibrationView(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
@@ -49,10 +50,18 @@ public class CalibrationActivity extends Activity {
     }
     
     @Override
+    protected void onStart() {
+        Log.v("CalibrationActivity", "onStart");
+        calibService.bind();
+        super.onStart();
+    }
+    
+    @Override
     protected void onStop() {
         Log.v("CalibrationActivity", "onStop");
         if (calibService != null)
             calibService.abortCalibration();
+            calibService.unbind();
         super.onStop();
     }
     
@@ -75,30 +84,19 @@ public class CalibrationActivity extends Activity {
         }
 
         @Override
-        public void handleDConnect(boolean connnected) {
-            // TODO Auto-generated method stub
-        }
+        public void handleDConnect(boolean connnected) {}
 
         @Override
-        public void handleETStatus(boolean ready) {
-            // TODO Auto-generated method stub
-        }
+        public void handleETStatus(boolean ready) {}
 
         @Override
-        public void handleETStartStop(boolean started) {
-            // TODO Auto-generated method stub
-        }
+        public void handleETStartStop(boolean started) {}
 
         @Override
-        public void handleMessage(String message) {
-            // TODO Auto-generated method stub
-        }
+        public void handleMessage(String message) {}
 
         @Override
-        public void handleError(String message) {
-            // TODO Auto-generated method stub
-        }
-        
+        public void handleError(String message) {}
     }
     
     private class CalibrationCallback implements CalibrationService.Callback {
@@ -115,6 +113,13 @@ public class CalibrationActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Start animation.
                         choreographer.startDance();
+                    }
+                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        // Cancel and stop calibration.
+                        finish();
                     }
                 }).show();
         }
@@ -141,7 +146,6 @@ public class CalibrationActivity extends Activity {
             Toast.makeText(CalibrationActivity.this, 
                            "Error: " + message, Toast.LENGTH_LONG).show();
         }
-        
     }
     
     private class Choreographer {
@@ -207,7 +211,6 @@ public class CalibrationActivity extends Activity {
                 });
             }
         }
-        
     }
     
     private interface Movement {

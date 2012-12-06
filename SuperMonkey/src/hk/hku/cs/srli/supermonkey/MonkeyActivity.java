@@ -36,6 +36,7 @@ public class MonkeyActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("MonkeyActivity", "onCreate");
         setContentView(R.layout.activity_monkey);
         monkeyStatus = (EditText) findViewById(R.id.mStatusEditText);
         dStatus = (EditText) findViewById(R.id.dStatusEditText);
@@ -64,14 +65,14 @@ public class MonkeyActivity extends Activity {
     @Override
     protected void onStart() {
         Log.v("MonkeyActivity", "onStart");
+        etService.bind();
         super.onStart();
     }
     
     @Override
     protected void onStop() {
         Log.v("MonkeyActivity", "onStop");
-        if (etService != null)
-            etService.unbound();
+        etService.unbind();
         super.onStop();
     }
     
@@ -85,7 +86,7 @@ public class MonkeyActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle settings
         if (item.getItemId() == R.id.menu_settings) {
-            startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
         else
@@ -94,12 +95,12 @@ public class MonkeyActivity extends Activity {
     
     public void onCalibrateButtonClicked(View view) {
         // start calibration
-        startActivity(new Intent(getBaseContext(), CalibrationActivity.class));
+        startActivity(new Intent(this, CalibrationActivity.class));
     }
     
     public void onTestButtonClicked(View view) {
         // start TouchPaint
-        startActivity(new Intent(getBaseContext(), TouchPaint.class));
+        startActivity(new Intent(this, TouchPaint.class));
     }
     
     public void onMToggleClicked(View view) {
