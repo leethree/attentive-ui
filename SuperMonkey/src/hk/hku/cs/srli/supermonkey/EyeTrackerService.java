@@ -44,7 +44,7 @@ public class EyeTrackerService {
     
     public void close() {
         if (client != null) {
-            client.stop();
+            client.close();
         }
     }
     
@@ -63,37 +63,31 @@ public class EyeTrackerService {
             return false;
     }
     
-    private SocketService.SocketListener socketListener 
-        = new SocketService.SocketListener() {
+    private SocketService.SocketListener socketListener = new SocketService.SocketListener() {
     
-        public void report(final SocketService.ReportType type, final String message) {
-            if (callback == null) return;
-            callback.runOnUiThread(new Runnable() {
-                
-                @Override
-                public void run() {
-                    switch (type) {
-                    case MESSAGE:
-                        int spacePos = message.indexOf(' ');
-                        if (spacePos > 0) {
-                            String command = message.substring(0, spacePos);
-                            String opt = message.substring(spacePos + 1);
-                            reportMessage(command, opt);
-                        } else
-                            reportMessage(message);
-                        break;
-                    case CONNECTED:
-                        callback.handleDConnect(true);
-                        break;
-                    case DISCONNECTED:
-                        callback.handleDConnect(false);
-                        break;
-                    case ERROR:
-                        callback.handleError(message);
-                        break;
-                    }
-                }
-            });
+        @Override
+        public void onConnected() {
+            callback.handleDConnect(true);
+        }
+        
+        @Override
+        public void onIncomingData(String data) {
+            int spacePos = data.indexOf(' ');
+            if (spacePos > 0) {
+                String command = data.substring(0, spacePos);
+                String opt = data.substring(spacePos + 1);
+                reportMessage(command, opt);
+            } else
+                reportMessage(data);
+        }
+        
+        public void onDisconnected() {
+            callback.handleDConnect(false);
+        }
+        
+        @Override
+        public void onError(String message) {
+            callback.handleError(message);
         }
     };
     
@@ -116,12 +110,11 @@ public class EyeTrackerService {
         } else if (command.equals("error")) {
             if (opt.length() > 0) callback.handleError(opt);
         } else if (command.equals("bye")) {
-            client.stop();
+            client.close();
         }
     }
     
     public interface Callback {
-        public void runOnUiThread(Runnable action);
         public void onServiceBound();
         public void handleDConnect(boolean connnected);
         public void handleETStatus(boolean ready);

@@ -193,11 +193,6 @@ public class MonkeyActivity extends Activity {
         }
 
         @Override
-        public void runOnUiThread(Runnable action) {
-            MonkeyActivity.this.runOnUiThread(action);
-        }
-
-        @Override
         public void onServiceBound() {
             dToggle.setEnabled(true);
             // Auto connect if needed.

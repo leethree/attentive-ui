@@ -1,10 +1,10 @@
-
 package hk.hku.cs.srli.supermonkey;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -16,10 +16,23 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+/**
+ * An asynchronous socket client service.
+ */
 public class SocketService extends Service {
 
+    private Handler handler;
     private final IBinder binder = new SocketBinder();
-    private SocketListener listener = null;
+    private SocketListener listener = new SocketListener() {
+        @Override
+        public void onConnected() {}
+        @Override
+        public void onIncomingData(String data) {}
+        @Override
+        public void onDisconnected() {}
+        @Override
+        public void onError(String message) {}
+    };
     
     private ClientThread client;
 
@@ -27,6 +40,7 @@ public class SocketService extends Service {
     public void onCreate() {
         Log.v("SocketService", "onCreate");
         super.onCreate();
+        handler = new Handler();
     }
     
     @Override
@@ -51,7 +65,7 @@ public class SocketService extends Service {
     public class SocketBinder extends Binder {
         
         public void setListener(SocketListener listener) {
-            SocketService.this.listener = listener;
+            SocketService.this.listener = new SocketAdapter(listener);
         }
         
         public void connect(String host, int port) {
@@ -60,9 +74,9 @@ public class SocketService extends Service {
             new Thread(client).start();
         }
         
-        public boolean send(String command) {
+        public boolean send(String data) {
             if (client != null)
-                return client.send(command);
+                return client.send(data);
             else
                 return false;
         }
@@ -71,26 +85,50 @@ public class SocketService extends Service {
             return client != null && client.isConnected();
         }
         
-        public void stop() {
+        public void close() {
             if (client != null) client.stop();
         }
     }
     
     public interface SocketListener {
-        public void report(ReportType type, String message);
+        public void onConnected();
+        public void onIncomingData(String data);
+        public void onDisconnected();
+        public void onError(String message);
     }
     
-    public enum ReportType {
-        MESSAGE, CONNECTED, DISCONNECTED, ERROR
-    }
-    
-    private void report(ReportType type) {
-        report(type, null);
-    }
-    
-    private void report(ReportType type, String message) {
-        if (listener != null)
-            listener.report(type, message);
+    private class SocketAdapter implements SocketListener{
+        
+        private SocketListener listener;
+        
+        public SocketAdapter(SocketListener listener) {
+            this.listener = listener;
+        }
+        
+        public void onConnected() {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {listener.onConnected();}
+            });
+        }
+        public void onIncomingData(final String data) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {listener.onIncomingData(data);}
+            });
+        }
+        public void onDisconnected() {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {listener.onDisconnected();}
+            });
+        }
+        public void onError(final String message) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {listener.onError(message);}
+            });
+        }
     }
     
     private class ClientThread implements Runnable {
@@ -122,16 +160,16 @@ public class SocketService extends Service {
                 Log.d("EyeTrackerService.ClientThread", "Connected!");
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                report(ReportType.CONNECTED);
+                listener.onConnected();
                 while (running) {
                     String message = in.readLine();
                     if (message == null) break;     // The socket is disconnected.
-                    report(ReportType.MESSAGE, message);
+                    listener.onIncomingData(message);
                 }
-                report(ReportType.DISCONNECTED);
+                listener.onDisconnected();
             } catch (IOException e) {
                 Log.e("EyeTrackerService.ClientThread.run", e.getMessage());
-                report(ReportType.ERROR, e.getMessage());
+                listener.onError(e.getMessage());
             } finally {
                 try {
                     socket.close();

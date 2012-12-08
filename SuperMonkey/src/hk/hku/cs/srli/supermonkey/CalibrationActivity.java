@@ -74,27 +74,18 @@ public class CalibrationActivity extends Activity {
     private class EyeTrackerCallback implements EyeTrackerService.Callback {
 
         @Override
-        public void runOnUiThread(Runnable action) {
-            CalibrationActivity.this.runOnUiThread(action);
-        }
-
-        @Override
         public void onServiceBound() {
             calibService.startCalibration();
         }
 
         @Override
         public void handleDConnect(boolean connnected) {}
-
         @Override
         public void handleETStatus(boolean ready) {}
-
         @Override
         public void handleETStartStop(boolean started) {}
-
         @Override
         public void handleMessage(String message) {}
-
         @Override
         public void handleError(String message) {}
     }
