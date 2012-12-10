@@ -32,7 +32,7 @@ public class CalibrationService extends EyeTrackerService {
     }
     
     @Override
-    protected void reportMessage(String command, String opt) {
+    protected void handleCommand(String command, String opt) {
         if (callback != null) {
             Log.v("CalibrationService", command + " " + opt);
             if (command.equals("calib_started")) {
@@ -46,9 +46,9 @@ public class CalibrationService extends EyeTrackerService {
             } else if (command.equals("error")) {
                 if (opt.length() > 0) callback.handleError(opt);
             } else
-                super.reportMessage(command, opt);
+                super.handleCommand(command, opt);
         } else
-            super.reportMessage(command, opt);
+            super.handleCommand(command, opt);
     }
     
     public interface Callback {

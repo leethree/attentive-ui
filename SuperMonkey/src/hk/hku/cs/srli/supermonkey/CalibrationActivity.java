@@ -59,9 +59,8 @@ public class CalibrationActivity extends Activity {
     @Override
     protected void onStop() {
         Log.v("CalibrationActivity", "onStop");
-        if (calibService != null)
-            calibService.abortCalibration();
-            calibService.unbind();
+        calibService.abortCalibration();
+        calibService.unbind();
         super.onStop();
     }
     

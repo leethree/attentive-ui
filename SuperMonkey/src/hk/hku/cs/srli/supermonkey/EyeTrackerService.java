@@ -25,27 +25,19 @@ public class EyeTrackerService {
     }
     
     public void unbind() {
-        if (client != null) {
-            context.unbindService(svcConn);
-        }
+        if (client != null) context.unbindService(svcConn);
     }
     
     public void connect(String host, int port) {
-        if (client != null)
-            client.connect(host, port);
+        if (client != null) client.connect(host, port);
     }
     
     public void switchTracking(boolean on) {
-        if (on)
-            send("start");
-        else
-            send("stop");
+        send(on ? "start" : "stop");
     }
     
     public void close() {
-        if (client != null) {
-            client.close();
-        }
+        if (client != null) client.close();
     }
     
     public void setCallback(Callback callback) {
@@ -56,46 +48,20 @@ public class EyeTrackerService {
         return client != null && client.isConnected();
     }
     
-    protected boolean send(String command) {
-        if (client != null)
-            return client.send(command);
-        else
-            return false;
+    public interface Callback {
+        public void onServiceBound();
+        public void handleDConnect(boolean connnected);
+        public void handleETStatus(boolean ready);
+        public void handleETStartStop(boolean started);
+        public void handleMessage(String message);
+        public void handleError(String message);
     }
     
-    private SocketService.SocketListener socketListener = new SocketService.SocketListener() {
-    
-        @Override
-        public void onConnected() {
-            callback.handleDConnect(true);
-        }
-        
-        @Override
-        public void onIncomingData(String data) {
-            int spacePos = data.indexOf(' ');
-            if (spacePos > 0) {
-                String command = data.substring(0, spacePos);
-                String opt = data.substring(spacePos + 1);
-                reportMessage(command, opt);
-            } else
-                reportMessage(data);
-        }
-        
-        public void onDisconnected() {
-            callback.handleDConnect(false);
-        }
-        
-        @Override
-        public void onError(String message) {
-            callback.handleError(message);
-        }
-    };
-    
-    private void reportMessage(String command) {
-        reportMessage(command, "");
+    protected void send(String command) {
+        if (client != null) client.send(command);
     }
     
-    protected void reportMessage(String command, String opt) {
+    protected void handleCommand(String command, String opt) {
         Log.v("EyeTrackerService", command + " " + opt);
         if (command.equals("msg")) {
             if (opt.length() > 0) callback.handleMessage(opt);
@@ -114,22 +80,41 @@ public class EyeTrackerService {
         }
     }
     
-    public interface Callback {
-        public void onServiceBound();
-        public void handleDConnect(boolean connnected);
-        public void handleETStatus(boolean ready);
-        public void handleETStartStop(boolean started);
-        public void handleMessage(String message);
-        public void handleError(String message);
-    }
+    private SocketService.SocketListener socketListener = new SocketService.SocketListener() {
+    
+        @Override
+        public void onConnected() {
+            callback.handleDConnect(true);
+        }
+        
+        @Override
+        public void onIncomingData(String data) {
+            int spacePos = data.indexOf(' ');
+            if (spacePos > 0) {
+                String command = data.substring(0, spacePos);
+                String opt = data.substring(spacePos + 1);
+                handleCommand(command, opt);
+            } else {
+                handleCommand(data, "");
+            }
+        }
+        
+        public void onDisconnected() {
+            callback.handleDConnect(false);
+        }
+        
+        @Override
+        public void onError(String message) {
+            callback.handleError(message);
+        }
+    };
     
     private ServiceConnection svcConn=new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder binder) {
             Log.v("EyeTrackerService", "onServiceConnected:" + EyeTrackerService.this);
             client = (SocketService.SocketBinder) binder;
             client.setListener(socketListener);
-            if (callback != null)
-                callback.onServiceBound();
+            if (callback != null) callback.onServiceBound();
         }
 
         public void onServiceDisconnected(ComponentName className) {

@@ -38,8 +38,8 @@ public class SocketService extends Service {
 
     @Override
     public void onCreate() {
-        Log.v("SocketService", "onCreate");
         super.onCreate();
+        Log.v("SocketService", "onCreate");
         handler = new Handler();
     }
     
@@ -74,11 +74,8 @@ public class SocketService extends Service {
             new Thread(client).start();
         }
         
-        public boolean send(String data) {
-            if (client != null)
-                return client.send(data);
-            else
-                return false;
+        public void send(String data) {
+            if (client != null) client.send(data);
         }
         
         public boolean isConnected() {
@@ -152,12 +149,12 @@ public class SocketService extends Service {
         @Override
         public void run() {
             running = true;
-            Log.v("EyeTrackerService.ClientThread", "Start running");
+            Log.v("SocketService.ClientThread", "Start running");
             try {
                 InetAddress dstAddress = InetAddress.getByName(host);
                 InetSocketAddress socketAddr = new InetSocketAddress(dstAddress, port);
                 socket.connect(socketAddr);
-                Log.d("EyeTrackerService.ClientThread", "Connected!");
+                Log.v("SocketService.ClientThread", "Connected!");
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 listener.onConnected();
@@ -168,7 +165,7 @@ public class SocketService extends Service {
                 }
                 listener.onDisconnected();
             } catch (IOException e) {
-                Log.e("EyeTrackerService.ClientThread.run", e.getMessage());
+                Log.d("SocketService.ClientThread.run", e.getMessage());
                 listener.onError(e.getMessage());
             } finally {
                 try {
@@ -177,30 +174,30 @@ public class SocketService extends Service {
                     in.close();
                 } catch (NullPointerException e) {
                 } catch (IOException e) {
-                    Log.e("EyeTrackerService.ClientThread.run", e.getMessage());
+                    Log.d("SocketService.ClientThread.run", e.getMessage());
                 }
                 running = false;
-                Log.d("EyeTrackerService.ClientThread", "Stopped.");
+                Log.v("SocketService.ClientThread", "Stopped.");
             }
         }
         
-        public boolean send(String command) {
+        public boolean send(String data) {
             if (out == null) return false;
             new AsyncTask<String, Void, Void>() {
                 @Override
                 protected Void doInBackground(String... params) {
-                    String command = params[0];
-                    out.println(command);
-                    Log.d("EyeTrackerService.ClientThread", "Send command: " + command);
+                    String data = params[0];
+                    out.println(data);
+                    Log.v("SocketService.ClientThread", "Send data: " + data);
                     return null;
                 }
-            }.execute(command);
+            }.execute(data);
             return true;
         }
         
         public void stop() {
             if (!running) return;
-            Log.d("EyeTrackerService.ClientThread", "Stopping...");
+            Log.v("SocketService.ClientThread", "Stopping...");
             if (socket.isConnected()) {
                 running = false;
                 send("bye");
@@ -209,7 +206,7 @@ public class SocketService extends Service {
                 try {
                     socket.close();
                 } catch (IOException e) {
-                    Log.e("EyeTrackerService.ClientThread.stop", e.getMessage());
+                    Log.d("SocketService.ClientThread.stop", e.getMessage());
                 }
             }
         }

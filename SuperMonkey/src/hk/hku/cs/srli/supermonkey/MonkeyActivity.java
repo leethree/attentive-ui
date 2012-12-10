@@ -88,9 +88,7 @@ public class MonkeyActivity extends Activity {
         if (item.getItemId() == R.id.menu_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
-        }
-        else
-            return super.onOptionsItemSelected(item);
+        } else return super.onOptionsItemSelected(item);
     }
     
     public void onCalibrateButtonClicked(View view) {
@@ -110,10 +108,11 @@ public class MonkeyActivity extends Activity {
     public void onDToggleClicked(View view) {
         boolean on = dToggle.isChecked();
         Log.v("MonkeyActivity", "onDToggleClicked:" + on);
-        if (on)
+        if (on) {
             lazyConnect();
-        else
+        } else {
             etService.close();
+        }
         dToggle.setChecked(!on);    // Maintain original state.
     }
     
@@ -130,13 +129,12 @@ public class MonkeyActivity extends Activity {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             try {
                 String host = sharedPref.getString(SettingsActivity.KEY_PREF_ET_HOST, "");
-                int port = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_PREF_ET_PORT, ""));
+                int port = Integer.parseInt(
+                        sharedPref.getString(SettingsActivity.KEY_PREF_ET_PORT, ""));
                 if (host.length() > 0 && port > 0) {
                     etService.connect(host, port);
                     dStatus.setText("connecting...");
-                }
-                else
-                    throw new IllegalArgumentException("Wrong host and port format.");
+                } else throw new IllegalArgumentException("Wrong host and port format.");
             } catch (IllegalArgumentException e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -197,8 +195,9 @@ public class MonkeyActivity extends Activity {
             dToggle.setEnabled(true);
             // Auto connect if needed.
             if (PreferenceManager.getDefaultSharedPreferences(MonkeyActivity.this)
-                    .getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false))
+                    .getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false)) {
                 lazyConnect();
+            }
         }
     }
 }

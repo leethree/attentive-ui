@@ -81,10 +81,9 @@ public class SettingsActivity extends Activity {
         private void initSummaries(PreferenceGroup pg) {
             for (int i = 0; i < pg.getPreferenceCount(); i++) {
                 Preference p = pg.getPreference(i);
-                if (p instanceof PreferenceGroup)
+                if (p instanceof PreferenceGroup) {
                     initSummaries((PreferenceGroup) p);
-                else
-                    updateSummary(p);
+                } else updateSummary(p);
             }
         }
 
