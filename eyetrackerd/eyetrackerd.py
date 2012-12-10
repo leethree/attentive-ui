@@ -97,8 +97,6 @@ class Conductor(object):
         self._mfeeder = None
         self._mhandler = None
         self._fprocessor = None
-        self._etready = False
-        self._ettracking = False
         self._calib = None
 
     @_helper.bind_all_handlers
@@ -116,13 +114,10 @@ class Conductor(object):
     def _handle_etf_event(self, event, *args):
         print "ETF Event:", event
         if event == 'connected':
-            self._etready = True
-            self._respond('ready')
+            self._respond('status ready')
         elif event == 'start_tracking':
-            self._ettracking = True
             self._respond('tracking_started')
         elif event == 'stop_tracking':
-            self._ettracking = False
             self._respond('tracking_stopped')
         elif event == 'stop_calib':
             self._calib = None
@@ -144,14 +139,6 @@ class Conductor(object):
     def _handle_conn(self, addr, mhandler):
         print "Connected by", addr
         self._mhandler = mhandler
-        # Report current status upon connection.
-        # TODO (LeeThree): Remove after 'status' command is used.
-        if self._etready:
-            self._respond('ready')
-            if self._ettracking:
-                self._respond('tracking_started')
-        else:
-            self._respond('not_connected')
 
     @_helper.handles('cmd-set')
     def _handle_cmd_set(self, param, value):

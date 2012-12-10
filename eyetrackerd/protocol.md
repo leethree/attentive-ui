@@ -29,19 +29,11 @@ All requests and responses end with "`\n`".
 
 - `msg <message>`
 
-	Send a message that meaned to be displayed to the user.
+	Send a message that meant to be displayed to the user.
 
 - `status <disconnected|ready|tracking|calibrating>`
 
 	Report the current status of eye tracker.
-
-- `ready`
-
-	Indicate that eye tracker is connected and ready.
-
-- `not_connected`
-
-	Indicate that eye tracker is not connected.
 
 - `tracking_started`
 

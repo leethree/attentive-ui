@@ -63,16 +63,23 @@ public class EyeTrackerService {
     
     protected void handleCommand(String command, String opt) {
         Log.v("EyeTrackerService", command + " " + opt);
-        if (command.equals("msg")) {
-            if (opt.length() > 0) callback.handleMessage(opt);
-        } else if (command.equals("ready")) {
-            callback.handleETStatus(true);
-        } else if (command.equals("not_connected")) {
-            callback.handleETStatus(false);
+        if (command.equals("status")) {
+            if (opt.length() > 0) {
+                if (opt.equals("disconnected")) {
+                    callback.handleETStatus(false);
+                } else if (opt.equals("ready")) {
+                    callback.handleETStatus(true);
+                } else if (opt.equals("tracking")) {
+                    callback.handleETStatus(true);
+                    callback.handleETStartStop(true);
+                }
+            }
         } else if (command.equals("tracking_started")) {
             callback.handleETStartStop(true);
         } else if (command.equals("tracking_stopped")) {
             callback.handleETStartStop(false);
+        } else if (command.equals("msg")) {
+            if (opt.length() > 0) callback.handleMessage(opt);
         } else if (command.equals("error")) {
             if (opt.length() > 0) callback.handleError(opt);
         } else if (command.equals("bye")) {
@@ -84,6 +91,8 @@ public class EyeTrackerService {
     
         @Override
         public void onConnected() {
+            // request for current status.
+            send("status");
             callback.handleDConnect(true);
         }
         

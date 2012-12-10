@@ -15,6 +15,10 @@ class DummyConductor(object):
                                      self._config['server_port'])
         self._mhandler = None
 
+        self._etready = True
+        self._ettracking = False
+        self._calib = False
+
     @_helper.bind_all_handlers
     def main(self):
         with self._mserver:
@@ -32,7 +36,6 @@ class DummyConductor(object):
     def _handle_conn(self, addr, mhandler):
         print "Connected by", addr
         self._mhandler = mhandler
-        self._respond('ready')
 
     @_helper.handles('cmd-set')
     def _handle_cmd_set(self, param, value):
@@ -41,10 +44,12 @@ class DummyConductor(object):
 
     @_helper.handles('cmd-start')
     def _handle_cmd_start(self):
+        self._ettracking = True
         self._respond('tracking_started')
 
     @_helper.handles('cmd-stop')
     def _handle_cmd_stop(self):
+        self._ettracking = False
         self._respond('tracking_stopped')
 
     @_helper.handles('cmd-bye')
@@ -55,10 +60,18 @@ class DummyConductor(object):
 
     @_helper.handles('cmd-status')
     def _handle_cmd_status(self):
-        self._respond('status', 'ready')
+        if self._ettracking:
+            self._respond('status', 'tracking')
+        elif self._calib:
+            self._respond('status', 'calibrating')
+        elif self._etready:
+            self._respond('status', 'ready')
+        else:
+            self._respond('status', 'disconnected')
 
     @_helper.handles('cmd-calib_start')
     def _handle_cmd_calib_start(self):
+        self._calib = True
         self._respond('calib_started')
 
     @_helper.handles('cmd-calib_add')
@@ -68,6 +81,7 @@ class DummyConductor(object):
     @_helper.handles('cmd-calib_compute')
     def _handle_cmd_calib_compute(self):
         self._respond('calib_done')
+        self._calib = False
         self._respond('calib_stopped')
 
     @_helper.handles('cmd-calib_abort')
