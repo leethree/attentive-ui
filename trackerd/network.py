@@ -7,32 +7,18 @@ import pubsub
 
 class MonkeyFeeder(asynchat.async_chat):
 
-    _TCP_IP = '127.0.0.1'
-    _TCP_PORT = 1080
-    _WIDTH = 480
-    _HEIGHT = 800
-
-    # Debug option for printing commands without doing anything.
-    _DRY_RUN = False
-
     def __init__(self):
         asynchat.async_chat.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_terminator(None)
-        self._entered = False
-        self._lastx = None
-        self._lasty = None
 
-    def connect_to(self):
-        if not MonkeyFeeder._DRY_RUN:
-            self.connect((MonkeyFeeder._TCP_IP, MonkeyFeeder._TCP_PORT))
+    def connect_to(self, host, port):
+        self.connect((host, port))
 
     def handle_connect(self):
-        pubsub.subscribe('data', self.move)
-        print "Feeder connected."
+        pubsub.publish('mfeeder-conn')
 
     def handle_close(self):
-        pubsub.unsubscribe('data', self.move)
         self.close()
 
     def collect_incoming_data(self, data):
@@ -42,50 +28,23 @@ class MonkeyFeeder(asynchat.async_chat):
     def found_terminator(self):
         pass
 
-    def _send_command(self, command):
-        if not MonkeyFeeder._DRY_RUN:
-            self.push(command + '\n')
-        print "Sent: ", command
-
-    def move(self, x, y):
-        width = MonkeyFeeder._WIDTH
-        height = MonkeyFeeder._HEIGHT
-
-        # Mouse is not moved.
-        if (x == self._lastx and y == self._lasty):
-            return False
-
-        if (x > 0 and x < 1 and y > 0 and y < 1):
-            action = 'move' if self._entered else 'enter'
-            self._send_command('hover %s %d %d' % (
-                               action, x * width, y * height))
-            self._entered = True
-
-        elif (self._entered):
-            self._send_command('hover move %d %d' % (x * width, y * height))
-            self._send_command('hover exit %d %d' % (x * width, y * height))
-            self._entered = False
-
-        self._lastx = x
-        self._lasty = y
-
-        return True
+    def send_data(self, data):
+        self.push(data + '\n')
+        print "Sent: ", data
 
 
 class MonkeyServer(asyncore.dispatcher):
 
-    _TCP_IP = 'localhost' # Use socket.gethostname() for real device.
-    _TCP_PORT = 10800
-
-    def __init__(self):
+    def __init__(self, host, port):
         asyncore.dispatcher.__init__(self)
+        self._addr = (host, port)
         self._handler = None
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def __enter__(self):
-        self.bind((MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT))
+        self.bind(self._addr)
         self.listen(1)
-        print "Listening to", MonkeyServer._TCP_IP, MonkeyServer._TCP_PORT
+        print "Listening to", self._addr
         return self
 
     def __exit__(self, type, value, traceback):
@@ -116,20 +75,23 @@ class MonkeyHandler(asynchat.async_chat):
 
     def __init__(self, sock):
         asynchat.async_chat.__init__(self, sock)
-        self.ibuffer = []
+        self._ibuffer = []
+        self._connected = True
         self.set_terminator('\n')
 
     def collect_incoming_data(self, data):
-        self.ibuffer.append(data)
+        self._ibuffer.append(data)
 
     def found_terminator(self):
-        message = ''.join(self.ibuffer)
-        self.ibuffer = []
+        message = ''.join(self._ibuffer)
+        self._ibuffer = []
         self._process_data(message)
 
     def handle_close(self):
-        print "Connection closed."
-        self.close()
+        if self._connected:
+            print "Connection closed."
+            self.close()
+            self._connected = False
 
     def respond(self, data, endline = True):
         self.push(data)

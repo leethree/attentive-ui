@@ -4,9 +4,14 @@ All requests and responses end with "`\n`".
 
 ## request
 
-- `conn_data <host> <port>`
+- `set <param> <value>`
 
-	Establish data channel connection to given address.
+	Set a configuration parameter to new value.
+	`param` is `monkey_host|monkey_port|display_width|display_height`.
+
+- `status`
+
+	Request for eye tracker status. Expect `status`.
 
 - `start`
 
@@ -16,23 +21,15 @@ All requests and responses end with "`\n`".
 
 	Stop sending eye tracking data. Expect `tracking_stopped`.
 
-- `bye`
-
-	Disconnect control channel. Expect `bye`.
-
 ## response
 
 - `msg <message>`
 
-	Send a message that meaned to be displayed to the user.
+	Send a message that meant to be displayed to the user.
 
-- `ready`
+- `status <disconnected|ready|tracking|calibrating>`
 
-	Indicate that eye tracker is connected and ready.
-
-- `not_connected`
-
-	Indicate that eye tracker is not connected.
+	Report the current status of eye tracker.
 
 - `tracking_started`
 
@@ -41,10 +38,6 @@ All requests and responses end with "`\n`".
 - `tracking_stopped`
 
 	Indicate that eye tracking has stopped.
-
-- `bye`
-
-	Disconnect control channel.
 
 - `error [message]`
 

@@ -54,7 +54,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     }
     
     public void hidePoint() {
-        Log.v("CalibrationView", "resetPoint");
+        Log.v("CalibrationView", "hidePoint");
         // Remove the point from view.
         startAnimation(animatedResize(0), 500);
     }

@@ -10,67 +10,66 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 
+import hk.hku.cs.srli.supermonkey.service.CalibratingController;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class CalibrationActivity extends Activity {
-
-    // TODO (LeeThree): Workaround for sharing socket between activities.
-    public static CalibrationService eyeTrackerService = new CalibrationService();
     
     private CalibrationView cview;
     private ProgressDialog progressDialog;
     
     private Choreographer choreographer;
-    private CalibrationService calibService;
+    private CalibratingController calibCtrl;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("CalibrationActivity", "onCreate");
         cview = new CalibrationView(this);
+        
+        // Create a progress dialog.
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
-        choreographer = new Choreographer();
-        calibService = eyeTrackerService;
-        calibService.setCalibrationCallback(new CalibrationCallback());
         
-        cview.setListener(new AnimatorListenerAdapter() {
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                choreographer.nextMove();
-            }
-        });
+        choreographer = new Choreographer();
+        cview.setListener(choreographer);
+        
+        setContentView(cview);
+        
+        calibCtrl = new CalibratingController(this, new CalibrationCallback());
         
         // Show loading indicator.
         progressDialog.setMessage("Starting...");
         progressDialog.show();
-        
-        calibService.startCalibration();
-        setContentView(cview);
+    }
+    
+    @Override
+    protected void onStart() {
+        Log.v("CalibrationActivity", "onStart");
+        calibCtrl.bind();
+        super.onStart();
     }
     
     @Override
     protected void onStop() {
         Log.v("CalibrationActivity", "onStop");
-        if (calibService != null)
-            calibService.abortCalibration();
+        calibCtrl.abortCalibration();
+        calibCtrl.unbind();
         super.onStop();
     }
     
     private void onDanceFinished() {
         progressDialog.setMessage("Computing...");
         progressDialog.show();
-        calibService.computeCalibration();
+        calibCtrl.computeCalibration();
     }
     
-    private class CalibrationCallback implements CalibrationService.Callback {
-
-        @Override
-        public void handleStarted() {
-            progressDialog.dismiss();
-            new AlertDialog.Builder(CalibrationActivity.this)
+    private void showInfoDialog() {
+        // Create a information dialog.
+        new AlertDialog.Builder(CalibrationActivity.this)
                 .setTitle("Calibration started")
                 .setMessage("Please follow the green dot until calibration is finished.")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -80,7 +79,37 @@ public class CalibrationActivity extends Activity {
                         // Start animation.
                         choreographer.startDance();
                     }
+                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        // Cancel and stop calibration.
+                        finish();
+                    }
                 }).show();
+    }
+    
+    private class CalibrationCallback implements CalibratingController.Callback {
+
+        @Override
+        public void onServiceBound() {
+            calibCtrl.startCalibration();
+        }
+
+        @Override
+        public void handleDConnect(boolean connected) {
+            if (!connected) {
+                // Something went wrong.
+                Toast.makeText(CalibrationActivity.this, 
+                        "Connection lost", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+        
+        @Override
+        public void handleStarted() {
+            progressDialog.dismiss();
+            showInfoDialog();
         }
 
         @Override
@@ -104,11 +133,11 @@ public class CalibrationActivity extends Activity {
         public void handleError(String message) {
             Toast.makeText(CalibrationActivity.this, 
                            "Error: " + message, Toast.LENGTH_LONG).show();
+            finish();
         }
-        
     }
     
-    private class Choreographer {
+    private class Choreographer extends AnimatorListenerAdapter{
         
         private Deque<Movement> sequence;
         
@@ -122,10 +151,17 @@ public class CalibrationActivity extends Activity {
         }
         
         public void nextMove() {
-            if (sequence.peek() != null)
+            if (sequence.peek() != null) {
                 sequence.poll().move();
-            else
+            } else {
+                // Finish when there's no more movement in the sequence.
                 onDanceFinished();
+            }
+        }
+        
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            choreographer.nextMove();
         }
         
         private void prepareSequence() {
@@ -135,6 +171,7 @@ public class CalibrationActivity extends Activity {
             addPoint(0.5f, 0.5f);
             addPoint(0.9f, 0.9f);
             addPoint(0.1f, 0.9f);
+            // Hide the point when animation is finished.
             sequence.add(new Movement() {
                 @Override
                 public void move() {
@@ -150,6 +187,7 @@ public class CalibrationActivity extends Activity {
                     cview.movePointTo(x, y);
                 }
             });
+            // Calibrate twice for each point.
             for (int i = 0; i < 2; i++) {
                 sequence.add(new Movement() {
                     @Override
@@ -160,7 +198,7 @@ public class CalibrationActivity extends Activity {
                 sequence.add(new Movement() {
                     @Override
                     public void move() {
-                        calibService.addCalibrationPoint(x, y);
+                        calibCtrl.addCalibrationPoint(x, y);
                     }
                 });
                 sequence.add(new Movement() {
@@ -171,7 +209,6 @@ public class CalibrationActivity extends Activity {
                 });
             }
         }
-        
     }
     
     private interface Movement {
