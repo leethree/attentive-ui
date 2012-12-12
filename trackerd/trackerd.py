@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-import functools
-
 import pubsub
 from eyetracker.facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
@@ -50,34 +48,9 @@ class FeedProcessor(object):
             self._output_method(command)
 
 
-class PubSubHelper(object):
-
-    def __init__(self):
-        self._reg = {}
-
-    def handles(self, topic):
-        # Decorator for handlers.
-        def decorator(handler):
-            self._reg[topic] = handler
-            return handler
-        return decorator
-
-    def bind_all_handlers(self, func):
-        # Decorator for subscribe and unsubscribe all handlers.
-        @functools.wraps(func)
-        def wrapper(instance, *args, **kwargs):
-            for topic, handler in self._reg.iteritems():
-                pubsub.subscribe(topic, handler.__get__(instance))
-            ret = func(instance, *args, **kwargs)
-            for topic, handler in self._reg.iteritems():
-                pubsub.unsubscribe(topic, handler.__get__(instance))
-            return ret
-        return wrapper
-
-
 class Conductor(object):
 
-    _helper = PubSubHelper()
+    _helper = pubsub.PubSubHelper()
 
     _DEFAULT_CONF = {
         'server_host': 'localhost', # Use socket.gethostname() for real device.

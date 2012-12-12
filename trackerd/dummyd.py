@@ -1,12 +1,13 @@
 #!/usr/bin/python
 
 import pubsub
-from trackerd import Conductor, PubSubHelper
+from trackerd import Conductor
 from network import MonkeyServer
+
 
 class DummyConductor(object):
 
-    _helper = PubSubHelper()
+    _helper = pubsub.PubSubHelper()
 
     def __init__(self):
         self._config = Conductor._DEFAULT_CONF.copy()
