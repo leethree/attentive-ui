@@ -22,7 +22,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
@@ -108,7 +107,7 @@ public class TouchPaint extends Activity {
             mFading = savedInstanceState.getBoolean("fading", true);
             mColorIndex = savedInstanceState.getInt("color", 0);
         } else {
-            mFading = false;
+            mFading = true;
             mColorIndex = 0;
         }
     }
@@ -117,13 +116,13 @@ public class TouchPaint extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, CLEAR_ID, 0, "Clear");
         menu.add(0, FADE_ID, 0, "Fade").setCheckable(true);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(FADE_ID).setChecked(mFading);
-        return super.onPrepareOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -248,6 +247,7 @@ public class TouchPaint extends Activity {
         public PaintView(Context c) {
             super(c);
             setFocusable(true);
+            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 
             mPaint = new Paint();
             mPaint.setColor(BACKGROUND_COLOR);

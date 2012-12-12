@@ -23,6 +23,8 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
 
     public CalibrationView(Context context) {
         super(context);
+        // Enter low profile mode to avoid UI distraction.
+        setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
         dot = new DotWrapper();
         // Put the dot outside the top left corner.
         dot.setX(0 - dot.DEFAULT_R);
