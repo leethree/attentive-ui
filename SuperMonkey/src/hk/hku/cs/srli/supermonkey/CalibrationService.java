@@ -7,8 +7,10 @@ public class CalibrationService extends EyeTrackerService {
 
     private Callback callback;
     
-    public CalibrationService(Context context) {
-        super(context);
+    public CalibrationService(Context context, EyeTrackerService.Callback etCallback, 
+                              Callback calibCallback) {
+        super(context, etCallback);
+        this.callback = calibCallback;
     }
     
     public void startCalibration() {
@@ -27,26 +29,19 @@ public class CalibrationService extends EyeTrackerService {
         send("calib_abort");
     }
     
-    public void setCalibrationCallback(Callback callback) {
-        this.callback = callback;
-    }
-    
     @Override
     protected void handleCommand(String command, String opt) {
-        if (callback != null) {
-            Log.v("CalibrationService", command + " " + opt);
-            if (command.equals("calib_started")) {
-                callback.handleStarted();
-            } else if (command.equals("calib_added")) {
-                callback.handleAdded();
-            } else if (command.equals("calib_done")) {
-                callback.handleDone();
-            } else if (command.equals("calib_stopped")) {
-                callback.handleStopped();
-            } else if (command.equals("error")) {
-                if (opt.length() > 0) callback.handleError(opt);
-            } else
-                super.handleCommand(command, opt);
+        Log.v("CalibrationService", command + " " + opt);
+        if (command.equals("calib_started")) {
+            callback.handleStarted();
+        } else if (command.equals("calib_added")) {
+            callback.handleAdded();
+        } else if (command.equals("calib_done")) {
+            callback.handleDone();
+        } else if (command.equals("calib_stopped")) {
+            callback.handleStopped();
+        } else if (command.equals("error")) {
+            if (opt.length() > 0) callback.handleError(opt);
         } else
             super.handleCommand(command, opt);
     }

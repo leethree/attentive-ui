@@ -30,9 +30,8 @@ public class CalibrationActivity extends Activity {
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         choreographer = new Choreographer();
-        calibService = new CalibrationService(this);
-        calibService.setCallback(new EyeTrackerCallback());
-        calibService.setCalibrationCallback(new CalibrationCallback());
+        calibService = new CalibrationService(this, 
+                new EyeTrackerCallback(), new CalibrationCallback());
         
         cview.setListener(new AnimatorListenerAdapter() {
 
@@ -95,23 +94,23 @@ public class CalibrationActivity extends Activity {
         public void handleStarted() {
             progressDialog.dismiss();
             new AlertDialog.Builder(CalibrationActivity.this)
-                .setTitle("Calibration started")
-                .setMessage("Please follow the green dot until calibration is finished.")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Start animation.
-                        choreographer.startDance();
-                    }
-                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    .setTitle("Calibration started")
+                    .setMessage("Please follow the green dot until calibration is finished.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        // Cancel and stop calibration.
-                        finish();
-                    }
-                }).show();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Start animation.
+                            choreographer.startDance();
+                        }
+                    }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            // Cancel and stop calibration.
+                            finish();
+                        }
+                    }).show();
         }
 
         @Override

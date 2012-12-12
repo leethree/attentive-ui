@@ -56,10 +56,9 @@ public class MonkeyActivity extends Activity {
         etToggle.setEnabled(false);
         etToggle.setChecked(false);
         caliButton.setEnabled(false);
-        infoText.setText(getScreenInfo());
+        infoText.setText(buildScreenInfoString(getScreenInfo()));
         
-        etService = new EyeTrackerService(this);
-        etService.setCallback(new EyeTrackerCallback());
+        etService = new EyeTrackerService(this, new EyeTrackerCallback());
     }
 
     @Override
@@ -126,7 +125,7 @@ public class MonkeyActivity extends Activity {
     
     private void lazyConnect() {
         if (!etService.isConnected()) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences sharedPref = getPref();
             try {
                 String host = sharedPref.getString(SettingsActivity.KEY_PREF_ET_HOST, "");
                 int port = Integer.parseInt(
@@ -141,17 +140,26 @@ public class MonkeyActivity extends Activity {
         }
     }
     
-    private String getScreenInfo() {
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
+    private String buildScreenInfoString(DisplayMetrics dm) {
         double xinch = dm.widthPixels / dm.xdpi;
         double yinch = dm.heightPixels / dm.ydpi;
-        String s = "Screen resolution: " + dm.widthPixels + " x " + dm.heightPixels + " px\n";
-        s += "Screen size: " + String.format("%.2f", xinch) + " x "
-                + String.format("%.2f", yinch) + " inch\n";
-        s += "(" + String.format("%.2f", xinch * 2.54) + " x " 
-                + String.format("%.2f", yinch * 2.54) + " cm)\n";
-        return s;
+        return new StringBuilder().append("Screen resolution: ")
+                .append(dm.widthPixels + " x " + dm.heightPixels + " px\n")
+                .append("Screen size: " + String.format("%.2f", xinch) + " x ")
+                .append(String.format("%.2f", yinch) + " inch\n")
+                .append("(" + String.format("%.2f", xinch * 2.54) + " x ")
+                .append(String.format("%.2f", yinch * 2.54) + " cm)\n")
+                .toString();
+    }
+    
+    private DisplayMetrics getScreenInfo() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        return dm;
+    }
+    
+    private SharedPreferences getPref() {
+        return PreferenceManager.getDefaultSharedPreferences(this);
     }
     
     private class EyeTrackerCallback implements EyeTrackerService.Callback {
@@ -162,6 +170,14 @@ public class MonkeyActivity extends Activity {
             etToggle.setEnabled(false);
             caliButton.setEnabled(false);
             dStatus.setText(connnected ? "connected" : "disconnected");
+            if (connnected) {
+                int port = Integer.parseInt(
+                        getPref().getString(SettingsActivity.KEY_PREF_M_PORT, ""));
+                if (port > 0) etService.setParam("monkey_port", Integer.toString(port));
+                DisplayMetrics dm = getScreenInfo();
+                etService.setParam("display_width", Integer.toString(dm.widthPixels));
+                etService.setParam("display_height", Integer.toString(dm.heightPixels));
+            }
         }
 
         @Override
@@ -194,8 +210,7 @@ public class MonkeyActivity extends Activity {
         public void onServiceBound() {
             dToggle.setEnabled(true);
             // Auto connect if needed.
-            if (PreferenceManager.getDefaultSharedPreferences(MonkeyActivity.this)
-                    .getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false)) {
+            if (getPref().getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false)) {
                 lazyConnect();
             }
         }

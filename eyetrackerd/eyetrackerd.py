@@ -142,7 +142,7 @@ class Conductor(object):
 
     @_helper.handles('cmd-set')
     def _handle_cmd_set(self, param, value):
-        print "Set parameter", param, "to", value
+        print "Set", param, "=", value
         self._config[param] = value
 
     @_helper.handles('cmd-start')

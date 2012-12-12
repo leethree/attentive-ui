@@ -14,8 +14,9 @@ public class EyeTrackerService {
     private Callback callback;
     private SocketService.SocketBinder client;
     
-    public EyeTrackerService(Context context) {
+    public EyeTrackerService(Context context, Callback callback) {
         this.context = context;
+        this.callback = callback;
     }
     
     public void bind() {
@@ -32,16 +33,16 @@ public class EyeTrackerService {
         if (client != null) client.connect(host, port);
     }
     
+    public void setParam(String param, String value) {
+        send("set " + param + " " + value);
+    }
+    
     public void switchTracking(boolean on) {
         send(on ? "start" : "stop");
     }
     
     public void close() {
         if (client != null) client.close();
-    }
-    
-    public void setCallback(Callback callback) {
-        this.callback = callback;
     }
     
     public boolean isConnected() {
@@ -123,7 +124,7 @@ public class EyeTrackerService {
             Log.v("EyeTrackerService", "onServiceConnected:" + EyeTrackerService.this);
             client = (SocketService.SocketBinder) binder;
             client.setListener(socketListener);
-            if (callback != null) callback.onServiceBound();
+            callback.onServiceBound();
         }
 
         public void onServiceDisconnected(ComponentName className) {
