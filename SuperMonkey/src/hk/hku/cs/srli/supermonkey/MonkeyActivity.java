@@ -2,7 +2,7 @@ package hk.hku.cs.srli.supermonkey;
 
 import com.example.android.apis.graphics.TouchPaint;
 
-import hk.hku.cs.srli.supermonkey.service.EyeTrackerService;
+import hk.hku.cs.srli.supermonkey.service.TrackingController;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -33,7 +33,7 @@ public class MonkeyActivity extends Activity {
     
     private TextView infoText;
     
-    private EyeTrackerService etService;
+    private TrackingController trackingCtrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,20 +63,20 @@ public class MonkeyActivity extends Activity {
         caliButton.setEnabled(false);
         infoText.setText(buildScreenInfoString(getScreenInfo()));
         
-        etService = new EyeTrackerService(this, new EyeTrackerCallback());
+        trackingCtrl = new TrackingController(this, new EyeTrackerCallback());
     }
 
     @Override
     protected void onStart() {
         Log.v("MonkeyActivity", "onStart");
-        etService.bind();
+        trackingCtrl.bind();
         super.onStart();
     }
     
     @Override
     protected void onStop() {
         Log.v("MonkeyActivity", "onStop");
-        etService.unbind();
+        trackingCtrl.unbind();
         super.onStop();
     }
     
@@ -115,7 +115,7 @@ public class MonkeyActivity extends Activity {
         if (on) {
             tryConnect();
         } else {
-            etService.close();
+            trackingCtrl.close();
         }
         dToggle.setChecked(!on);    // Maintain original state.
     }
@@ -123,20 +123,20 @@ public class MonkeyActivity extends Activity {
     public void onEtToggleClicked(View view) {
         boolean on = etToggle.isChecked();
         Log.v("MonkeyActivity", "onEtToggleClicked:" + on);
-        etService.switchTracking(on);
+        trackingCtrl.switchTracking(on);
         etToggle.setChecked(!on);    // Maintain original state.
         etStatus.setText(on ? "starting..." : "stopping...");
     }
     
     private void tryConnect() {
-        if (!etService.isConnected()) {
+        if (!trackingCtrl.isConnected()) {
             SharedPreferences sharedPref = getPref();
             try {
                 String host = sharedPref.getString(SettingsActivity.KEY_PREF_ET_HOST, "");
                 int port = Integer.parseInt(
                         sharedPref.getString(SettingsActivity.KEY_PREF_ET_PORT, ""));
                 if (host.length() > 0 && port > 0) {
-                    etService.connect(host, port);
+                    trackingCtrl.connect(host, port);
                     dStatus.setText("connecting...");
                 } else throw new IllegalArgumentException("Wrong host and port format.");
             } catch (IllegalArgumentException e) {
@@ -167,7 +167,7 @@ public class MonkeyActivity extends Activity {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
     
-    private class EyeTrackerCallback implements EyeTrackerService.Callback {
+    private class EyeTrackerCallback implements TrackingController.Callback {
 
         @Override
         public void onServiceBound() {
@@ -188,10 +188,10 @@ public class MonkeyActivity extends Activity {
                 // Report parameters to the daemon.
                 int port = Integer.parseInt(
                         getPref().getString(SettingsActivity.KEY_PREF_M_PORT, ""));
-                if (port > 0) etService.setParam("monkey_port", Integer.toString(port));
+                if (port > 0) trackingCtrl.setParam("monkey_port", Integer.toString(port));
                 DisplayMetrics dm = getScreenInfo();
-                etService.setParam("display_width", Integer.toString(dm.widthPixels));
-                etService.setParam("display_height", Integer.toString(dm.heightPixels));
+                trackingCtrl.setParam("display_width", Integer.toString(dm.widthPixels));
+                trackingCtrl.setParam("display_height", Integer.toString(dm.heightPixels));
             }
         }
 

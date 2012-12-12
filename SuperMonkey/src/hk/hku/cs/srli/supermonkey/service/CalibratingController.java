@@ -3,11 +3,11 @@ package hk.hku.cs.srli.supermonkey.service;
 import android.content.Context;
 import android.util.Log;
 
-public class CalibrationService extends ServiceControllerBase {
+public class CalibratingController extends ServiceControllerBase {
 
     private Callback callback;
     
-    public CalibrationService(Context context, Callback callback) {
+    public CalibratingController(Context context, Callback callback) {
         super(context, callback);
         this.callback = callback;
     }
@@ -30,7 +30,7 @@ public class CalibrationService extends ServiceControllerBase {
     
     @Override
     protected void handleCommand(String command, String opt) {
-        Log.v("CalibrationService", command + " " + opt);
+        Log.v("CalibratingController", command + " " + opt);
         if (command.equals("calib_started")) {
             callback.handleStarted();
         } else if (command.equals("calib_added")) {

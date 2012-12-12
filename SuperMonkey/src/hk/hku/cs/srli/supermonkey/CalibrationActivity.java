@@ -10,7 +10,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 
-import hk.hku.cs.srli.supermonkey.service.CalibrationService;
+import hk.hku.cs.srli.supermonkey.service.CalibratingController;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -21,7 +21,7 @@ public class CalibrationActivity extends Activity {
     private ProgressDialog progressDialog;
     
     private Choreographer choreographer;
-    private CalibrationService calibService;
+    private CalibratingController calibCtrl;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class CalibrationActivity extends Activity {
         
         setContentView(cview);
         
-        calibService = new CalibrationService(this, new CalibrationCallback());
+        calibCtrl = new CalibratingController(this, new CalibrationCallback());
         
         // Show loading indicator.
         progressDialog.setMessage("Starting...");
@@ -49,22 +49,22 @@ public class CalibrationActivity extends Activity {
     @Override
     protected void onStart() {
         Log.v("CalibrationActivity", "onStart");
-        calibService.bind();
+        calibCtrl.bind();
         super.onStart();
     }
     
     @Override
     protected void onStop() {
         Log.v("CalibrationActivity", "onStop");
-        calibService.abortCalibration();
-        calibService.unbind();
+        calibCtrl.abortCalibration();
+        calibCtrl.unbind();
         super.onStop();
     }
     
     private void onDanceFinished() {
         progressDialog.setMessage("Computing...");
         progressDialog.show();
-        calibService.computeCalibration();
+        calibCtrl.computeCalibration();
     }
     
     private void showInfoDialog() {
@@ -89,11 +89,11 @@ public class CalibrationActivity extends Activity {
                 }).show();
     }
     
-    private class CalibrationCallback implements CalibrationService.Callback {
+    private class CalibrationCallback implements CalibratingController.Callback {
 
         @Override
         public void onServiceBound() {
-            calibService.startCalibration();
+            calibCtrl.startCalibration();
         }
 
         @Override
@@ -198,7 +198,7 @@ public class CalibrationActivity extends Activity {
                 sequence.add(new Movement() {
                     @Override
                     public void move() {
-                        calibService.addCalibrationPoint(x, y);
+                        calibCtrl.addCalibrationPoint(x, y);
                     }
                 });
                 sequence.add(new Movement() {

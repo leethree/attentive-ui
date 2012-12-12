@@ -86,14 +86,14 @@ public abstract class ServiceControllerBase {
     
     private ServiceConnection svcConn = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder binder) {
-                Log.v("EyeTrackerService", "onServiceConnected:" + ServiceControllerBase.this);
+                Log.v("ServiceControllerBase", "onServiceConnected:" + ServiceControllerBase.this);
                 service = (SocketService.SocketBinder) binder;
                 service.setListener(socketListener);
                 callback.onServiceBound();
             }
     
             public void onServiceDisconnected(ComponentName className) {
-                Log.v("EyeTrackerService", "onServiceDisconnected:" + ServiceControllerBase.this);
+                Log.v("ServiceControllerBase", "onServiceDisconnected:" + ServiceControllerBase.this);
                 service = null;
             }
         };

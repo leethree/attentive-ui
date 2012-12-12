@@ -3,11 +3,11 @@ package hk.hku.cs.srli.supermonkey.service;
 import android.content.Context;
 import android.util.Log;
 
-public class EyeTrackerService extends ServiceControllerBase {
+public class TrackingController extends ServiceControllerBase {
     
     private Callback callback;
 
-    public EyeTrackerService(Context context, Callback callback) {
+    public TrackingController(Context context, Callback callback) {
         super(context, callback);
         this.callback = callback;
     }
@@ -22,7 +22,7 @@ public class EyeTrackerService extends ServiceControllerBase {
     
     @Override
     protected void handleCommand(String command, String opt) {
-        Log.v("EyeTrackerService", command + " " + opt);
+        Log.v("TrackingController", command + " " + opt);
         if (command.equals("status")) {
             if (opt.length() > 0) {
                 if (opt.equals("disconnected")) {
