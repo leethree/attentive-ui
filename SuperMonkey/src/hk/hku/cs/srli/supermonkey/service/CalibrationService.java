@@ -3,15 +3,13 @@ package hk.hku.cs.srli.supermonkey.service;
 import android.content.Context;
 import android.util.Log;
 
-
-public class CalibrationService extends EyeTrackerService {
+public class CalibrationService extends ServiceControllerBase {
 
     private Callback callback;
     
-    public CalibrationService(Context context, EyeTrackerService.Callback etCallback, 
-                              Callback calibCallback) {
-        super(context, etCallback);
-        this.callback = calibCallback;
+    public CalibrationService(Context context, Callback callback) {
+        super(context, callback);
+        this.callback = callback;
     }
     
     public void startCalibration() {
@@ -43,14 +41,13 @@ public class CalibrationService extends EyeTrackerService {
             callback.handleStopped();
         } else if (command.equals("error")) {
             if (opt.length() > 0) callback.handleError(opt);
-        } else super.handleCommand(command, opt);
+        }
     }
     
-    public interface Callback {
+    public interface Callback extends ServiceControllerBase.Callback {
         public void handleStarted();
         public void handleAdded();
         public void handleDone();
         public void handleStopped();
-        public void handleError(String message);
     }
 }

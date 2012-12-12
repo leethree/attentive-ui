@@ -170,12 +170,21 @@ public class MonkeyActivity extends Activity {
     private class EyeTrackerCallback implements EyeTrackerService.Callback {
 
         @Override
-        public void handleDConnect(boolean connnected) {
-            dToggle.setChecked(connnected);
+        public void onServiceBound() {
+            dToggle.setEnabled(true);
+            // Auto connect if needed.
+            if (getPref().getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false)) {
+                tryConnect();
+            }
+        }
+        
+        @Override
+        public void handleDConnect(boolean connected) {
+            dToggle.setChecked(connected);
             etToggle.setEnabled(false);
             caliButton.setEnabled(false);
-            dStatus.setText(connnected ? "connected" : "disconnected");
-            if (connnected) {
+            dStatus.setText(connected ? "connected" : "disconnected");
+            if (connected) {
                 // Report parameters to the daemon.
                 int port = Integer.parseInt(
                         getPref().getString(SettingsActivity.KEY_PREF_M_PORT, ""));
@@ -210,15 +219,6 @@ public class MonkeyActivity extends Activity {
         public void handleError(String message) {
             String text = "Error: " + message;
             Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onServiceBound() {
-            dToggle.setEnabled(true);
-            // Auto connect if needed.
-            if (getPref().getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false)) {
-                tryConnect();
-            }
         }
     }
 }

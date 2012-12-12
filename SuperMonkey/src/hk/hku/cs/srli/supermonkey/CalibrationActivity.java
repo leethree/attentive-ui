@@ -11,7 +11,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 
 import hk.hku.cs.srli.supermonkey.service.CalibrationService;
-import hk.hku.cs.srli.supermonkey.service.EyeTrackerService;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -40,8 +39,7 @@ public class CalibrationActivity extends Activity {
         
         setContentView(cview);
         
-        calibService = new CalibrationService(this, 
-                new EyeTrackerCallback(), new CalibrationCallback());
+        calibService = new CalibrationService(this, new CalibrationCallback());
         
         // Show loading indicator.
         progressDialog.setMessage("Starting...");
@@ -91,7 +89,7 @@ public class CalibrationActivity extends Activity {
                 }).show();
     }
     
-    private class EyeTrackerCallback implements EyeTrackerService.Callback {
+    private class CalibrationCallback implements CalibrationService.Callback {
 
         @Override
         public void onServiceBound() {
@@ -99,19 +97,15 @@ public class CalibrationActivity extends Activity {
         }
 
         @Override
-        public void handleDConnect(boolean connnected) {}
-        @Override
-        public void handleETStatus(boolean ready) {}
-        @Override
-        public void handleETStartStop(boolean started) {}
-        @Override
-        public void handleMessage(String message) {}
-        @Override
-        public void handleError(String message) {}
-    }
-    
-    private class CalibrationCallback implements CalibrationService.Callback {
-
+        public void handleDConnect(boolean connected) {
+            if (!connected) {
+                // Something went wrong.
+                Toast.makeText(CalibrationActivity.this, 
+                        "Connection lost", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+        
         @Override
         public void handleStarted() {
             progressDialog.dismiss();
@@ -139,6 +133,7 @@ public class CalibrationActivity extends Activity {
         public void handleError(String message) {
             Toast.makeText(CalibrationActivity.this, 
                            "Error: " + message, Toast.LENGTH_LONG).show();
+            finish();
         }
     }
     
