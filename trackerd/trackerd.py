@@ -3,7 +3,7 @@
 import functools
 
 import pubsub
-from eyetracker_facade import EyeTrackerFacade
+from eyetracker.facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
 
 

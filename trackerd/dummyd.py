@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import pubsub
-from eyetrackerd import Conductor, PubSubHelper
+from trackerd import Conductor, PubSubHelper
 from network import MonkeyServer
 
 class DummyConductor(object):
