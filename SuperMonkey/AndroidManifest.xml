@@ -45,9 +45,9 @@
         </activity>
 
         <service
-            android:name="hk.hku.cs.srli.supermonkey.SocketService"
+            android:name="hk.hku.cs.srli.supermonkey.service.SocketService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="false" >
         </service>
     </application>
 

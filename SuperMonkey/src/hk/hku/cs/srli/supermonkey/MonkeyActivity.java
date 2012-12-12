@@ -2,6 +2,8 @@ package hk.hku.cs.srli.supermonkey;
 
 import com.example.android.apis.graphics.TouchPaint;
 
+import hk.hku.cs.srli.supermonkey.service.EyeTrackerService;
+
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;

@@ -1,4 +1,4 @@
-package hk.hku.cs.srli.supermonkey;
+package hk.hku.cs.srli.supermonkey.service;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
+
 
 public class EyeTrackerService {
 

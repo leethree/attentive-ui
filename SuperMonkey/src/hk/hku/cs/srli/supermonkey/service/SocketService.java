@@ -1,4 +1,4 @@
-package hk.hku.cs.srli.supermonkey;
+package hk.hku.cs.srli.supermonkey.service;
 
 import android.app.Service;
 import android.content.Intent;

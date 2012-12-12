@@ -1,7 +1,8 @@
-package hk.hku.cs.srli.supermonkey;
+package hk.hku.cs.srli.supermonkey.service;
 
 import android.content.Context;
 import android.util.Log;
+
 
 public class CalibrationService extends EyeTrackerService {
 
