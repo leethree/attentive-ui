@@ -163,10 +163,10 @@ public class SocketService extends Service {
                     if (message == null) break;     // The socket is disconnected.
                     listener.onIncomingData(message);
                 }
-                listener.onDisconnected();
             } catch (IOException e) {
-                Log.d("SocketService.ClientThread.run", e.getMessage());
-                listener.onError(e.getMessage());
+                Log.d("SocketService.ClientThread.run1", e.getMessage());
+                // Report error only when the socket is connected.
+                if (running) listener.onError(e.getMessage());
             } finally {
                 try {
                     socket.close();
@@ -174,9 +174,10 @@ public class SocketService extends Service {
                     in.close();
                 } catch (NullPointerException e) {
                 } catch (IOException e) {
-                    Log.d("SocketService.ClientThread.run", e.getMessage());
+                    Log.d("SocketService.ClientThread.run2", e.getMessage());
                 }
                 running = false;
+                listener.onDisconnected();
                 Log.v("SocketService.ClientThread", "Stopped.");
             }
         }
@@ -198,16 +199,11 @@ public class SocketService extends Service {
         public void stop() {
             if (!running) return;
             Log.v("SocketService.ClientThread", "Stopping...");
-            if (socket.isConnected()) {
-                running = false;
-                send("bye");
-            } else {
-                // Socket is blocked when connecting. We need to close it here.
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    Log.d("SocketService.ClientThread.stop", e.getMessage());
-                }
+            running = false;
+            try {
+                socket.close();
+            } catch (IOException e) {
+                Log.d("SocketService.ClientThread.stop", e.getMessage());
             }
         }
         

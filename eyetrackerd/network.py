@@ -75,20 +75,23 @@ class MonkeyHandler(asynchat.async_chat):
 
     def __init__(self, sock):
         asynchat.async_chat.__init__(self, sock)
-        self.ibuffer = []
+        self._ibuffer = []
+        self._connected = True
         self.set_terminator('\n')
 
     def collect_incoming_data(self, data):
-        self.ibuffer.append(data)
+        self._ibuffer.append(data)
 
     def found_terminator(self):
-        message = ''.join(self.ibuffer)
-        self.ibuffer = []
+        message = ''.join(self._ibuffer)
+        self._ibuffer = []
         self._process_data(message)
 
     def handle_close(self):
-        print "Connection closed."
-        self.close()
+        if self._connected:
+            print "Connection closed."
+            self.close()
+            self._connected = False
 
     def respond(self, data, endline = True):
         self.push(data)

@@ -52,12 +52,6 @@ class DummyConductor(object):
         self._ettracking = False
         self._respond('tracking_stopped')
 
-    @_helper.handles('cmd-bye')
-    def _handle_cmd_bye(self):
-        if self._mhandler is not None:
-            self._mhandler.respond('bye')
-            self._mhandler.handle_close()
-
     @_helper.handles('cmd-status')
     def _handle_cmd_status(self):
         if self._ettracking:

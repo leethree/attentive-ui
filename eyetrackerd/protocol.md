@@ -21,10 +21,6 @@ All requests and responses end with "`\n`".
 
 	Stop sending eye tracking data. Expect `tracking_stopped`.
 
-- `bye`
-
-	Disconnect control channel. Expect `bye`.
-
 ## response
 
 - `msg <message>`
@@ -42,10 +38,6 @@ All requests and responses end with "`\n`".
 - `tracking_stopped`
 
 	Indicate that eye tracking has stopped.
-
-- `bye`
-
-	Disconnect control channel.
 
 - `error [message]`
 
