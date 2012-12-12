@@ -116,7 +116,11 @@ class Conductor(object):
     @_helper.handles('cmd-set')
     def _handle_cmd_set(self, param, value):
         print "Set", param, "=", value
-        self._config[param] = value
+        # Try to parse value as int.
+        try:
+            self._config[param] = int(value)
+        except ValueError:
+            self._config[param] = value
 
     @_helper.handles('cmd-start')
     def _handle_cmd_start(self):
@@ -150,7 +154,7 @@ class Conductor(object):
 
     @_helper.handles('cmd-status')
     def _handle_cmd_status(self):
-        self._respond('status', etf.get_status())
+        self._respond('status', self._etf.get_status())
 
     @_helper.handles('cmd-calib_start')
     def _handle_cmd_calib_start(self):

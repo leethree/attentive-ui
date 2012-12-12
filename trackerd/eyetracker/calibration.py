@@ -31,7 +31,7 @@ class Calibration(object):
         self._on_calib_done(False)
 
     def _report_event(self, event, *args):
-        pubsub.publish(event, *args)
+        pubsub.publish('calib', event, *args)
 
     def _on_calib_start(self, error, r):
         if error:
