@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import functools
 import Queue
 
@@ -7,66 +5,77 @@ import tobii.sdk.browsing
 import tobii.sdk.eyetracker
 import tobii.sdk.mainloop
 
+import pubsub
 from calibration import Calibration
+
 
 class EyeTrackerFacade(object):
 
-    def __init__(self, callback):
-        self.eyetracker = None
-        self.eyetrackers = {}
-        self.browser = None
+    def __init__(self):
+        self._browser = None
+        self._tracker = None
+        self._trackers = {}
+
         self._q = CallbackQueue()
-        self._data_callback = functools.partial(callback, 'data')
-        self._event_callback = functools.partial(callback, 'etf')
-        self._calib_callback = functools.partial(callback, 'calib')
 
         self._tracking = False
         self._calibrating = False
 
         tobii.sdk.init()
-        self.mainloop_thread = tobii.sdk.mainloop.MainloopThread(
+        self._mainloop = tobii.sdk.mainloop.MainloopThread(
             mainloop=None, delay_start=True)
 
     def __enter__(self):
-        self.mainloop_thread.start()
-        self.browser = tobii.sdk.browsing.EyetrackerBrowser(
-            self.mainloop_thread,
+        self._mainloop.start()
+        self._browser = tobii.sdk.browsing.EyetrackerBrowser(
+            self._mainloop,
             self._q.bind(self._on_eyetracker_browser_event))
         return self
 
     def __exit__(self, type, value, traceback):
-        if self.eyetracker is not None:
+        if self._tracker is not None:
             if self._tracking:
-                self.eyetracker.StopTracking()
-                self.eyetracker.events.OnGazeDataReceived -= \
+                self._tracker.StopTracking()
+                self._tracker.events.OnGazeDataReceived -= \
                     self._q.bind(self._on_gazedata)
                 self._tracking = False
             if self._calibrating:
-                self.eyetracker.StopCalibration()
+                self._tracker.StopCalibration()
                 self._calibrating = False
-        if self.mainloop_thread is not None:
-            self.mainloop_thread.stop()
+            self._tracker = None
+        if self._mainloop is not None:
+            self._mainloop.stop()
         print "%d events processed." % self._q.count()
         return False
 
     def loop(self):
         self._q.pop()
 
+    def get_status(self):
+        if self._tracker is None:
+            return 'disconnected'
+        elif self._tracking:
+            return 'tracking'
+        elif self._calibrating:
+            return 'calibrating'
+        else:
+            return 'ready'
+
     def _report_event(self, event, *args):
-        self._event_callback(event, *args)
+        pubsub.publish('etf', event, *args)
 
     def _on_eyetracker_browser_event(self, event_type, event_name,
                                      eyetracker_info):
-        if self.eyetracker is not None:
+        if self._tracker is not None:
             # already connected.
             return False
         if event_type == tobii.sdk.browsing.EyetrackerBrowser.FOUND:
-            self.eyetrackers[eyetracker_info.product_id] = eyetracker_info
+            self._trackers[eyetracker_info.product_id] = eyetracker_info
             print ('%s' % eyetracker_info.product_id, eyetracker_info.model,
                   eyetracker_info.status)
             print "Connecting to:", eyetracker_info
             tobii.sdk.eyetracker.Eyetracker.create_async(
-                self.mainloop_thread, eyetracker_info,
+                self._mainloop, eyetracker_info,
                 self._q.bind(self._on_eyetracker_created))
 
         return False
@@ -82,7 +91,7 @@ class EyeTrackerFacade(object):
                 print "Could not connect to eye tracker."
             return False
 
-        self.eyetracker = eyetracker
+        self._tracker = eyetracker
         print "   --- Connected!"
 
         self._report_event('connected')
@@ -91,17 +100,17 @@ class EyeTrackerFacade(object):
     def start_tracking(self):
         if self._calibrating or self._tracking:
             return None
-        if self.eyetracker is not None:
-            self.eyetracker.events.OnGazeDataReceived += \
+        if self._tracker is not None:
+            self._tracker.events.OnGazeDataReceived += \
                 self._q.bind(self._on_gazedata)
-            self.eyetracker.StartTracking()
+            self._tracker.StartTracking()
             self._tracking = True
             self._report_event('start_tracking')
 
     def stop_tracking(self):
-        if self.eyetracker is not None:
-            self.eyetracker.StopTracking()
-            self.eyetracker.events.OnGazeDataReceived -= \
+        if self._tracker is not None:
+            self._tracker.StopTracking()
+            self._tracker.events.OnGazeDataReceived -= \
                 self._q.bind(self._on_gazedata)
             self._tracking = False
             self._report_event('stop_tracking')
@@ -119,16 +128,15 @@ class EyeTrackerFacade(object):
             y = (y + right.y) / 2 if y is not None else right.y
 
         if (x is not None) and (y is not None):
-            if self._data_callback is not None:
-                self._data_callback(x, y)
+            pubsub.publish('data', x, y)
         return False
 
     def start_calibration(self):
         if self._calibrating or self._tracking:
             return None
-        if self.eyetracker is not None:
-            calib = Calibration(self._q, self._calib_callback)
-            calib.run(self.eyetracker, self._on_calib_done)
+        if self._tracker is not None:
+            calib = Calibration(self._q)
+            calib.run(self._tracker, self._on_calib_done)
             self._calibrating = True
             return calib
 

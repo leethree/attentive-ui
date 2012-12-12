@@ -1,15 +1,13 @@
-#!/usr/bin/python
-
 import tobii.sdk.eyetracker
-
 from tobii.sdk.types import Point2D
+
+import pubsub
 
 
 class Calibration(object):
 
-    def __init__(self, queue, callback):
+    def __init__(self, queue):
         self._q = queue
-        self._callback = callback
 
     def run(self, tracker, on_calib_done):
         self._tracker = tracker
@@ -33,7 +31,7 @@ class Calibration(object):
         self._on_calib_done(False)
 
     def _report_event(self, event, *args):
-        self._callback(event, *args)
+        pubsub.publish(event, *args)
 
     def _on_calib_start(self, error, r):
         if error:
