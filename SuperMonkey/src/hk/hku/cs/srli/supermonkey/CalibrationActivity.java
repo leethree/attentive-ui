@@ -26,26 +26,23 @@ public class CalibrationActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.v("CalibrationActivity", "onCreate");
         cview = new CalibrationView(this);
+        
+        // Create a progress dialog.
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
+        
         choreographer = new Choreographer();
+        cview.setListener(choreographer);
+        
+        setContentView(cview);
+        
         calibService = new CalibrationService(this, 
                 new EyeTrackerCallback(), new CalibrationCallback());
-        
-        cview.setListener(new AnimatorListenerAdapter() {
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                choreographer.nextMove();
-            }
-        });
         
         // Show loading indicator.
         progressDialog.setMessage("Starting...");
         progressDialog.show();
-        
-        setContentView(cview);
     }
     
     @Override
@@ -67,6 +64,28 @@ public class CalibrationActivity extends Activity {
         progressDialog.setMessage("Computing...");
         progressDialog.show();
         calibService.computeCalibration();
+    }
+    
+    private void showInfoDialog() {
+        // Create a information dialog.
+        new AlertDialog.Builder(CalibrationActivity.this)
+                .setTitle("Calibration started")
+                .setMessage("Please follow the green dot until calibration is finished.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Start animation.
+                        choreographer.startDance();
+                    }
+                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        // Cancel and stop calibration.
+                        finish();
+                    }
+                }).show();
     }
     
     private class EyeTrackerCallback implements EyeTrackerService.Callback {
@@ -93,24 +112,7 @@ public class CalibrationActivity extends Activity {
         @Override
         public void handleStarted() {
             progressDialog.dismiss();
-            new AlertDialog.Builder(CalibrationActivity.this)
-                    .setTitle("Calibration started")
-                    .setMessage("Please follow the green dot until calibration is finished.")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Start animation.
-                            choreographer.startDance();
-                        }
-                    }).setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            // Cancel and stop calibration.
-                            finish();
-                        }
-                    }).show();
+            showInfoDialog();
         }
 
         @Override
@@ -137,7 +139,7 @@ public class CalibrationActivity extends Activity {
         }
     }
     
-    private class Choreographer {
+    private class Choreographer extends AnimatorListenerAdapter{
         
         private Deque<Movement> sequence;
         
@@ -151,10 +153,17 @@ public class CalibrationActivity extends Activity {
         }
         
         public void nextMove() {
-            if (sequence.peek() != null)
+            if (sequence.peek() != null) {
                 sequence.poll().move();
-            else
+            } else {
+                // Finish when there's no more movement in the sequence.
                 onDanceFinished();
+            }
+        }
+        
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            choreographer.nextMove();
         }
         
         private void prepareSequence() {
@@ -164,6 +173,7 @@ public class CalibrationActivity extends Activity {
             addPoint(0.5f, 0.5f);
             addPoint(0.9f, 0.9f);
             addPoint(0.1f, 0.9f);
+            // Hide the point when animation is finished.
             sequence.add(new Movement() {
                 @Override
                 public void move() {
@@ -179,6 +189,7 @@ public class CalibrationActivity extends Activity {
                     cview.movePointTo(x, y);
                 }
             });
+            // Calibrate twice for each point.
             for (int i = 0; i < 2; i++) {
                 sequence.add(new Movement() {
                     @Override

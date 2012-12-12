@@ -37,7 +37,9 @@ public class MonkeyActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v("MonkeyActivity", "onCreate");
+        
         setContentView(R.layout.activity_monkey);
+        
         monkeyStatus = (EditText) findViewById(R.id.mStatusEditText);
         dStatus = (EditText) findViewById(R.id.dStatusEditText);
         etStatus = (EditText) findViewById(R.id.etStatusEditText);
@@ -47,6 +49,7 @@ public class MonkeyActivity extends Activity {
         caliButton = (Button) findViewById(R.id.calibrateButton);
         infoText = (TextView) findViewById(R.id.infoTextView);
 
+        // Set initial interface status.
         monkeyStatus.setText("not available");
         dStatus.setText("disconnected");
         etStatus.setText("unknown");
@@ -108,7 +111,7 @@ public class MonkeyActivity extends Activity {
         boolean on = dToggle.isChecked();
         Log.v("MonkeyActivity", "onDToggleClicked:" + on);
         if (on) {
-            lazyConnect();
+            tryConnect();
         } else {
             etService.close();
         }
@@ -123,7 +126,7 @@ public class MonkeyActivity extends Activity {
         etStatus.setText(on ? "starting..." : "stopping...");
     }
     
-    private void lazyConnect() {
+    private void tryConnect() {
         if (!etService.isConnected()) {
             SharedPreferences sharedPref = getPref();
             try {
@@ -171,6 +174,7 @@ public class MonkeyActivity extends Activity {
             caliButton.setEnabled(false);
             dStatus.setText(connnected ? "connected" : "disconnected");
             if (connnected) {
+                // Report parameters to the daemon.
                 int port = Integer.parseInt(
                         getPref().getString(SettingsActivity.KEY_PREF_M_PORT, ""));
                 if (port > 0) etService.setParam("monkey_port", Integer.toString(port));
@@ -211,7 +215,7 @@ public class MonkeyActivity extends Activity {
             dToggle.setEnabled(true);
             // Auto connect if needed.
             if (getPref().getBoolean(SettingsActivity.KEY_PREF_ET_AUTOCONNECT, false)) {
-                lazyConnect();
+                tryConnect();
             }
         }
     }

@@ -12,7 +12,7 @@ public class EyeTrackerService {
     private Context context;
     
     private Callback callback;
-    private SocketService.SocketBinder client;
+    private SocketService.SocketBinder service;
     
     public EyeTrackerService(Context context, Callback callback) {
         this.context = context;
@@ -26,11 +26,11 @@ public class EyeTrackerService {
     }
     
     public void unbind() {
-        if (client != null) context.unbindService(svcConn);
+        if (service != null) context.unbindService(svcConn);
     }
     
     public void connect(String host, int port) {
-        if (client != null) client.connect(host, port);
+        if (service != null) service.connect(host, port);
     }
     
     public void setParam(String param, String value) {
@@ -42,11 +42,11 @@ public class EyeTrackerService {
     }
     
     public void close() {
-        if (client != null) client.close();
+        if (service != null) service.close();
     }
     
     public boolean isConnected() {
-        return client != null && client.isConnected();
+        return service != null && service.isConnected();
     }
     
     public interface Callback {
@@ -59,7 +59,7 @@ public class EyeTrackerService {
     }
     
     protected void send(String command) {
-        if (client != null) client.send(command);
+        if (service != null) service.send(command);
     }
     
     protected void handleCommand(String command, String opt) {
@@ -84,7 +84,7 @@ public class EyeTrackerService {
         } else if (command.equals("error")) {
             if (opt.length() > 0) callback.handleError(opt);
         } else if (command.equals("bye")) {
-            client.close();
+            service.close();
         }
     }
     
@@ -122,14 +122,14 @@ public class EyeTrackerService {
     private ServiceConnection svcConn=new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder binder) {
             Log.v("EyeTrackerService", "onServiceConnected:" + EyeTrackerService.this);
-            client = (SocketService.SocketBinder) binder;
-            client.setListener(socketListener);
+            service = (SocketService.SocketBinder) binder;
+            service.setListener(socketListener);
             callback.onServiceBound();
         }
 
         public void onServiceDisconnected(ComponentName className) {
             Log.v("EyeTrackerService", "onServiceDisconnected:" + EyeTrackerService.this);
-            client = null;
+            service = null;
         }
     };
 }

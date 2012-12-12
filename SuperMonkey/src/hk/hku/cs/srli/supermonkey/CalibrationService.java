@@ -42,8 +42,7 @@ public class CalibrationService extends EyeTrackerService {
             callback.handleStopped();
         } else if (command.equals("error")) {
             if (opt.length() > 0) callback.handleError(opt);
-        } else
-            super.handleCommand(command, opt);
+        } else super.handleCommand(command, opt);
     }
     
     public interface Callback {

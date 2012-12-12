@@ -21,9 +21,10 @@ import java.net.Socket;
  */
 public class SocketService extends Service {
 
-    private Handler handler;
+    private Handler handler = new Handler();
     private final IBinder binder = new SocketBinder();
     private SocketListener listener = new SocketListener() {
+        // An empty listener used as a placeholder.
         @Override
         public void onConnected() {}
         @Override
@@ -37,35 +38,21 @@ public class SocketService extends Service {
     private ClientThread client;
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        Log.v("SocketService", "onCreate");
-        handler = new Handler();
-    }
-    
-    @Override
     public void onDestroy() {
-        Log.v("SocketService", "onDestroy");
         if (client != null) client.stop();
         super.onDestroy();
     }
     
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v("SocketService", "onBind");
         return binder;
-    }
-    
-    @Override
-    public boolean onUnbind(Intent intent) {
-        Log.v("SocketService", "onUnbind");
-        return super.onUnbind(intent);
     }
     
     public class SocketBinder extends Binder {
         
         public void setListener(SocketListener listener) {
-            SocketService.this.listener = new SocketAdapter(listener);
+            // Wrap callback with adapter.
+            SocketService.this.listener = new ListenerAdapter(listener);
         }
         
         public void connect(String host, int port) {
@@ -94,11 +81,15 @@ public class SocketService extends Service {
         public void onError(String message);
     }
     
-    private class SocketAdapter implements SocketListener{
+    /**
+     * Adapter for running listener callback on main thread.
+     * Intended to be called by the socket client thread.
+     */
+    private class ListenerAdapter implements SocketListener{
         
         private SocketListener listener;
         
-        public SocketAdapter(SocketListener listener) {
+        public ListenerAdapter(SocketListener listener) {
             this.listener = listener;
         }
         
@@ -182,8 +173,9 @@ public class SocketService extends Service {
             }
         }
         
-        public boolean send(String data) {
-            if (out == null) return false;
+        public void send(String data) {
+            if (out == null) return;
+            // Send data in another thread because it might block.
             new AsyncTask<String, Void, Void>() {
                 @Override
                 protected Void doInBackground(String... params) {
@@ -193,7 +185,6 @@ public class SocketService extends Service {
                     return null;
                 }
             }.execute(data);
-            return true;
         }
         
         public void stop() {
@@ -201,6 +192,7 @@ public class SocketService extends Service {
             Log.v("SocketService.ClientThread", "Stopping...");
             running = false;
             try {
+                // Force close the socket from main thread to unblock the client thread.
                 socket.close();
             } catch (IOException e) {
                 Log.d("SocketService.ClientThread.stop", e.getMessage());
