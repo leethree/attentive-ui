@@ -2,4 +2,6 @@
 
     <style name="AppTheme" parent="android:Theme.Holo" />
 
+    <style name="CalibrationTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen" />
+
 </resources>
