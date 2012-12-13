@@ -8,7 +8,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_calibration">CalibrationActivity</string>
     <string name="label_m_status">Monkey status:</string>
-    <string name="label_d_status">Feeder status:</string>
+    <string name="label_d_status">Trackerd status:</string>
     <string name="label_et_status">Eye Tracker status:</string>
     <string name="pref_m_cat">Monkey</string>
     <string name="pref_et_cat">Eye Tracker</string>
