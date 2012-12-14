@@ -30,7 +30,6 @@ class MonkeyFeeder(asynchat.async_chat):
 
     def send_data(self, data):
         self.push(data + '\n')
-        print "Sent: ", data
 
 
 class MonkeyServer(asyncore.dispatcher):

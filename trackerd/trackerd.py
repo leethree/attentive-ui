@@ -7,9 +7,10 @@ from network import MonkeyServer, MonkeyFeeder
 
 class FeedProcessor(object):
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, upside_down=False):
         self._width = width
         self._height = height
+        self._upside_down = upside_down
 
         self._entered = False
         self._lastx = None
@@ -22,6 +23,11 @@ class FeedProcessor(object):
     def process(self, x, y):
         width = self._width
         height = self._height
+
+        if self._upside_down:
+            # Mirror position
+            x = 1 - x
+            y = 1 - y
 
         # Point is not moved.
         if (x == self._lastx and y == self._lasty):
@@ -53,12 +59,13 @@ class Conductor(object):
     _helper = pubsub.PubSubHelper()
 
     _DEFAULT_CONF = {
-        'server_host': 'localhost', # Use socket.gethostname() for real device.
+        'server_host': 'srlipc', # Use socket.gethostname() for real device.
         'server_port': 10800,
         'monkey_host': 'localhost',
         'monkey_port': 1080,
         'display_width': 480,
-        'display_height': 800
+        'display_height': 800,
+        'upside_down': True
         }
 
     def __init__(self):
@@ -106,7 +113,7 @@ class Conductor(object):
         elif event == 'done':
             self._respond('calib_done')
         elif event == 'error':
-            self._respond('error', args[0])
+            self._respond('error', str(args[0]))
 
     @_helper.handles('conn')
     def _handle_conn(self, addr, mhandler):
@@ -133,7 +140,8 @@ class Conductor(object):
     def _handle_mfeeder_conn(self):
         print "Feeder connected."
         self._fprocessor = FeedProcessor(self._config['display_width'],
-                                         self._config['display_height'])
+                                         self._config['display_height'],
+                                         self._config['upside_down'])
         self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
@@ -165,7 +173,10 @@ class Conductor(object):
     @_helper.handles('cmd-calib_add')
     def _handle_cmd_calib_add(self, x, y):
         if self._calib is not None:
-            self._calib.add_point(float(x), float(y))
+            if self._config['upside_down']:
+                self._calib.add_point(1 - float(x), 1 - float(y))
+            else:
+                self._calib.add_point(float(x), float(y))
 
     @_helper.handles('cmd-calib_compute')
     def _handle_cmd_calib_compute(self):

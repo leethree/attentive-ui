@@ -81,6 +81,7 @@ class DummyConductor(object):
 
     @_helper.handles('cmd-calib_abort')
     def _handle_cmd_calib_abort(self):
+        self._calib = False
         self._respond('calib_stopped')
 
     @_helper.handles(pubsub.UNHANDLED)
