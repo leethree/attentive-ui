@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import socket
+
 import pubsub
 from eyetracker.facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
@@ -59,7 +61,9 @@ class Conductor(object):
     _helper = pubsub.PubSubHelper()
 
     _DEFAULT_CONF = {
-        'server_host': 'srlipc', # Use socket.gethostname() for real device.
+        # Use 'socket.gethostname()' for real devices.
+        # Or use 'localhost' for emulators.
+        'server_host': socket.gethostname(),
         'server_port': 10800,
         'monkey_host': 'localhost',
         'monkey_port': 1080,
