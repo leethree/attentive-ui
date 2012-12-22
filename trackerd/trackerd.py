@@ -19,10 +19,19 @@ class FeedProcessor(object):
         self._lasty = None
         self._output_method = None
 
+        self._ofile = open('data.pk', 'wb')
+
+    def __del__(self):
+        self._ofile.close()
+
     def set_output_method(self, output_method):
         self._output_method = output_method
 
-    def process(self, x, y):
+    def process(self, x, y, gaze):
+        import pickle
+        pickle.dump(gaze, self._ofile)
+        return
+
         width = self._width
         height = self._height
 
@@ -63,7 +72,7 @@ class Conductor(object):
     _DEFAULT_CONF = {
         # Use 'socket.gethostname()' for real devices.
         # Or use 'localhost' for emulators.
-        'server_host': socket.gethostname(),
+        'server_host': 'localhost',
         'server_port': 10800,
         'monkey_host': 'localhost',
         'monkey_port': 1080,
@@ -133,27 +142,27 @@ class Conductor(object):
         except ValueError:
             self._config[param] = value
 
-    @_helper.handles('cmd-start')
+    #@_helper.handles('cmd-start')
     def _handle_cmd_start(self):
         self._mfeeder = MonkeyFeeder()
         self._mfeeder.connect_to(self._config['monkey_host'],
                                  self._config['monkey_port'])
         print "Feeder connecting..."
 
-    @_helper.handles('mfeeder-conn')
+    @_helper.handles('cmd-start')
     def _handle_mfeeder_conn(self):
         print "Feeder connected."
         self._fprocessor = FeedProcessor(self._config['display_width'],
                                          self._config['display_height'],
                                          self._config['upside_down'])
-        self._fprocessor.set_output_method(self._mfeeder.send_data)
+        #self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
 
     @_helper.handles('cmd-stop')
     def _handle_cmd_stop(self):
-        self._mfeeder.handle_close()
-        self._mfeeder = None
+        #self._mfeeder.handle_close()
+        #self._mfeeder = None
         self._fprocessor.set_output_method(None)
         pubsub.unsubscribe('data', self._fprocessor.process)
         self._etf.stop_tracking()

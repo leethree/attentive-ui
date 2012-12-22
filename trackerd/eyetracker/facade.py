@@ -118,6 +118,7 @@ class EyeTrackerFacade(object):
     def _on_gazedata(self, error, gaze):
         x = None
         y = None
+
         if gaze.LeftValidity < 2:
             left = gaze.LeftGazePoint2D
             x = left.x
@@ -128,7 +129,7 @@ class EyeTrackerFacade(object):
             y = (y + right.y) / 2 if y is not None else right.y
 
         if (x is not None) and (y is not None):
-            pubsub.publish('data', x, y)
+            pubsub.publish('data', x, y, gaze)
         return False
 
     def start_calibration(self):
