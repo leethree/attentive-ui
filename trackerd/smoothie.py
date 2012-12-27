@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from decimal import Decimal
 import math
 import pickle
 
@@ -8,18 +9,27 @@ from tobii.sdk.types import Point2D, Point3D
 class P3(object):
 
     def __init__(self, x=0, y=0, z=0):
-        self.x, self.y, self.z = x, y, z
+        self.x = x if isinstance(x, Decimal) else Decimal(repr(x))
+        self.y = y if isinstance(y, Decimal) else Decimal(repr(y))
+        self.z = z if isinstance(z, Decimal) else Decimal(repr(z))
 
-    def __str__(p):
-        return '(%.2f,%.2f,%.2f)' % (p.x, p.y, p.z)
+    def __str__(self):
+        return '(%.2f,%.2f,%.2f)' % (self.x, self.y, self.z)
 
-    @staticmethod
-    def sub(p1, p2):
-        return P3(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z)
+    def __sub__(self, other):
+        if isinstance(other, P3):
+            return P3(self.x - other.x, self.y - other.y, self.z - other.z)
+        else:
+            return NotImplemented
 
-    @staticmethod
-    def dot(v1, v2):
-        return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+    def __mul__(self, other):
+        if isinstance(other, P3):
+            return self.x * other.x + self.y * other.y + self.z * other.z
+        else:
+            return NotImplemented
+
+    def __abs__(self):
+        return (self * self).sqrt()
 
     @staticmethod
     def of(p):
@@ -78,8 +88,8 @@ def get_data():
 
     try:
         while(True):
-            gaze = pickle.load(data_file)
-            raw_data.append(gaze)
+            item = pickle.load(data_file)
+            raw_data.append(item)
     except EOFError:
         print "EOF"
 
@@ -87,8 +97,8 @@ def get_data():
 
     data = []
 
-    for gaze in raw_data:
-        data.append(Gaze.of(gaze))
+    for item in raw_data:
+        data.append(Gaze.of(item))
 
     return data
 
@@ -106,11 +116,11 @@ def main():
     theta = []
     deltat = []
     for (left, right) in data:
-        v = P3.sub(left.p, left.h)
+        v = left.p - left.h
         if lastv is not None:
             try:
-                cos = P3.dot(v, lastv) / math.sqrt(P3.dot(v, v) *
-                      P3.dot(lastv, lastv))
+                cos = (v * lastv) / (abs(v) * abs(lastv))
+
                 theta_i = math.degrees(math.acos(cos))
             except ArithmeticError:
                 theta_i = 0
