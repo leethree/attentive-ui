@@ -5,30 +5,70 @@ import pickle
 
 from tobii.sdk.types import Point2D, Point3D
 
+class P3(object):
+
+    def __init__(self, x=0, y=0, z=0):
+        self.x, self.y, self.z = x, y, z
+
+    def __str__(p):
+        return '(%.2f,%.2f,%.2f)' % (p.x, p.y, p.z)
+
+    @staticmethod
+    def sub(p1, p2):
+        return P3(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z)
+
+    @staticmethod
+    def dot(v1, v2):
+        return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+
+    @staticmethod
+    def of(p):
+        x = p.x if hasattr(p, 'x') else 0
+        y = p.y if hasattr(p, 'y') else 0
+        z = p.z if hasattr(p, 'z') else 0
+        return P3(x, y, z)
+
+
 class Gaze(object):
 
     def __init__(self):
         self.t = long() # Timestamp
 
-        self.h = Point3D() # EyePosition3D
-        self.h_relative = Point3D() # EyePosition3DRelative
-        self.p = Point3D() # GazePoint3D
-        self.p2d = Point2D() # GazePoint2D
+        self.h = P3() # EyePosition3D
+        self.h_relative = P3() # EyePosition3DRelative
+        self.p = P3() # GazePoint3D
+        self.p2d = P3() # GazePoint2D
         self.pupil = float() # Pupil
         self.validity = long() # Validity
 
     def __str__(self):
         return ('%.2f:' % ((self.t - 1167612915647489) / 29059.0) +
-                '%s|' % _p3d(self.h) +
-                '%s,%s,' % (_p3d(self.p), _p2d(self.p2d)) +
+                '%s|' % self.h +
+                '%s,%s,' % (self.p, self.p2d) +
                 '%.2f,%d' % (self.pupil, self.validity)
                 )
 
-def _p2d(p):
-    return '(%.2f,%.2f)' % (p.x, p.y)
+    @staticmethod
+    def of(gaze):
+        lp = Gaze()
+        lp.t = gaze.Timestamp
+        lp.h = P3.of(gaze.LeftEyePosition3D)
+        lp.h_relative = P3.of(gaze.LeftEyePosition3DRelative)
+        lp.p = P3.of(gaze.LeftGazePoint3D)
+        lp.p2d = P3.of(gaze.LeftGazePoint2D)
+        lp.pupil = gaze.LeftPupil
+        lp.validity = gaze.LeftValidity
 
-def _p3d(p):
-    return '(%.2f,%.2f,%.2f)' % (p.x, p.y, p.z)
+        rp = Gaze()
+        rp.t = gaze.Timestamp
+        rp.h = P3.of(gaze.RightEyePosition3D)
+        rp.h_relative = P3.of(gaze.RightEyePosition3DRelative)
+        rp.p = P3.of(gaze.RightGazePoint3D)
+        rp.p2d = P3.of(gaze.RightGazePoint2D)
+        rp.pupil = gaze.RightPupil
+        rp.validity = gaze.RightValidity
+
+        return lp, rp
 
 
 def get_data():
@@ -48,32 +88,10 @@ def get_data():
     data = []
 
     for gaze in raw_data:
-        lp = Gaze()
-        lp.t = gaze.Timestamp
-        lp.h = gaze.LeftEyePosition3D
-        lp.h_relative = gaze.LeftEyePosition3DRelative
-        lp.p = gaze.LeftGazePoint3D
-        lp.p2d = gaze.LeftGazePoint2D
-        lp.pupil = gaze.LeftPupil
-        lp.validity = gaze.LeftValidity
-
-        rp = Gaze()
-        rp.t = gaze.Timestamp
-        rp.h = gaze.RightEyePosition3D
-        rp.h_relative = gaze.RightEyePosition3DRelative
-        rp.p = gaze.RightGazePoint3D
-        rp.p2d = gaze.RightGazePoint2D
-        rp.pupil = gaze.RightPupil
-        rp.validity = gaze.RightValidity
-        data.append((lp, rp))
+        data.append(Gaze.of(gaze))
 
     return data
 
-def sub(p1, p2):
-    return Point3D(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z)
-
-def dot(v1, v2):
-    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
 
 def main():
     # Savitzky-Golay smoothing filters
@@ -88,10 +106,11 @@ def main():
     theta = []
     deltat = []
     for (left, right) in data:
-        v = sub(left.p, left.h)
+        v = P3.sub(left.p, left.h)
         if lastv is not None:
             try:
-                cos = dot(v, lastv) / math.sqrt(dot(v, v) * dot(lastv, lastv))
+                cos = P3.dot(v, lastv) / math.sqrt(P3.dot(v, v) *
+                      P3.dot(lastv, lastv))
                 theta_i = math.degrees(math.acos(cos))
             except ArithmeticError:
                 theta_i = 0
