@@ -89,14 +89,18 @@ def main():
     deltat = []
     for (left, right) in data:
         v = sub(left.p, left.h)
-        try:
-            if lastv is not None:
+        if lastv is not None:
+            try:
                 cos = dot(v, lastv) / math.sqrt(dot(v, v) * dot(lastv, lastv))
                 theta_i = math.degrees(math.acos(cos))
-                theta.append(theta_i)
-                deltat.append((left.t - lastt) / 1000000.0)
-        except ArithmeticError:
-            pass
+            except ArithmeticError:
+                theta_i = 0
+            deltat.append((left.t - lastt) / 1000000.0)
+            theta.append(theta_i)
+        else:
+            theta.append(0)
+            deltat.append(0)
+
         lastv = v
         lastt = left.t
 
@@ -108,7 +112,7 @@ def main():
         dtheta_i = 0.0
         for j in xrange(0, len(filter_h)):
             dtheta_i = dtheta_i + theta[i + j] * filter_h[j]
-        dtheta.append(dtheta_i / deltat[i])
+        dtheta.append(dtheta_i / deltat[i + len(filter_h)])
 
     print 'dtheta =\n', dtheta
 
@@ -117,21 +121,28 @@ def main():
         ddtheta_i = 0.0
         for j in xrange(0, len(filter_g)):
             ddtheta_i = ddtheta_i + dtheta[i + j] * filter_g[j]
-        ddtheta.append(ddtheta_i / deltat[i])
+        ddtheta.append(ddtheta_i / deltat[i + len(filter_g)])
 
     print 'ddtheta =\n', ddtheta
 
     saccade = False
+    lasti = 0
     sign = False
     for i in xrange(0, len(ddtheta)):
         accel = math.fabs(ddtheta[i])
-        if accel > 300:
-            saccade = True
-            sign = True if ddtheta[i] > 0 else False
-        elif saccade and accel > 200:
-            saccade = False if (ddtheta[i] > 0) is not sign else saccade
-        print saccade
+        if saccade:
+            if i - lasti > 12: # saccade longer than 300ms
+                saccade = False
+            elif ddtheta[i] < -200 and dtheta[i] < 100:
+                saccade = False #if (ddtheta[i] > 0) is not sign else saccade
 
+        if saccade is not True: # fixation
+            if ddtheta[i] > 300:
+                saccade = True
+                lasti = i
+                #sign = True if ddtheta[i] > 0 else False
+        #print ddtheta[i], saccade
+        print 1 if saccade else 0
 
 
 if __name__ == '__main__':
