@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import collections
 from decimal import Decimal
 import math
 import pickle
@@ -81,6 +82,21 @@ class Gaze(object):
         return lp, rp
 
 
+class FirFilter(object):
+
+    def __init__(self, filters, normalization):
+        self._filter = [x / normalization for x in filters]
+        mem_len = len(self._filter)
+        self._mem = collections.deque([0] * mem_len, maxlen=mem_len)
+
+    def filter(self, x):
+        self._mem.append(x)
+        ret = 0.0
+        for v, f in zip(self._mem, self._filter):
+            ret = ret + v * f
+        return ret
+
+
 def get_data():
     data_file = open('data.pk', 'rb')
 
@@ -91,7 +107,7 @@ def get_data():
             item = pickle.load(data_file)
             raw_data.append(item)
     except EOFError:
-        print "EOF"
+        pass
 
     data_file.close()
 
@@ -106,9 +122,9 @@ def get_data():
 def main():
     # Savitzky-Golay smoothing filters
     filter_h = [-3, 12, 17, 12, -3]
-    filter_h = [x / 35.0 for x in filter_h]
+    velocity_filter = FirFilter(filter_h, 35.0)
     filter_g = [-3, -2, -1, 0, 1, 2, 3]
-    filter_g = [x / 28.0 for x in filter_g]
+    accel_filter = FirFilter(filter_g, 28.0)
 
     data = get_data()
     lastv = None
@@ -128,50 +144,45 @@ def main():
             theta.append(theta_i)
         else:
             theta.append(0)
-            deltat.append(0)
+            deltat.append(1)
 
         lastv = v
         lastt = left.t
 
-    print 'deltat =\n', deltat
-    print 'theta =\n', theta
+    print 'deltat =\n', deltat, len(deltat)
+    print 'theta =\n', theta, len(theta)
 
     dtheta = []
-    for i in xrange(0, len(theta) - len(filter_h)):
-        dtheta_i = 0.0
-        for j in xrange(0, len(filter_h)):
-            dtheta_i = dtheta_i + theta[i + j] * filter_h[j]
-        dtheta.append(dtheta_i / deltat[i + len(filter_h)])
+    for i in xrange(0, len(theta)):
+        dtheta_i = velocity_filter.filter(theta[i])
+        dtheta.append(dtheta_i / deltat[i])
 
-    print 'dtheta =\n', dtheta
+    print 'dtheta =\n', dtheta, len(dtheta)
 
     ddtheta = []
-    for i in xrange(0, len(dtheta) - len(filter_g)):
-        ddtheta_i = 0.0
-        for j in xrange(0, len(filter_g)):
-            ddtheta_i = ddtheta_i + dtheta[i + j] * filter_g[j]
-        ddtheta.append(ddtheta_i / deltat[i + len(filter_g)])
+    for i in xrange(0, len(dtheta)):
+        ddtheta_i = accel_filter.filter(dtheta[i])
+        ddtheta.append(ddtheta_i / deltat[i])
 
-    print 'ddtheta =\n', ddtheta
+    print 'ddtheta =\n', ddtheta, len(ddtheta)
 
     saccade = False
     lasti = 0
     sign = False
+    s_indicator = []
     for i in xrange(0, len(ddtheta)):
-        accel = math.fabs(ddtheta[i])
         if saccade:
             if i - lasti > 12: # saccade longer than 300ms
                 saccade = False
             elif ddtheta[i] < -200 and dtheta[i] < 100:
-                saccade = False #if (ddtheta[i] > 0) is not sign else saccade
+                saccade = False
 
         if saccade is not True: # fixation
             if ddtheta[i] > 300:
                 saccade = True
                 lasti = i
-                #sign = True if ddtheta[i] > 0 else False
-        #print ddtheta[i], saccade
-        print 1 if saccade else 0
+        s_indicator.append(1 if saccade else 0)
+    print 's_indicator =\n', s_indicator, len(s_indicator)
 
 
 if __name__ == '__main__':
