@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import collections
-from decimal import Decimal
 import math
 import pickle
+from decimal import Decimal
 
 from tobii.sdk.types import Point2D, Point3D
 
@@ -89,12 +89,77 @@ class FirFilter(object):
         mem_len = len(self._filter)
         self._mem = collections.deque([0] * mem_len, maxlen=mem_len)
 
+    def clear(self):
+        self._mem.extend([0] * len(self._mem))
+
     def filter(self, x):
         self._mem.append(x)
         ret = 0.0
         for v, f in zip(self._mem, self._filter):
-            ret = ret + v * f
+            ret += v * f
         return ret
+
+
+class FixationDetector(object):
+
+    def __init__(self):
+        # Savitzky-Golay smoothing filters
+        filter_h = [-3, 12, 17, 12, -3]
+        self._velocity_filter = FirFilter(filter_h, 35.0)
+        filter_g = [-3, -2, -1, 0, 1, 2, 3]
+        self._accel_filter = FirFilter(filter_g, 28.0)
+        self._init_params()
+
+    def clear(self):
+        self._velocity_filter.clear()
+        self._accel_filter.clear()
+        self._init_params()
+
+    def is_fixation(self, data_item):
+        self._counter += 1
+        left, right = data_item
+        delta_t = self._get_delta_t(left)
+        theta = self._get_theta(left)
+        dtheta = self._velocity_filter.filter(theta) / delta_t
+        ddtheta = self._accel_filter.filter(dtheta) / delta_t
+        if self._saccade:
+            if self._counter - self._last_counter > 12:
+                # saccade should not be longer than 300ms
+                self._saccade = False
+            elif ddtheta < -200 and dtheta < 100:
+                self._saccade = False
+        if not self._saccade: # candidate for fixation
+            if ddtheta > 300:
+                self._saccade = True
+                self._last_counter = self._counter
+        return False if self._saccade else True # fixation if not in saccade
+
+    def _init_params(self):
+        self._last_v = None
+        self._last_t = None
+        self._counter = 0
+        self._last_counter = 0
+        self._saccade = False
+
+    def _get_delta_t(self, gaze):
+        if self._last_t is not None:
+            delta_t = (gaze.t - self._last_t) / 1000000.0
+        else:
+            delta_t = 1
+        self._last_t = gaze.t
+        return delta_t
+
+    def _get_theta(self, gaze):
+        v = gaze.p - gaze.h
+        theta = 0
+        if self._last_v is not None:
+            try:
+                cos = (v * self._last_v) / (abs(v) * abs(self._last_v))
+                theta = math.degrees(math.acos(cos))
+            except ArithmeticError:
+                pass
+        self._last_v = v
+        return theta
 
 
 def get_data():
@@ -120,68 +185,11 @@ def get_data():
 
 
 def main():
-    # Savitzky-Golay smoothing filters
-    filter_h = [-3, 12, 17, 12, -3]
-    velocity_filter = FirFilter(filter_h, 35.0)
-    filter_g = [-3, -2, -1, 0, 1, 2, 3]
-    accel_filter = FirFilter(filter_g, 28.0)
-
-    data = get_data()
-    lastv = None
-    lastt = None
-    theta = []
-    deltat = []
-    for (left, right) in data:
-        v = left.p - left.h
-        if lastv is not None:
-            try:
-                cos = (v * lastv) / (abs(v) * abs(lastv))
-
-                theta_i = math.degrees(math.acos(cos))
-            except ArithmeticError:
-                theta_i = 0
-            deltat.append((left.t - lastt) / 1000000.0)
-            theta.append(theta_i)
-        else:
-            theta.append(0)
-            deltat.append(1)
-
-        lastv = v
-        lastt = left.t
-
-    print 'deltat =\n', deltat, len(deltat)
-    print 'theta =\n', theta, len(theta)
-
-    dtheta = []
-    for i in xrange(0, len(theta)):
-        dtheta_i = velocity_filter.filter(theta[i])
-        dtheta.append(dtheta_i / deltat[i])
-
-    print 'dtheta =\n', dtheta, len(dtheta)
-
-    ddtheta = []
-    for i in xrange(0, len(dtheta)):
-        ddtheta_i = accel_filter.filter(dtheta[i])
-        ddtheta.append(ddtheta_i / deltat[i])
-
-    print 'ddtheta =\n', ddtheta, len(ddtheta)
-
-    saccade = False
-    lasti = 0
-    sign = False
+    detector = FixationDetector()
     s_indicator = []
-    for i in xrange(0, len(ddtheta)):
-        if saccade:
-            if i - lasti > 12: # saccade longer than 300ms
-                saccade = False
-            elif ddtheta[i] < -200 and dtheta[i] < 100:
-                saccade = False
+    for item in get_data():
+        s_indicator.append(0 if detector.is_fixation(item) else 1)
 
-        if saccade is not True: # fixation
-            if ddtheta[i] > 300:
-                saccade = True
-                lasti = i
-        s_indicator.append(1 if saccade else 0)
     print 's_indicator =\n', s_indicator, len(s_indicator)
 
 
