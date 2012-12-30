@@ -38,12 +38,12 @@ class FeedProcessor(object):
             x = (x + right.p2d.x) / 2 if x is not None else right.p2d.x
             y = (y + right.p2d.y) / 2 if y is not None else right.p2d.y
 
+        if (x is None) or (y is None):
+            return
+
         # convert to ordinary float
         x = float(x)
         y = float(y)
-
-        if (x is None) or (y is None):
-            return
 
         is_fixation = self._detector.is_fixation(gaze)
 
@@ -163,27 +163,27 @@ class Conductor(object):
         except ValueError:
             self._config[param] = value
 
-    #@_helper.handles('cmd-start')
+    @_helper.handles('cmd-start')
     def _handle_cmd_start(self):
         self._mfeeder = MonkeyFeeder()
         self._mfeeder.connect_to(self._config['monkey_host'],
                                  self._config['monkey_port'])
         print "Feeder connecting..."
 
-    @_helper.handles('cmd-start')
+    @_helper.handles('mfeeder-conn')
     def _handle_mfeeder_conn(self):
         print "Feeder connected."
         self._fprocessor = FeedProcessor(self._config['display_width'],
                                          self._config['display_height'],
                                          self._config['upside_down'])
-        #self._fprocessor.set_output_method(self._mfeeder.send_data)
+        self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
 
     @_helper.handles('cmd-stop')
     def _handle_cmd_stop(self):
-        #self._mfeeder.handle_close()
-        #self._mfeeder = None
+        self._mfeeder.handle_close()
+        self._mfeeder = None
         self._fprocessor.set_output_method(None)
         pubsub.unsubscribe('data', self._fprocessor.process)
         self._etf.stop_tracking()

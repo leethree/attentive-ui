@@ -69,6 +69,7 @@ class FixationDetector(object):
         left, right = data_item
 
         delta_t = self._time_diff.diff(left.t)
+        if delta_t == 0: return not self._saccade
 
         theta, weight = 0.0, 0
         # use validity to determine weight of each eye in caculation
@@ -95,7 +96,7 @@ class FixationDetector(object):
                 self._saccade = True
                 self._last_counter = self._counter
 
-        return False if self._saccade else True # fixation if not in saccade
+        return not self._saccade # fixation if not in saccade
 
     def _init_params(self):
         self._last_v = None
