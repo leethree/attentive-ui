@@ -3,81 +3,6 @@
 import collections
 import math
 import pickle
-from decimal import Decimal
-
-class P3(object):
-
-    def __init__(self, x=0, y=0, z=0):
-        self.x = x if isinstance(x, Decimal) else Decimal(repr(x))
-        self.y = y if isinstance(y, Decimal) else Decimal(repr(y))
-        self.z = z if isinstance(z, Decimal) else Decimal(repr(z))
-
-    def __str__(self):
-        return '(%.2f,%.2f,%.2f)' % (self.x, self.y, self.z)
-
-    def __sub__(self, other):
-        if isinstance(other, P3):
-            return P3(self.x - other.x, self.y - other.y, self.z - other.z)
-        else:
-            return NotImplemented
-
-    def __mul__(self, other):
-        if isinstance(other, P3):
-            return self.x * other.x + self.y * other.y + self.z * other.z
-        else:
-            return NotImplemented
-
-    def __abs__(self):
-        return (self * self).sqrt()
-
-    @staticmethod
-    def of(p):
-        x = p.x if hasattr(p, 'x') else 0
-        y = p.y if hasattr(p, 'y') else 0
-        z = p.z if hasattr(p, 'z') else 0
-        return P3(x, y, z)
-
-
-class Gaze(object):
-
-    def __init__(self):
-        self.t = float() # Timestamp
-
-        self.h = P3() # EyePosition3D
-        self.h_relative = P3() # EyePosition3DRelative
-        self.p = P3() # GazePoint3D
-        self.p2d = P3() # GazePoint2D
-        self.pupil = float() # Pupil
-        self.validity = long() # Validity
-
-    def __str__(self):
-        return ('%.2f:' % ((self.t - 1167612915647489) / 29059.0) +
-                '%s|' % self.h +
-                '%s,%s,' % (self.p, self.p2d) +
-                '%.2f,%d' % (self.pupil, self.validity)
-                )
-
-    @staticmethod
-    def of(gaze):
-        lp = Gaze()
-        lp.t = gaze.Timestamp / 1000000.0
-        lp.h = P3.of(gaze.LeftEyePosition3D)
-        lp.h_relative = P3.of(gaze.LeftEyePosition3DRelative)
-        lp.p = P3.of(gaze.LeftGazePoint3D)
-        lp.p2d = P3.of(gaze.LeftGazePoint2D)
-        lp.pupil = gaze.LeftPupil
-        lp.validity = gaze.LeftValidity
-
-        rp = Gaze()
-        rp.t = gaze.Timestamp / 1000000.0
-        rp.h = P3.of(gaze.RightEyePosition3D)
-        rp.h_relative = P3.of(gaze.RightEyePosition3DRelative)
-        rp.p = P3.of(gaze.RightGazePoint3D)
-        rp.p2d = P3.of(gaze.RightGazePoint2D)
-        rp.pupil = gaze.RightPupil
-        rp.validity = gaze.RightValidity
-
-        return lp, rp
 
 
 class FirFilter(object):
@@ -170,8 +95,6 @@ class FixationDetector(object):
                 self._saccade = True
                 self._last_counter = self._counter
 
-        print delta_t, theta, dtheta, ddtheta, 1 if self._saccade else 0
-
         return False if self._saccade else True # fixation if not in saccade
 
     def _init_params(self):
@@ -190,6 +113,8 @@ class FixationDetector(object):
 
 
 def get_data():
+    from eyetracker.facade import Gaze
+
     data_file = open('data.pk', 'rb')
 
     raw_data = []
@@ -211,11 +136,20 @@ def get_data():
     return data
 
 
+def printout(x):
+    print x
+
+
 def main():
-    detector = FixationDetector()
-    s_indicator = []
+    # detector = FixationDetector()
+    # s_indicator = []
+    # for item in get_data():
+    #     s_indicator.append(0 if detector.is_fixation(item) else 1)
+    from trackerd import FeedProcessor
+    processor = FeedProcessor(1000, 1000)
+    processor.set_output_method(printout)
     for item in get_data():
-        s_indicator.append(0 if detector.is_fixation(item) else 1)
+        processor.process(item)
 
 
 if __name__ == '__main__':

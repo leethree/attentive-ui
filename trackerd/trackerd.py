@@ -5,6 +5,7 @@ import socket
 import pubsub
 from eyetracker.facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
+from smoothie import FixationDetector
 
 
 class FeedProcessor(object):
@@ -15,54 +16,74 @@ class FeedProcessor(object):
         self._upside_down = upside_down
 
         self._entered = False
-        self._lastx = None
-        self._lasty = None
+        self._lastx = 0.0
+        self._lasty = 0.0
+        self._last_weight = 0
         self._output_method = None
 
-        self._ofile = open('data.pk', 'wb')
-
-    def __del__(self):
-        self._ofile.close()
+        self._detector = FixationDetector()
 
     def set_output_method(self, output_method):
         self._output_method = output_method
 
-    def process(self, x, y, gaze):
-        import pickle
-        pickle.dump(gaze, self._ofile)
-        return
+    def process(self, gaze):
+        left, right = gaze
+        x = None
+        y = None
 
-        width = self._width
-        height = self._height
+        if left.validity < 2:
+            x = left.p2d.x
+            y = left.p2d.y
+        if right.validity < 2:
+            x = (x + right.p2d.x) / 2 if x is not None else right.p2d.x
+            y = (y + right.p2d.y) / 2 if y is not None else right.p2d.y
+
+        # convert to ordinary float
+        x = float(x)
+        y = float(y)
+
+        if (x is None) or (y is None):
+            return
+
+        is_fixation = self._detector.is_fixation(gaze)
 
         if self._upside_down:
             # Mirror position
             x = 1 - x
             y = 1 - y
 
-        # Point is not moved.
-        if (x == self._lastx and y == self._lasty):
-            return False
+        if is_fixation:
+            x = (x + self._last_weight * self._lastx) / (self._last_weight + 1)
+            y = (y + self._last_weight * self._lasty) / (self._last_weight + 1)
+            self._last_weight += 1
+            # do nothing if the point hasn't moved
+            if (abs(x - self._lastx) * self._width < 0.5 and
+                abs(y - self._lasty) * self._height < 0.5):
+                return
+            self._lastx = x
+            self._lasty = y
 
-        if (x > 0 and x < 1 and y > 0 and y < 1):
-            action = 'move' if self._entered else 'enter'
-            self._send_command('hover %s %d %d' % (
-                               action, x * width, y * height))
-            self._entered = True
+            if x > 0 and x < 1 and y > 0 and y < 1:
+                action = 'move' if self._entered else 'enter'
+                self._send_command(action, x, y)
+                self._entered = True
 
-        elif (self._entered):
-            self._send_command('hover move %d %d' % (x * width, y * height))
-            self._send_command('hover exit %d %d' % (x * width, y * height))
-            self._entered = False
+            elif self._entered:
+                self._send_command('move', x, y)
+                self._send_command('exit', x, y)
+                self._entered = False
 
-        self._lastx = x
-        self._lasty = y
+        else: # saccade
+            self._last_weight = 0
+            if (self._entered):
+                self._send_command('exit', x, y)
+                self._entered = False
 
-        return True
 
-    def _send_command(self, command):
+    def _send_command(self, command, x, y):
         if self._output_method is not None:
-            self._output_method(command)
+            self._output_method('hover %s %d %d' % (
+                                command, x * self._width, y * self._height))
 
 
 class Conductor(object):
@@ -78,7 +99,7 @@ class Conductor(object):
         'monkey_port': 1080,
         'display_width': 480,
         'display_height': 800,
-        'upside_down': True
+        'upside_down': False
         }
 
     def __init__(self):
