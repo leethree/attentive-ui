@@ -372,6 +372,7 @@ public class TouchPaint extends Activity {
 
             final int action = event.getActionMasked();
             if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE
+                    || action == MotionEvent.ACTION_HOVER_ENTER
                     || action == MotionEvent.ACTION_HOVER_MOVE) {
                 final int N = event.getHistorySize();
                 final int P = event.getPointerCount();
@@ -403,7 +404,11 @@ public class TouchPaint extends Activity {
                     mCurX = event.getX();
                     mCurY = event.getY();
                 }
+            } else if (action == MotionEvent.ACTION_HOVER_EXIT) {
+                mCurX = -1;
+                mCurY = -1;
             }
+            
             return true;
         }
 
@@ -485,7 +490,9 @@ public class TouchPaint extends Activity {
         }
 
         private void drawLine(Canvas canvas, float x, float y, Paint paint) {
-            canvas.drawLine(mCurX, mCurY, x, y, paint);
+            if (mCurX > 0 && mCurY > 0) {
+                canvas.drawLine(mCurX, mCurY, x, y, paint);
+            }
         }
 
         /**
