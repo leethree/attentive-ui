@@ -5,10 +5,27 @@ import math
 import pickle
 
 
+class MovingWindow(object):
+
+    def __init__(self, length):
+        self._window = collections.deque(maxlen=length)
+
+    def clear(self):
+        self._window.clear()
+
+    def push(self, value):
+        self._window.append(value)
+
+    def get_average(self):
+        return sum(self._window) / float(len(self._window))
+
+
 class FirFilter(object):
 
-    def __init__(self, filters, normalization=1):
-        self._filter = [x / normalization for x in filters]
+    def __init__(self, filters, normalization=None):
+        self._filter = filters
+        self._norm = (1.0 / sum(filters) if normalization is None
+                      else normalization)
         mem_len = len(self._filter)
         self._mem = collections.deque([0] * mem_len, maxlen=mem_len)
 
@@ -20,7 +37,7 @@ class FirFilter(object):
         ret = 0.0
         for v, f in zip(self._mem, self._filter):
             ret += v * f
-        return ret
+        return ret * self._norm
 
 
 class Differentiator(object):
@@ -50,10 +67,8 @@ class FixationDetector(object):
         self._right_diff = Differentiator(0, self._get_theta)
 
         # Savitzky-Golay smoothing filters
-        filter_h = [-3, 12, 17, 12, -3]
-        self._velocity_filter = FirFilter(filter_h, 35.0)
-        filter_g = [-3, -2, -1, 0, 1, 2, 3]
-        self._accel_filter = FirFilter(filter_g, 28.0)
+        self._velocity_filter = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
+        self._accel_filter = FirFilter([-3, -2, -1, 0, 1, 2, 3], 1.0 / 28)
         self._init_params()
 
     def clear(self):
