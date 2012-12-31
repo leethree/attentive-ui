@@ -68,7 +68,7 @@ class FixationDetector(object):
 
         # Savitzky-Golay smoothing filters
         self._velocity_filter = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
-        self._accel_filter = FirFilter([-3, -2, -1, 0, 1, 2, 3], 1.0 / 28)
+        self._accel_filter = FirFilter([-2, -1, 0, 1, 2], 1.0 / 10)
         self._init_params()
 
     def clear(self):
@@ -104,10 +104,10 @@ class FixationDetector(object):
             if self._counter - self._last_counter > 12:
                 # saccade should not be longer than 300ms
                 self._saccade = False
-            elif ddtheta < -200 and dtheta < 100:
+            elif ddtheta < -200 and dtheta < 50:
                 self._saccade = False
         if not self._saccade: # candidate for fixation
-            if ddtheta > 300:
+            if ddtheta > 200:
                 self._saccade = True
                 self._last_counter = self._counter
 

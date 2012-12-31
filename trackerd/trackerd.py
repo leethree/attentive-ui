@@ -45,11 +45,11 @@ class FeedProcessor(object):
         if (x is None) or (y is None):
             return
 
+        is_fixation = self._detector.is_fixation(gaze)
+
         # convert to ordinary float
         x = float(x)
         y = float(y)
-
-        is_fixation = self._detector.is_fixation(gaze)
 
         if self._upside_down:
             # Mirror position
@@ -66,6 +66,7 @@ class FeedProcessor(object):
             if (abs(x - self._lastx) * self._width < 1 and
                 abs(y - self._lasty) * self._height < 1):
                 return
+
             self._lastx = x
             self._lasty = y
 
@@ -79,10 +80,9 @@ class FeedProcessor(object):
                 self._send_command('exit', x, y)
                 self._entered = False
 
-        else: # saccade
-            self._moving_avg_x.clear()
-            self._moving_avg_y.clear()
-            if (self._entered):
+        elif self._entered: # start saccade
+                self._moving_avg_x.clear()
+                self._moving_avg_y.clear()
                 self._send_command('exit', x, y)
                 self._entered = False
 
