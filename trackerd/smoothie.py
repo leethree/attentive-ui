@@ -20,22 +20,19 @@ class MovingWindow(object):
         return sum(self._window) / float(len(self._window))
 
 
-class FirFilter(object):
+class FirFilter(MovingWindow):
 
     def __init__(self, filters, normalization=None):
         self._filter = filters
         self._norm = (1.0 / sum(filters) if normalization is None
                       else normalization)
-        mem_len = len(self._filter)
-        self._mem = collections.deque([0] * mem_len, maxlen=mem_len)
-
-    def clear(self):
-        self._mem.extend([0] * len(self._mem))
+        super(FirFilter, self).__init__(len(self._filter))
 
     def filter(self, x):
-        self._mem.append(x)
+        self.push(x)
         ret = 0.0
-        for v, f in zip(self._mem, self._filter):
+        # (right-aligned) reversed zip
+        for v, f in zip(reversed(self._window), reversed(self._filter)):
             ret += v * f
         return ret * self._norm
 
@@ -67,6 +64,7 @@ class FixationDetector(object):
         self._right_diff = Differentiator(0, self._get_theta)
 
         # Savitzky-Golay smoothing filters
+        self._time_filter = FirFilter([0, -1, 1, 0, 0], 1)
         self._velocity_filter = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
         self._accel_filter = FirFilter([-2, -1, 0, 1, 2], 1.0 / 10)
         self._init_params()
@@ -83,7 +81,7 @@ class FixationDetector(object):
         self._counter += 1
         left, right = data_item
 
-        delta_t = self._time_diff.diff(left.t)
+        delta_t = self._time_filter.filter(left.t)
         if delta_t == 0: return not self._saccade
 
         theta, weight = 0.0, 0
@@ -99,17 +97,20 @@ class FixationDetector(object):
             theta /= weight
 
         dtheta = self._velocity_filter.filter(theta) / delta_t
-        ddtheta = self._accel_filter.filter(dtheta) / delta_t
+        ddtheta = self._accel_filter.filter(theta) / delta_t / delta_t
         if self._saccade:
             if self._counter - self._last_counter > 12:
                 # saccade should not be longer than 300ms
                 self._saccade = False
-            elif ddtheta < -200 and dtheta < 50:
+            elif ddtheta < self._threshold and dtheta < 50:
                 self._saccade = False
         if not self._saccade: # candidate for fixation
             if ddtheta > 200:
                 self._saccade = True
+                self._threshold = -ddtheta * 0.6
                 self._last_counter = self._counter
+
+        # print delta_t, theta, dtheta, ddtheta, 1 if self._saccade else 0
 
         return not self._saccade # fixation if not in saccade
 
@@ -118,6 +119,7 @@ class FixationDetector(object):
         self._last_t = None
         self._counter = 0
         self._last_counter = 0
+        self._threshold = -300
         self._saccade = False
 
     def _get_theta(self, v, last_v):
@@ -157,10 +159,6 @@ def printout(x):
 
 
 def main():
-    # detector = FixationDetector()
-    # s_indicator = []
-    # for item in get_data():
-    #     s_indicator.append(0 if detector.is_fixation(item) else 1)
     from trackerd import FeedProcessor
     processor = FeedProcessor(1000, 1000)
     processor.set_output_method(printout)

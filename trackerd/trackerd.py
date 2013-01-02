@@ -5,7 +5,7 @@ import socket
 import pubsub
 from eyetracker.facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
-from smoothie import MovingWindow, FixationDetector
+from smoothie import FirFilter, FixationDetector
 
 
 class FeedProcessor(object):
@@ -24,8 +24,8 @@ class FeedProcessor(object):
         self._detector = FixationDetector()
 
         # moving averagers
-        self._moving_avg_x = MovingWindow(7)
-        self._moving_avg_y = MovingWindow(7)
+        self._moving_avg_x = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
+        self._moving_avg_y = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
 
     def set_output_method(self, output_method):
         self._output_method = output_method
@@ -45,8 +45,6 @@ class FeedProcessor(object):
         if (x is None) or (y is None):
             return
 
-        is_fixation = self._detector.is_fixation(gaze)
-
         # convert to ordinary float
         x = float(x)
         y = float(y)
@@ -56,12 +54,10 @@ class FeedProcessor(object):
             x = 1 - x
             y = 1 - y
 
-        if is_fixation:
-            self._moving_avg_x.push(x)
-            x = self._moving_avg_x.get_average()
-            self._moving_avg_y.push(y)
-            y = self._moving_avg_y.get_average()
+        x = self._moving_avg_x.filter(x)
+        y = self._moving_avg_y.filter(y)
 
+        if self._detector.is_fixation(gaze):
             # do nothing if the point hasn't moved
             if (abs(x - self._lastx) * self._width < 1 and
                 abs(y - self._lasty) * self._height < 1):
@@ -81,9 +77,7 @@ class FeedProcessor(object):
                 self._entered = False
 
         elif self._entered: # start saccade
-                self._moving_avg_x.clear()
-                self._moving_avg_y.clear()
-                self._send_command('exit', x, y)
+                self._send_command('exit', self._lastx, self._lasty)
                 self._entered = False
 
 
