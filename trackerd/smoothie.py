@@ -7,14 +7,25 @@ import pickle
 
 class MovingWindow(object):
 
-    def __init__(self, length):
-        self._window = collections.deque(maxlen=length)
+    def __init__(self, maxlen):
+        self._maxlen = maxlen
+        self._window = collections.deque(maxlen=maxlen)
 
     def clear(self):
         self._window.clear()
 
     def push(self, value):
         self._window.append(value)
+
+    def __iter__(self):
+        return iter(self._window)
+
+    def __len__(self):
+        return len(self._window)
+
+    @property
+    def maxlen(self):
+        return self._maxlen
 
     def get_average(self):
         return sum(self._window) / float(len(self._window))
@@ -58,7 +69,28 @@ class Differentiator(object):
 
 class FixationDetector(object):
 
+    def __init__(self, initial=True):
+        self._initial_saccade = not initial
+        self._saccade = self._initial_saccade
+
+    def clear(self):
+        self._saccade = self._initial_saccade
+
+    def is_fixation(self, data_item):
+        self._process(data_item, self._saccade)
+        return not self._saccade
+
+    def _set_saccade(self, is_saccade):
+        self._saccade = is_saccade
+
+    def _process(self, data_item, saccade):
+        pass # to be implemented by subclasses
+
+
+class AccelDetector(FixationDetector):
+
     def __init__(self):
+        super(AccelDetector, self).__init__(True)
         self._time_diff = Differentiator(1)
         self._left_diff = Differentiator(0, self._get_theta)
         self._right_diff = Differentiator(0, self._get_theta)
@@ -70,6 +102,7 @@ class FixationDetector(object):
         self._init_params()
 
     def clear(self):
+        super(DispersionDetector, self).clear()
         self._time_diff.clear()
         self._left_diff.clear()
         self._right_diff.clear()
@@ -77,12 +110,12 @@ class FixationDetector(object):
         self._accel_filter.clear()
         self._init_params()
 
-    def is_fixation(self, data_item):
+    def _process(self, data_item, saccade):
         self._counter += 1
         left, right = data_item
 
         delta_t = self._time_filter.filter(left.t)
-        if delta_t == 0: return not self._saccade
+        if delta_t == 0: return
 
         theta, weight = 0.0, 0
         # use validity to determine weight of each eye in caculation
@@ -98,21 +131,19 @@ class FixationDetector(object):
 
         dtheta = self._velocity_filter.filter(theta) / delta_t
         ddtheta = self._accel_filter.filter(theta) / delta_t / delta_t
-        if self._saccade:
+        if saccade:
             if self._counter - self._last_counter > 12:
                 # saccade should not be longer than 300ms
-                self._saccade = False
+                saccade = False
             elif ddtheta < self._threshold and dtheta < 50:
-                self._saccade = False
-        if not self._saccade: # candidate for fixation
+                saccade = False
+        if not saccade: # candidate for fixation
             if ddtheta > 200:
-                self._saccade = True
+                saccade = True
                 self._threshold = -ddtheta * 0.6
                 self._last_counter = self._counter
 
-        # print delta_t, theta, dtheta, ddtheta, 1 if self._saccade else 0
-
-        return not self._saccade # fixation if not in saccade
+        self._set_saccade(saccade)
 
     def _init_params(self):
         self._last_v = None
@@ -120,7 +151,6 @@ class FixationDetector(object):
         self._counter = 0
         self._last_counter = 0
         self._threshold = -300
-        self._saccade = False
 
     def _get_theta(self, v, last_v):
         try:
@@ -128,6 +158,44 @@ class FixationDetector(object):
             return math.degrees(math.acos(cos))
         except ArithmeticError:
             return 0
+
+
+class DispersionDetector(FixationDetector):
+
+    def __init__(self):
+        super(DispersionDetector, self).__init__(False)
+        self._memory = MovingWindow(6) # 6 / 40Hz = 150ms
+        self._fix_x = 0
+        self._fix_y = 0
+
+    def clear(self):
+        super(DispersionDetector, self).clear()
+        self._memory.clear()
+        self._fix_x = 0
+        self._fix_y = 0
+
+    def _process(self, data_item, saccade):
+        left, right = data_item
+        if left.validity >= 2:
+            return not self._saccade
+        self._memory.push(data_item)
+        if saccade:
+            if len(self._memory) == self._memory.maxlen:
+                xlist = [float(left.p2d.x) for left, right in self._memory]
+                ylist = [float(left.p2d.y) for left, right in self._memory]
+                xdispersion = max(xlist) - min(xlist)
+                ydispersion = max(ylist) - min(ylist)
+                if xdispersion + ydispersion < 0.2:
+                    saccade = False
+                    self._fix_x = sum(xlist) / len(xlist)
+                    self._fix_y = sum(ylist) / len(ylist)
+                    print self._fix_x, self._fix_y
+        else:
+            x, y = float(left.p2d.x), float(left.p2d.y)
+            if abs(self._fix_x - x) + abs(self._fix_y - y) > 0.2:
+                saccade = True
+
+        self._set_saccade(saccade)
 
 
 def get_data():
@@ -161,6 +229,7 @@ def printout(x):
 def main():
     from trackerd import FeedProcessor
     processor = FeedProcessor(1000, 1000)
+    processor.set_fixation_detector(AccelDetector())
     processor.set_output_method(printout)
     for item in get_data():
         processor.process(item)

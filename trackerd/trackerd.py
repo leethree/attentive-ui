@@ -27,6 +27,9 @@ class FeedProcessor(object):
         self._moving_avg_x = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
         self._moving_avg_y = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
 
+    def set_fixation_detector(self, fixation_detector):
+        self._detector = fixation_detector
+
     def set_output_method(self, output_method):
         self._output_method = output_method
 
@@ -35,6 +38,8 @@ class FeedProcessor(object):
         x = None
         y = None
 
+        # TODO(LeeThree): Mirror data in monocular cases instead of use data
+        # from single eye.
         if left.validity < 2:
             x = left.p2d.x
             y = left.p2d.y
@@ -46,6 +51,7 @@ class FeedProcessor(object):
             return
 
         # convert to ordinary float
+        # TODO(LeeThree): Remove this when float properties are added to P3.
         x = float(x)
         y = float(y)
 

@@ -180,6 +180,7 @@ class P3(object):
         self.x = x if isinstance(x, Decimal) else Decimal(repr(x))
         self.y = y if isinstance(y, Decimal) else Decimal(repr(y))
         self.z = z if isinstance(z, Decimal) else Decimal(repr(z))
+        # TODO(LeeThree): add property x,y,z as float.
 
     def __str__(self):
         return '(%.2f,%.2f,%.2f)' % (self.x, self.y, self.z)
