@@ -217,10 +217,11 @@ class Gaze(object):
         self.h_relative = P3() # EyePosition3DRelative
         self.p = P3() # GazePoint3D
         self.p2d = P3() # GazePoint2D
-        self.pupil = float() # Pupil
-        self.validity = long() # Validity
+        self.pupil = 0.0 # Pupil
+        self.validity = 0.0 # Validity
 
     def __str__(self):
+        # TODO(LeeThree): Remove magic numbers.
         return ('%.2f:' % ((self.t - 1167612915647489) / 29059.0) +
                 '%s|' % self.h +
                 '%s,%s,' % (self.p, self.p2d) +
@@ -230,13 +231,12 @@ class Gaze(object):
     @staticmethod
     def of(gaze):
         lp = Gaze()
-        lp.t = gaze.Timestamp / 1000000.0
+        lp.t = gaze.Timestamp / 1000000.0 # microseconds to seconds
         lp.h = P3.of(gaze.LeftEyePosition3D)
         lp.h_relative = P3.of(gaze.LeftEyePosition3DRelative)
         lp.p = P3.of(gaze.LeftGazePoint3D)
         lp.p2d = P3.of(gaze.LeftGazePoint2D)
         lp.pupil = gaze.LeftPupil
-        lp.validity = gaze.LeftValidity
 
         rp = Gaze()
         rp.t = gaze.Timestamp / 1000000.0
@@ -245,6 +245,14 @@ class Gaze(object):
         rp.p = P3.of(gaze.RightGazePoint3D)
         rp.p2d = P3.of(gaze.RightGazePoint2D)
         rp.pupil = gaze.RightPupil
-        rp.validity = gaze.RightValidity
+
+        if gaze.LeftValidity == 0 and gaze.RightValidity == 0:
+            lp.validity, rp.validity = 0.5, 0.5
+        elif gaze.LeftValidity < 2:
+            lp.validity, rp.validity = 1, 0
+        elif gaze.RightValidity < 2:
+            lp.validity, rp.validity = 0, 1
+        else:
+            lp.validity, rp.validity = 0, 0
 
         return lp, rp

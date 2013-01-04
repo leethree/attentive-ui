@@ -23,9 +23,8 @@ class MovingWindow(object):
     def __len__(self):
         return len(self._window)
 
-    @property
-    def maxlen(self):
-        return self._maxlen
+    def is_full(self):
+        return len(self._window) == self._maxlen
 
     def get_average(self):
         return sum(self._window) / float(len(self._window))
@@ -117,17 +116,9 @@ class AccelDetector(FixationDetector):
         delta_t = self._time_filter.filter(left.t)
         if delta_t == 0: return
 
-        theta, weight = 0.0, 0
         # use validity to determine weight of each eye in caculation
-        if left.validity < 2:
-            theta += self._left_diff.diff(left.p - left.h)
-            weight += 1
-        if right.validity < 2:
-            theta += self._right_diff.diff(right.p - right.h)
-            weight += 1
-
-        if weight > 0:
-            theta /= weight
+        theta = (self._left_diff.diff(left.p - left.h) * left.validity +
+                 self._right_diff.diff(right.p - right.h) * right.validity)
 
         dtheta = self._velocity_filter.filter(theta) / delta_t
         ddtheta = self._accel_filter.filter(theta) / delta_t / delta_t
@@ -176,11 +167,11 @@ class DispersionDetector(FixationDetector):
 
     def _process(self, data_item, saccade):
         left, right = data_item
-        if left.validity >= 2:
-            return not self._saccade
+        if left.validity == 0:
+            return
         self._memory.push(data_item)
         if saccade:
-            if len(self._memory) == self._memory.maxlen:
+            if self._memory.is_full():
                 xlist = [float(left.p2d.x) for left, right in self._memory]
                 ylist = [float(left.p2d.y) for left, right in self._memory]
                 xdispersion = max(xlist) - min(xlist)
@@ -189,7 +180,6 @@ class DispersionDetector(FixationDetector):
                     saccade = False
                     self._fix_x = sum(xlist) / len(xlist)
                     self._fix_y = sum(ylist) / len(ylist)
-                    print self._fix_x, self._fix_y
         else:
             x, y = float(left.p2d.x), float(left.p2d.y)
             if abs(self._fix_x - x) + abs(self._fix_y - y) > 0.2:

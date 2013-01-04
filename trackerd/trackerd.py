@@ -35,25 +35,16 @@ class FeedProcessor(object):
 
     def process(self, gaze):
         left, right = gaze
-        x = None
-        y = None
+
+        if left.validity == 0 and right.validity == 0:
+            return
 
         # TODO(LeeThree): Mirror data in monocular cases instead of use data
         # from single eye.
-        if left.validity < 2:
-            x = left.p2d.x
-            y = left.p2d.y
-        if right.validity < 2:
-            x = (x + right.p2d.x) / 2 if x is not None else right.p2d.x
-            y = (y + right.p2d.y) / 2 if y is not None else right.p2d.y
-
-        if (x is None) or (y is None):
-            return
-
-        # convert to ordinary float
-        # TODO(LeeThree): Remove this when float properties are added to P3.
-        x = float(x)
-        y = float(y)
+        x = (float(left.p2d.x) * left.validity +
+             float(right.p2d.x) * right.validity)
+        y = (float(left.p2d.y) * left.validity +
+             float(right.p2d.y) * right.validity)
 
         if self._upside_down:
             # Mirror position
