@@ -167,25 +167,34 @@ class DispersionDetector(FixationDetector):
 
     def _process(self, data_item, saccade):
         left, right = data_item
-        if left.validity == 0:
+        if left.validity == 0 and right.validity == 0:
             return
-        self._memory.push(data_item)
+
+        # TODO(LeeThree): Mirror data in monocular cases instead of use data
+        # from single eye.
+        x = (float(left.p2d.x) * left.validity +
+             float(right.p2d.x) * right.validity)
+        y = (float(left.p2d.y) * left.validity +
+             float(right.p2d.y) * right.validity)
+
+        self._memory.push((x, y))
         if saccade:
             if self._memory.is_full():
-                xlist = [float(left.p2d.x) for left, right in self._memory]
-                ylist = [float(left.p2d.y) for left, right in self._memory]
+                xlist = [x for x, y in self._memory]
+                ylist = [y for x, y in self._memory]
                 xdispersion = max(xlist) - min(xlist)
                 ydispersion = max(ylist) - min(ylist)
-                if xdispersion + ydispersion < 0.2:
+                if xdispersion + ydispersion < 0.1:
                     saccade = False
                     self._fix_x = sum(xlist) / len(xlist)
                     self._fix_y = sum(ylist) / len(ylist)
         else:
             x, y = float(left.p2d.x), float(left.p2d.y)
-            if abs(self._fix_x - x) + abs(self._fix_y - y) > 0.2:
+            if abs(self._fix_x - x) + abs(self._fix_y - y) > 0.1:
                 saccade = True
 
         self._set_saccade(saccade)
+        # print x, y, saccade
 
 
 def get_data():
@@ -219,7 +228,7 @@ def printout(x):
 def main():
     from trackerd import FeedProcessor
     processor = FeedProcessor(1000, 1000)
-    processor.set_fixation_detector(AccelDetector())
+    processor.set_fixation_detector(DispersionDetector())
     processor.set_output_method(printout)
     for item in get_data():
         processor.process(item)

@@ -222,7 +222,7 @@ class Gaze(object):
 
     def __str__(self):
         # TODO(LeeThree): Remove magic numbers.
-        return ('%.2f:' % ((self.t - 1167612915647489) / 29059.0) +
+        return ('%.3f:' % ((self.t - 1167612915647489) / 29059.0) +
                 '%s|' % self.h +
                 '%s,%s,' % (self.p, self.p2d) +
                 '%.2f,%d' % (self.pupil, self.validity)

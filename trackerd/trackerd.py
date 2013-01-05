@@ -5,7 +5,7 @@ import socket
 import pubsub
 from eyetracker.facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
-from smoothie import FirFilter, FixationDetector
+from smoothie import MovingWindow, FixationDetector, DispersionDetector
 
 
 class FeedProcessor(object):
@@ -24,8 +24,8 @@ class FeedProcessor(object):
         self._detector = FixationDetector()
 
         # moving averagers
-        self._moving_avg_x = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
-        self._moving_avg_y = FirFilter([-3, 12, 17, 12, -3], 1.0 / 35)
+        self._moving_avg_x = MovingWindow(32)
+        self._moving_avg_y = MovingWindow(32)
 
     def set_fixation_detector(self, fixation_detector):
         self._detector = fixation_detector
@@ -51,13 +51,15 @@ class FeedProcessor(object):
             x = 1 - x
             y = 1 - y
 
-        x = self._moving_avg_x.filter(x)
-        y = self._moving_avg_y.filter(y)
-
         if self._detector.is_fixation(gaze):
+            self._moving_avg_x.push(x)
+            self._moving_avg_y.push(y)
+            x = self._moving_avg_x.get_average()
+            y = self._moving_avg_y.get_average()
+
             # do nothing if the point hasn't moved
-            if (abs(x - self._lastx) * self._width < 1 and
-                abs(y - self._lasty) * self._height < 1):
+            if (abs(x - self._lastx) * self._width < 5 and
+                abs(y - self._lasty) * self._height < 5):
                 return
 
             self._lastx = x
@@ -74,14 +76,17 @@ class FeedProcessor(object):
                 self._entered = False
 
         elif self._entered: # start saccade
-                self._send_command('exit', self._lastx, self._lasty)
-                self._entered = False
+            self._moving_avg_x.clear()
+            self._moving_avg_y.clear()
+            self._send_command('exit', self._lastx, self._lasty)
+            self._entered = False
 
 
     def _send_command(self, command, x, y):
         if self._output_method is not None:
             self._output_method('hover %s %d %d' % (
                                 command, x * self._width, y * self._height))
+        # print '%s %d %d' % (command, x * self._width, y * self._height)
 
 
 class Conductor(object):
@@ -91,13 +96,13 @@ class Conductor(object):
     _DEFAULT_CONF = {
         # Use 'socket.gethostname()' for real devices.
         # Or use 'localhost' for emulators.
-        'server_host': 'localhost',
+        'server_host': socket.gethostname(),
         'server_port': 10800,
         'monkey_host': 'localhost',
         'monkey_port': 1080,
         'display_width': 480,
         'display_height': 800,
-        'upside_down': False
+        'upside_down': True
         }
 
     def __init__(self):
@@ -174,6 +179,7 @@ class Conductor(object):
         self._fprocessor = FeedProcessor(self._config['display_width'],
                                          self._config['display_height'],
                                          self._config['upside_down'])
+        self._fprocessor.set_fixation_detector(DispersionDetector())
         self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
