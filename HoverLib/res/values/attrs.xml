@@ -1,0 +1,6 @@
+<resources>
+
+    <declare-styleable name="HoverImageButton">
+    </declare-styleable>
+
+</resources>
