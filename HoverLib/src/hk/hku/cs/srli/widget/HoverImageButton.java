@@ -2,9 +2,7 @@
 package hk.hku.cs.srli.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,9 +33,6 @@ public class HoverImageButton extends ImageButton {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-//        // Load attributes
-//        final TypedArray a = getContext().obtainStyledAttributes(
-//                attrs, R.styleable.HoverImageButton, defStyle, 0);
         setOnLongClickListener(new OnLongClickListener() {
             
             @Override
