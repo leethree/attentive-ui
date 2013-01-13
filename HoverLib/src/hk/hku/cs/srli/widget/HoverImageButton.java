@@ -1,4 +1,3 @@
-
 package hk.hku.cs.srli.widget;
 
 import android.content.Context;
@@ -11,9 +10,8 @@ import android.widget.ImageButton;
  * ImageButton with Hover support.
  */
 public class HoverImageButton extends ImageButton {
-
-    private float mHoverX;
-    private float mHoverY;
+    
+    private HoverDelegate hover;
     
     public HoverImageButton(Context context) {
         super(context);
@@ -40,26 +38,26 @@ public class HoverImageButton extends ImageButton {
                 return false;
             }
         });
-
+        hover = new HoverDelegate(this);
+        hover.setOnLongHoverListener(new HoverDelegate.OnLongHoverListener() {
+            
+            @Override
+            public boolean onLongHover(View v, int x, int y) {
+                TooltipManager.show(HoverImageButton.this, getContentDescription(),
+                        x, y);
+                return false;
+            }
+        });
     }
-    
-    private boolean hovered;
     
     @Override
     public void onHoverChanged(boolean hovered) {
-        this.hovered = hovered;
+        hover.onHoverChanged(hovered);
         super.onHoverChanged(hovered);
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        if (event.getActionMasked() == MotionEvent.ACTION_HOVER_MOVE) {
-            mHoverX = event.getRawX();
-            mHoverY = event.getRawY();
-            if (hovered) {
-                TooltipManager.show(HoverImageButton.this, getContentDescription());
-            }
-        }
-        return super.onHoverEvent(event);
+        return hover.onHoverEvent(event) || super.onHoverEvent(event);
     }
 }
