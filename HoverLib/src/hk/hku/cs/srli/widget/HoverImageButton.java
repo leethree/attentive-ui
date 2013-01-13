@@ -2,6 +2,7 @@
 package hk.hku.cs.srli.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -39,7 +40,19 @@ public class HoverImageButton extends ImageButton {
             public boolean onLongClick(View v) {
                 int[] location = new int[2];
                 getLocationInWindow(location);
-                showTooltipAt(location[0], location[1]);
+                Rect displayFrame = new Rect();
+                getWindowVisibleDisplayFrame(displayFrame);
+                final int width = getWidth();
+                final int height = getHeight();
+                final int midx = location[0] + width / 2;
+                final int midy = location[1] + height / 2;
+                if (midy < displayFrame.height()) {
+                    // Show along the top; follow action buttons
+                    showTooltipAt(midx - displayFrame.left, midy - displayFrame.top);
+                } else {
+                    // Show along the bottom center
+                    showTooltipAt(0, height);
+                }
                 return false;
             }
         });
