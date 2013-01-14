@@ -50,7 +50,8 @@ public class DemoFragmentBase extends Fragment {
 
         // Show the demo title as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.demo_title)).setText(mItem.title);
+            TextView title = (TextView) rootView.findViewById(R.id.demo_title);
+            if (title != null) title.setText(mItem.title);
         }
 
         return rootView;

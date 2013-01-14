@@ -17,7 +17,7 @@ public class DemoContent {
     static {
         // Add 3 sample items.
         addItem(new DemoItem("1", "Buttons", new ButtonsFragment()));
-        addItem(new DemoItem("2", "WebView"));
+        addItem(new DemoItem("2", "Parallax", new WebViewFragment()));
         addItem(new DemoItem("3", "Ellipsis"));
     }
 
