@@ -1,9 +1,9 @@
 
 package hk.hku.cs.srli.monkeydemo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
 import hk.hku.cs.srli.monkeydemo.demo.DemoContent;
 import hk.hku.cs.srli.monkeydemo.demo.DemoFragmentBase;
@@ -23,7 +23,7 @@ import hk.hku.cs.srli.monkeydemo.demo.DemoFragmentBase;
  * This activity also implements the required {@link DemoListFragment.Callbacks}
  * interface to listen for item selections.
  */
-public class DemoListActivity extends FragmentActivity
+public class DemoListActivity extends Activity
         implements DemoListFragment.Callbacks {
 
     /**
@@ -46,7 +46,7 @@ public class DemoListActivity extends FragmentActivity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            ((DemoListFragment) getSupportFragmentManager()
+            ((DemoListFragment) getFragmentManager()
                     .findFragmentById(R.id.demo_list))
                     .setActivateOnItemClick(true);
         }
@@ -67,7 +67,7 @@ public class DemoListActivity extends FragmentActivity
             arguments.putString(DemoFragmentBase.ARG_ITEM_ID, id);
             DemoFragmentBase fragment = DemoContent.ITEM_MAP.get(id).fragment;
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .replace(R.id.single_demo_container, fragment)
                     .commit();
 
