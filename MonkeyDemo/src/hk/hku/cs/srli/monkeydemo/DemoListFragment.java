@@ -12,7 +12,7 @@ import hk.hku.cs.srli.monkeydemo.demo.DemoContent;
 import hk.hku.cs.srli.monkeydemo.demo.DemoFragmentBase;
 
 /**
- * A list fragment representing a list of Typefaces. This fragment also supports
+ * A list fragment representing a list of demos. This fragment also supports
  * tablet devices by allowing list items to be given an 'activated' state upon
  * selection. This helps indicate which item is currently being viewed in a
  * {@link DemoFragmentBase}.
@@ -72,8 +72,7 @@ public class DemoListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<DemoContent.DummyItem>(
+        setListAdapter(new ArrayAdapter<DemoContent.DemoItem>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
