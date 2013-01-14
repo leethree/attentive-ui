@@ -1,6 +1,9 @@
 
 package hk.hku.cs.srli.monkeydemo.dummy;
 
+import hk.hku.cs.srli.monkeydemo.ButtonsFragment;
+import hk.hku.cs.srli.monkeydemo.TypeDetailFragment;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +29,7 @@ public class DummyContent {
 
     static {
         // Add 3 sample items.
-        addItem(new DummyItem("1", "Helvetica"));
+        addItem(new DummyItem("1", "Helvetica", new ButtonsFragment()));
         addItem(new DummyItem("2", "Futura"));
         addItem(new DummyItem("3", "Univers"));
     }
@@ -42,10 +45,18 @@ public class DummyContent {
     public static class DummyItem {
         public String id;
         public String content;
+        public TypeDetailFragment fragment;
 
         public DummyItem(String id, String content) {
             this.id = id;
             this.content = content;
+            this.fragment = new TypeDetailFragment();
+        }
+        
+        public DummyItem(String id, String content, TypeDetailFragment fragment) {
+            this.id = id;
+            this.content = content;
+            this.fragment = fragment;
         }
 
         @Override

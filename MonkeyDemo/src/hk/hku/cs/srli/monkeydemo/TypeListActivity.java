@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import hk.hku.cs.srli.monkeydemo.dummy.DummyContent;
+
 /**
  * An activity representing a list of Typefaces. This activity has different
  * presentations for handset and tablet-size devices. On handsets, the activity
@@ -63,7 +65,7 @@ public class TypeListActivity extends FragmentActivity
             // fragment transaction.
             Bundle arguments = new Bundle();
             arguments.putString(TypeDetailFragment.ARG_ITEM_ID, id);
-            TypeDetailFragment fragment = new TypeDetailFragment();
+            TypeDetailFragment fragment = DummyContent.ITEM_MAP.get(id).fragment;
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.type_detail_container, fragment)

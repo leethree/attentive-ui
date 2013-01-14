@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
+import hk.hku.cs.srli.monkeydemo.dummy.DummyContent;
+
 /**
  * An activity representing a single Type detail screen. This activity is only
  * used on handset devices. On tablet-size devices, item details are presented
@@ -37,10 +39,10 @@ public class TypeDetailActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+            final String demoId = getIntent().getStringExtra(TypeDetailFragment.ARG_ITEM_ID);
+            TypeDetailFragment fragment = DummyContent.ITEM_MAP.get(demoId).fragment; //new TypeDetailFragment();
             Bundle arguments = new Bundle();
-            arguments.putString(TypeDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(TypeDetailFragment.ARG_ITEM_ID));
-            TypeDetailFragment fragment = new TypeDetailFragment();
+            arguments.putString(TypeDetailFragment.ARG_ITEM_ID, demoId);
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.type_detail_container, fragment)
