@@ -7,7 +7,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".TypeListActivity" >
+    tools:context=".DemoListActivity" >
 
     <!--
     This layout is a two-pane layout for the Typefaces
@@ -21,15 +21,15 @@
     -->
 
     <fragment
-        android:id="@+id/type_list"
-        android:name="hk.hku.cs.srli.monkeydemo.TypeListFragment"
+        android:id="@+id/demo_list"
+        android:name="hk.hku.cs.srli.monkeydemo.DemoListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         tools:layout="@android:layout/list_content" />
 
     <FrameLayout
-        android:id="@+id/type_detail_container"
+        android:id="@+id/demo_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3" />

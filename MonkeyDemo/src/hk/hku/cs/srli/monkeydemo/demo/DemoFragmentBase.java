@@ -1,5 +1,5 @@
 
-package hk.hku.cs.srli.monkeydemo;
+package hk.hku.cs.srli.monkeydemo.demo;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,14 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import hk.hku.cs.srli.monkeydemo.dummy.DummyContent;
+import hk.hku.cs.srli.monkeydemo.R;
+import hk.hku.cs.srli.monkeydemo.SingleDemoActivity;
+import hk.hku.cs.srli.monkeydemo.DemoListActivity;
 
 /**
  * A fragment representing a single Type detail screen. This fragment is either
- * contained in a {@link TypeListActivity} in two-pane mode (on tablets) or a
- * {@link TypeDetailActivity} on handsets.
+ * contained in a {@link DemoListActivity} in two-pane mode (on tablets) or a
+ * {@link SingleDemoActivity} on handsets.
  */
-public class TypeDetailFragment extends Fragment {
+public class DemoFragmentBase extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -25,13 +27,13 @@ public class TypeDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private DemoContent.DummyItem mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public TypeDetailFragment() {
+    public DemoFragmentBase() {
     }
 
     @Override
@@ -42,7 +44,7 @@ public class TypeDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = DemoContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         }
     }
 
@@ -53,13 +55,13 @@ public class TypeDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.type_detail)).setText(mItem.content);
+            ((TextView) rootView.findViewById(R.id.demo_title)).setText(mItem.content);
         }
 
         return rootView;
     }
     
     protected int getLayoutResource() {
-        return R.layout.fragment_type_detail;
+        return R.layout.fragment_demo_base;
     }
 }

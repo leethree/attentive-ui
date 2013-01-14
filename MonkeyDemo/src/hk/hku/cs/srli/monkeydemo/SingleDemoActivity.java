@@ -7,22 +7,23 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
-import hk.hku.cs.srli.monkeydemo.dummy.DummyContent;
+import hk.hku.cs.srli.monkeydemo.demo.DemoContent;
+import hk.hku.cs.srli.monkeydemo.demo.DemoFragmentBase;
 
 /**
  * An activity representing a single Type detail screen. This activity is only
  * used on handset devices. On tablet-size devices, item details are presented
- * side-by-side with a list of items in a {@link TypeListActivity}.
+ * side-by-side with a list of items in a {@link DemoListActivity}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing more than
- * a {@link TypeDetailFragment}.
+ * a {@link DemoFragmentBase}.
  */
-public class TypeDetailActivity extends FragmentActivity {
+public class SingleDemoActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_type_detail);
+        setContentView(R.layout.activity_single_demo);
 
         // Show the Up button in the action bar.
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -39,13 +40,13 @@ public class TypeDetailActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            final String demoId = getIntent().getStringExtra(TypeDetailFragment.ARG_ITEM_ID);
-            TypeDetailFragment fragment = DummyContent.ITEM_MAP.get(demoId).fragment; //new TypeDetailFragment();
+            final String demoId = getIntent().getStringExtra(DemoFragmentBase.ARG_ITEM_ID);
+            DemoFragmentBase fragment = DemoContent.ITEM_MAP.get(demoId).fragment;
             Bundle arguments = new Bundle();
-            arguments.putString(TypeDetailFragment.ARG_ITEM_ID, demoId);
+            arguments.putString(DemoFragmentBase.ARG_ITEM_ID, demoId);
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.type_detail_container, fragment)
+                    .add(R.id.single_demo_container, fragment)
                     .commit();
         }
     }
@@ -61,7 +62,7 @@ public class TypeDetailActivity extends FragmentActivity {
                 //
                 // http://developer.android.com/design/patterns/navigation.html#up-vs-back
                 //
-                NavUtils.navigateUpTo(this, new Intent(this, TypeListActivity.class));
+                NavUtils.navigateUpTo(this, new Intent(this, DemoListActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

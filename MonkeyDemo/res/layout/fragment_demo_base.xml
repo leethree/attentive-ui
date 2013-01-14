@@ -6,11 +6,11 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/type_detail"
+        android:id="@+id/demo_title"
         style="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Loading..."
-        tools:context=".TypeDetailFragment" />
+        tools:context=".SingleDemoFragment" />
 
 </LinearLayout>

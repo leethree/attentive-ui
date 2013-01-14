@@ -5,25 +5,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import hk.hku.cs.srli.monkeydemo.dummy.DummyContent;
+import hk.hku.cs.srli.monkeydemo.demo.DemoContent;
+import hk.hku.cs.srli.monkeydemo.demo.DemoFragmentBase;
 
 /**
  * An activity representing a list of Typefaces. This activity has different
  * presentations for handset and tablet-size devices. On handsets, the activity
  * presents a list of items, which when touched, lead to a
- * {@link TypeDetailActivity} representing item details. On tablets, the
+ * {@link SingleDemoActivity} representing item details. On tablets, the
  * activity presents the list of items and item details side-by-side using two
  * vertical panes.
  * <p>
  * The activity makes heavy use of fragments. The list of items is a
- * {@link TypeListFragment} and the item details (if present) is a
- * {@link TypeDetailFragment}.
+ * {@link DemoListFragment} and the item details (if present) is a
+ * {@link DemoFragmentBase}.
  * <p>
- * This activity also implements the required {@link TypeListFragment.Callbacks}
+ * This activity also implements the required {@link DemoListFragment.Callbacks}
  * interface to listen for item selections.
  */
-public class TypeListActivity extends FragmentActivity
-        implements TypeListFragment.Callbacks {
+public class DemoListActivity extends FragmentActivity
+        implements DemoListFragment.Callbacks {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -34,9 +35,9 @@ public class TypeListActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_type_list);
+        setContentView(R.layout.activity_demo_list);
 
-        if (findViewById(R.id.type_detail_container) != null) {
+        if (findViewById(R.id.single_demo_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-large and
             // res/values-sw600dp). If this view is present, then the
@@ -45,8 +46,8 @@ public class TypeListActivity extends FragmentActivity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            ((TypeListFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.type_list))
+            ((DemoListFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.demo_list))
                     .setActivateOnItemClick(true);
         }
 
@@ -54,7 +55,7 @@ public class TypeListActivity extends FragmentActivity
     }
 
     /**
-     * Callback method from {@link TypeListFragment.Callbacks} indicating that
+     * Callback method from {@link DemoListFragment.Callbacks} indicating that
      * the item with the given ID was selected.
      */
     @Override
@@ -64,18 +65,18 @@ public class TypeListActivity extends FragmentActivity
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(TypeDetailFragment.ARG_ITEM_ID, id);
-            TypeDetailFragment fragment = DummyContent.ITEM_MAP.get(id).fragment;
+            arguments.putString(DemoFragmentBase.ARG_ITEM_ID, id);
+            DemoFragmentBase fragment = DemoContent.ITEM_MAP.get(id).fragment;
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.type_detail_container, fragment)
+                    .replace(R.id.single_demo_container, fragment)
                     .commit();
 
         } else {
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
-            Intent detailIntent = new Intent(this, TypeDetailActivity.class);
-            detailIntent.putExtra(TypeDetailFragment.ARG_ITEM_ID, id);
+            Intent detailIntent = new Intent(this, SingleDemoActivity.class);
+            detailIntent.putExtra(DemoFragmentBase.ARG_ITEM_ID, id);
             startActivity(detailIntent);
         }
     }

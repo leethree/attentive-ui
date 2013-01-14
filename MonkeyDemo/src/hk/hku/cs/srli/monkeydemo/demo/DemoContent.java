@@ -1,8 +1,6 @@
 
-package hk.hku.cs.srli.monkeydemo.dummy;
+package hk.hku.cs.srli.monkeydemo.demo;
 
-import hk.hku.cs.srli.monkeydemo.ButtonsFragment;
-import hk.hku.cs.srli.monkeydemo.TypeDetailFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +13,7 @@ import java.util.Map;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class DummyContent {
+public class DemoContent {
 
     /**
      * An array of sample (dummy) items.
@@ -29,9 +27,9 @@ public class DummyContent {
 
     static {
         // Add 3 sample items.
-        addItem(new DummyItem("1", "Helvetica", new ButtonsFragment()));
-        addItem(new DummyItem("2", "Futura"));
-        addItem(new DummyItem("3", "Univers"));
+        addItem(new DummyItem("1", "Buttons", new ButtonsFragment()));
+        addItem(new DummyItem("2", "WebView"));
+        addItem(new DummyItem("3", "Ellipsis"));
     }
 
     private static void addItem(DummyItem item) {
@@ -45,15 +43,15 @@ public class DummyContent {
     public static class DummyItem {
         public String id;
         public String content;
-        public TypeDetailFragment fragment;
+        public DemoFragmentBase fragment;
 
         public DummyItem(String id, String content) {
             this.id = id;
             this.content = content;
-            this.fragment = new TypeDetailFragment();
+            this.fragment = new DemoFragmentBase();
         }
         
-        public DummyItem(String id, String content, TypeDetailFragment fragment) {
+        public DummyItem(String id, String content, DemoFragmentBase fragment) {
             this.id = id;
             this.content = content;
             this.fragment = fragment;
