@@ -18,7 +18,7 @@ public class DemoContent {
         // Add 3 sample items.
         addItem(new DemoItem("1", "Buttons", new ButtonsFragment()));
         addItem(new DemoItem("2", "Parallax", new WebViewFragment()));
-        addItem(new DemoItem("3", "Ellipsis"));
+        addItem(new DemoItem("3", "Ellipsis", new TextFragment()));
     }
 
     private static void addItem(DemoItem item) {
@@ -33,12 +33,6 @@ public class DemoContent {
         public String id;
         public String title;
         public DemoFragmentBase fragment;
-
-        public DemoItem(String id, String content) {
-            this.id = id;
-            this.title = content;
-            this.fragment = new DemoFragmentBase();
-        }
         
         public DemoItem(String id, String content, DemoFragmentBase fragment) {
             this.id = id;

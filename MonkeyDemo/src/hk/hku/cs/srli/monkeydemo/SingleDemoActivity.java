@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import hk.hku.cs.srli.monkeydemo.demo.DemoContent;
 import hk.hku.cs.srli.monkeydemo.demo.DemoFragmentBase;
+import hk.hku.cs.srli.monkeydemo.demo.DemoContent.DemoItem;
 
 /**
  * An activity representing a single demo screen. This activity is only
@@ -37,7 +38,9 @@ public class SingleDemoActivity extends Activity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             final String demoId = getIntent().getStringExtra(DemoFragmentBase.ARG_ITEM_ID);
-            DemoFragmentBase fragment = DemoContent.ITEM_MAP.get(demoId).fragment;
+            DemoItem demo = DemoContent.ITEM_MAP.get(demoId);
+            setTitle(demo.title);
+            DemoFragmentBase fragment = demo.fragment;
             Bundle arguments = new Bundle();
             arguments.putString(DemoFragmentBase.ARG_ITEM_ID, demoId);
             fragment.setArguments(arguments);
