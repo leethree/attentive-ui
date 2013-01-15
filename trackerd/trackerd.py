@@ -63,13 +63,13 @@ class Conductor(object):
     _DEFAULT_CONF = {
         # Use 'socket.gethostname()' for real devices.
         # Or use 'localhost' for emulators.
-        'server_host': socket.gethostname(),
+        'server_host': 'localhost',
         'server_port': 10800,
         'monkey_host': 'localhost',
         'monkey_port': 1080,
         'display_width': 480,
         'display_height': 800,
-        'upside_down': True
+        'upside_down': False
         }
 
     def __init__(self):
