@@ -1,6 +1,5 @@
 package hk.hku.cs.srli.widget;
 
-import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
