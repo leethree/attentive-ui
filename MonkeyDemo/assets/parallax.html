@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- modified from url=(0042)http://stephband.info/jparallax/index.html -->
+<html lang="en" class="js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+
+	<title>Parallax demo</title>
+
+	<script>document.documentElement.className = 'js';</script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+
+	<link rel="stylesheet" href="./parallax_files/jquery.parallax.css">
+
+    <style type="text/css" media="screen, projection">
+        body {
+            margin: 0;
+        }
+
+        .parallax-viewport {
+            width: 100%;
+            max-width: 50em;
+            height: 20em;
+            background-color: #aebcc9;
+        }
+	</style>
+
+</head>
+
+<body>
+
+    <div class="parallax-viewport" id="parallax">
+
+        <!-- parallax layers -->
+        <div class="parallax-layer" style="width:860px; height:273px;">
+            <img src="./parallax_files/0_sun.png" alt="" style="position:absolute; left:300px; top:-12px;">
+        </div>
+        <div class="parallax-layer" style="width:920px; height:274px;">
+            <img src="./parallax_files/1_mountains.png" alt="">
+        </div>
+        <div class="parallax-layer" style="width:1100px; height:284px;">
+            <img src="./parallax_files/2_hill.png" alt="" style="position:absolute; top:40px; left:0;">
+        </div>
+        <div class="parallax-layer" style="width:1360px; height:320px;">
+            <img src="./parallax_files/3_wood.png" alt="" style="position:absolute; top:96px; left:0;">
+        </div>
+
+    </div>
+
+    <h3>More demos</h3>
+    <ul>
+        <li><a href="http://stephband.info/jparallax/demos/index.html">demos/index.html</a></li>
+        <li><a href="http://stephband.info/jparallax/demos/stalkbuttons.html">demos/stalkbuttons.html</a> - multiple parallax.</li>
+        <li><a href="http://stephband.info/jparallax/demos/remotecontrol.html">demos/remotecontrol.html</a> - parallax by remote control.</li>
+        <li><a href="http://stephband.info/jparallax/demos/thumbnails.html">demos/thumbnails.html</a> - beautiful interactive thumbnails.</li>
+        <li><a href="http://stephband.info/jparallax/demos/target.html">demos/target.html</a> - demonstrates how smoothly jParallax handles window resizing.</li>
+    </ul>
+
+
+    <script src="./parallax_files/jquery.js"></script>
+    <script src="./parallax_files/jquery.event.frame.js"></script>
+    <script src="./parallax_files/jquery.parallax.js"></script>
+    <script>
+        jQuery(document).ready(function(){
+            jQuery('#parallax .parallax-layer')
+            .parallax({
+                mouseport: jQuery('#parallax'),
+                decay: 0
+            });
+        });
+    </script>
+
+</body>
+</html>
