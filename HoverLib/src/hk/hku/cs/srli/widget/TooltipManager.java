@@ -4,13 +4,13 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Toast;
+import android.view.WindowManager;
 
 public class TooltipManager {
 
     private static TooltipManager instance = null;
     
-    private Toast tooltip;
+    private Tooltip tooltip;
     private Context context;
     
     // Single object.
@@ -45,11 +45,31 @@ public class TooltipManager {
         xoffset = xoffset + screenPos[0] - displayFrame.left;
         yoffset = yoffset + screenPos[1] - displayFrame.top;
         
-        if (tooltip != null) tooltip.cancel();
-        tooltip = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+        hideTooltip(); // Hide existing tooltip.
+        tooltip = new Tooltip(context);
+        tooltip.setText(text);
+        WindowManager.LayoutParams params = Tooltip.getDefaultLayoutParams();
         if (xoffset > 0 && yoffset > 0) {
-            tooltip.setGravity(Gravity.TOP|Gravity.LEFT, xoffset, yoffset);
+            params.gravity = Gravity.TOP|Gravity.LEFT;
+            params.x = xoffset;
+            params.y = yoffset;
         }
-        tooltip.show();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.addView(tooltip, params);
+    }
+    
+    public static void hide(View view) {
+        getInstance(view.getContext()).hideTooltip();
+    }
+    
+    public void hideTooltip() {
+        if (tooltip != null) {
+            // Make sure it's attached before removing.
+            if (tooltip.getParent() != null) {
+                WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                wm.removeView(tooltip);
+            }
+            tooltip = null;
+        }
     }
 }

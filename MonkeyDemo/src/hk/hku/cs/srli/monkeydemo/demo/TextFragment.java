@@ -1,14 +1,12 @@
 package hk.hku.cs.srli.monkeydemo.demo;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import hk.hku.cs.srli.monkeydemo.R;
-import hk.hku.cs.srli.widget.Tooltip;
+import hk.hku.cs.srli.widget.TooltipManager;
 
 public class TextFragment extends DemoFragmentBase {
 
@@ -33,10 +31,6 @@ public class TextFragment extends DemoFragmentBase {
     }
     
     public void showTooltip(View view) {
-        Tooltip tooltip = new Tooltip(getActivity());
-        tooltip.setText(R.string.dummy_text);
-         
-        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        wm.addView(tooltip, tooltip.getLayoutParams());
+        TooltipManager.show(getView(), getResources().getString(R.string.dummy_text));
     }
 }

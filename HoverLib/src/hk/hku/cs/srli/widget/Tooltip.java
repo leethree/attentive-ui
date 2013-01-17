@@ -63,7 +63,7 @@ public class Tooltip extends FrameLayout {
         textView.setText(text);
     }
     
-    public WindowManager.LayoutParams getLayoutParams() {
+    public static WindowManager.LayoutParams getDefaultLayoutParams() {
         WindowManager.LayoutParams ret = new WindowManager.LayoutParams();        
         ret.copyFrom(PARAMS);
         return ret;
