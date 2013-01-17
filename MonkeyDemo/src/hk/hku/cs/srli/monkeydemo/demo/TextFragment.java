@@ -9,7 +9,6 @@ import android.view.WindowManager;
 
 import hk.hku.cs.srli.monkeydemo.R;
 import hk.hku.cs.srli.widget.Tooltip;
-import hk.hku.cs.srli.widget.TooltipFragment;
 
 public class TextFragment extends DemoFragmentBase {
 
