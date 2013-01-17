@@ -38,7 +38,5 @@ public class TextFragment extends DemoFragmentBase {
          
         WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         wm.addView(tooltip, tooltip.getLayoutParams());
-        
-        tooltip.requestFocus();
     }
 }

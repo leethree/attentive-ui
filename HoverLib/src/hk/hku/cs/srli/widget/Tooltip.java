@@ -54,6 +54,8 @@ public class Tooltip extends FrameLayout {
     }
     
     private void build(Context context, String text) {
+        setBackgroundResource(R.drawable.tooltip);
+        
         LayoutInflater inflater = 
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.tooltip, this, true);
