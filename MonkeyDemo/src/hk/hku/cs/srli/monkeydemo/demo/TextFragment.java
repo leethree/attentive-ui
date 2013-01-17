@@ -9,6 +9,7 @@ import android.view.WindowManager;
 
 import hk.hku.cs.srli.monkeydemo.R;
 import hk.hku.cs.srli.widget.Tooltip;
+import hk.hku.cs.srli.widget.TooltipFragment;
 
 public class TextFragment extends DemoFragmentBase {
 
@@ -33,12 +34,8 @@ public class TextFragment extends DemoFragmentBase {
     }
     
     public void showTooltip(View view) {
-        Tooltip tooltip = new Tooltip(getActivity());
-        tooltip.setText(R.string.dummy_text);
-         
-        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        wm.addView(tooltip, tooltip.getLayoutParams());
-        
-        tooltip.requestFocus();
+        String text = getResources().getString(R.string.dummy_text);
+        TooltipFragment tooltip = new TooltipFragment(text);
+        tooltip.show(getFragmentManager(), "tooltip");
     }
 }
