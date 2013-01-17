@@ -7,5 +7,12 @@
     <style name="HoverImageButton" parent="android:Widget.Holo.Light.ImageButton">
         <item name="android:background">@drawable/hoverbtn_default_holo_light</item>
     </style>
+    
+    <style name="Theme.Tooltip" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:drawable/toast_frame</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Toast</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
 
 </resources>
