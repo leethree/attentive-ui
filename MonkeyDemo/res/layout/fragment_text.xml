@@ -16,16 +16,7 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:text="@string/dummy_text" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:text="@string/dummy_text"
-            android:visibility="gone" >
-
-            <requestFocus />
-        </TextView>
+        
     </FrameLayout>
 
     <Button

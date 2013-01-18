@@ -35,16 +35,21 @@ public class Tooltip extends FrameLayout {
     private TextView textView;
 
     public Tooltip(Context context) {
-        this(context, null, 0);
+        super(context);
+        init(context, null, 0);
     }
 
     public Tooltip(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(context, attrs, 0);
     }
 
     public Tooltip(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
+        init(context, attrs, defStyle);
+    }
+        
+    public void init(Context context, AttributeSet attrs, int defStyle) {
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, ATTRS, defStyle, 0);
@@ -54,12 +59,12 @@ public class Tooltip extends FrameLayout {
     }
     
     private void build(Context context, String text) {
-        setBackgroundResource(R.drawable.tooltip);
+        setBackgroundResource(R.drawable.tooltip_bg);
         
         LayoutInflater inflater = 
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.tooltip, this, true);
-        textView = (TextView) v.findViewById(android.R.id.message);
+        View rootView =  inflater.inflate(R.layout.tooltip_text, this, true);
+        textView = (TextView) rootView.findViewById(R.id.message); 
         textView.setText(text);
     }
     
