@@ -31,11 +31,20 @@ public class HoverDelegate {
     }
     
     public boolean onHoverEvent(MotionEvent event) {
-        if (event.getActionMasked() == MotionEvent.ACTION_HOVER_MOVE) {
-            if (hovered) {
-                hoverX = event.getRawX();
-                hoverY = event.getRawY();
-            }
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                // workaround for non-hoverable views.
+                view.setHovered(true);
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                view.setHovered(false);
+                break;
+            case MotionEvent.ACTION_HOVER_MOVE:
+                if (hovered) {
+                    hoverX = event.getRawX();
+                    hoverY = event.getRawY();
+                }
+                break;
         }
         return false;
     }
