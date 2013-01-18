@@ -62,7 +62,7 @@ public class TooltipManager {
     public static void showAndHide(View view, CharSequence text, int xoffset, int yoffset, long duration) {
         if (duration > 0) {
             getInstance(view.getContext()).showTooltipNow(view, text, xoffset, yoffset);
-            getInstance(view.getContext()).hideTooltipLater(duration);
+            instance.hideTooltipLater(duration);
         }
     }
     

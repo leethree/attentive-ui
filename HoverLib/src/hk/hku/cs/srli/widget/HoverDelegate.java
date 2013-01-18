@@ -8,6 +8,7 @@ public class HoverDelegate {
 
     private View view;
     private OnLongHoverListener onLongHoverListener;
+    private OnHoverEventListener onHoverEventListener;
     
     private boolean hovered = false;
     private float hoverX;
@@ -23,6 +24,8 @@ public class HoverDelegate {
     public void onHoverChanged(boolean hovered) {
         if (hovered && !this.hovered) {
             checkForLongHover();
+        } else if (!hovered && this.hovered) {
+            if (onHoverEventListener != null) onHoverEventListener.onHoverExit(view);
         }
         this.hovered = hovered;
     }
@@ -41,9 +44,18 @@ public class HoverDelegate {
         this.onLongHoverListener = onLongHoverListener;
     }
     
+    public void setOnHoverEventListener(OnHoverEventListener onHoverEventListener) {
+        this.onHoverEventListener = onHoverEventListener;
+    }
+    
     public interface OnLongHoverListener {
         
         public boolean onLongHover(View v, int x, int y);
+    }
+    
+    public interface OnHoverEventListener {
+        
+        public void onHoverExit(View v);
     }
     
     private void checkForLongHover() {

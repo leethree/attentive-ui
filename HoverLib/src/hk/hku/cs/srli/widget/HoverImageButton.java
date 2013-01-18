@@ -33,8 +33,8 @@ public class HoverImageButton extends ImageButton {
             
             @Override
             public boolean onLongClick(View v) {
-                TooltipManager.show(HoverImageButton.this, getContentDescription(),
-                        getWidth() / 2, getHeight() / 2);
+                TooltipManager.showAndHide(HoverImageButton.this, getContentDescription(),
+                        getWidth() / 2, getHeight() / 2, TooltipManager.LONG_DELAY);
                 return false;
             }
         });
@@ -43,9 +43,16 @@ public class HoverImageButton extends ImageButton {
             
             @Override
             public boolean onLongHover(View v, int x, int y) {
-                TooltipManager.show(HoverImageButton.this, getContentDescription(),
-                        x, y);
+                TooltipManager.show(HoverImageButton.this, getContentDescription(), x, y);
                 return false;
+            }
+        });
+        
+        hover.setOnHoverEventListener(new HoverDelegate.OnHoverEventListener() {
+            
+            @Override
+            public void onHoverExit(View v) {
+                TooltipManager.hide(HoverImageButton.this);
             }
         });
     }
