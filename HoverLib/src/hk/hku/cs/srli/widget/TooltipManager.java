@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -108,7 +109,7 @@ public class TooltipManager {
     }
     
     private Tooltip makeTooltip(CharSequence text) {
-        Tooltip tooltip = new Tooltip(context);
+        Tooltip tooltip = (Tooltip) LayoutInflater.from(context).inflate(R.layout.tooltip, null);
         tooltip.setText(text);
         return tooltip;
     }
