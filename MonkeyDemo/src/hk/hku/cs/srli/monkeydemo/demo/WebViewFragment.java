@@ -23,9 +23,6 @@ public class WebViewFragment extends DemoFragmentBase {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         
-        // TODO (LeeThree): This is a hack to hide Action Bar programmatically.
-        getActivity().getActionBar().hide();
-        
         webView = (WebView) rootView.findViewById(R.id.webview);
         
         WebSettings webSettings = webView.getSettings();

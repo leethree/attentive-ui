@@ -45,7 +45,7 @@ public class SingleDemoActivity extends Activity {
             arguments.putString(DemoFragmentBase.ARG_ITEM_ID, demoId);
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
-                    .add(R.id.single_demo_container, fragment)
+                    .add(R.id.single_demo, fragment)
                     .commit();
         }
     }
