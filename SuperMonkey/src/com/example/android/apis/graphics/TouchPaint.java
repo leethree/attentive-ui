@@ -22,12 +22,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -108,7 +106,7 @@ public class TouchPaint extends Activity {
             mFading = savedInstanceState.getBoolean("fading", true);
             mColorIndex = savedInstanceState.getInt("color", 0);
         } else {
-            mFading = false;
+            mFading = true;
             mColorIndex = 0;
         }
     }
@@ -117,13 +115,13 @@ public class TouchPaint extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, CLEAR_ID, 0, "Clear");
         menu.add(0, FADE_ID, 0, "Fade").setCheckable(true);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(FADE_ID).setChecked(mFading);
-        return super.onPrepareOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -248,6 +246,7 @@ public class TouchPaint extends Activity {
         public PaintView(Context c) {
             super(c);
             setFocusable(true);
+            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 
             mPaint = new Paint();
             mPaint.setColor(BACKGROUND_COLOR);
@@ -373,10 +372,10 @@ public class TouchPaint extends Activity {
 
             final int action = event.getActionMasked();
             if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE
+                    || action == MotionEvent.ACTION_HOVER_ENTER
                     || action == MotionEvent.ACTION_HOVER_MOVE) {
                 final int N = event.getHistorySize();
                 final int P = event.getPointerCount();
-                Log.v("TouchPaint", "NP(" + N + "," + P + ")");
                 for (int i = 0; i < N; i++) {
                     for (int j = 0; j < P; j++) {
                         paint(getPaintModeForTool(event.getToolType(j), mode),
@@ -390,7 +389,6 @@ public class TouchPaint extends Activity {
                                 event.getHistoricalAxisValue(MotionEvent.AXIS_TILT, j, i));
                         mCurX = event.getHistoricalX(j, i);
                         mCurY = event.getHistoricalY(j, i);
-                        Log.v("TouchPaint", "save(" + mCurX + "," + mCurY + ")");
                     }
                 }
                 for (int j = 0; j < P; j++) {
@@ -405,9 +403,12 @@ public class TouchPaint extends Activity {
                             event.getAxisValue(MotionEvent.AXIS_TILT, j));
                     mCurX = event.getX();
                     mCurY = event.getY();
-                    Log.v("TouchPaint", "save(" + mCurX + "," + mCurY + ")");
                 }
+            } else if (action == MotionEvent.ACTION_HOVER_EXIT) {
+                mCurX = -1;
+                mCurY = -1;
             }
+            
             return true;
         }
 
@@ -429,8 +430,6 @@ public class TouchPaint extends Activity {
         private void paint(PaintMode mode, float x, float y, float pressure,
                 float major, float minor, float orientation,
                 float distance, float tilt) {
-            Log.v("PaintView.paint", mode + "(" + mCurX + "," + mCurY + ")" +
-                    "(" + x + "," + y + ")");
             if (mBitmap != null) {
                 if (major <= 0 || minor <= 0) {
                     // If size is not available, use a default value.
@@ -459,8 +458,11 @@ public class TouchPaint extends Activity {
                     case Line:
                         // mPaint.setColor(COLORS[mColorIndex]);
                         mPaint.setColor(Color.YELLOW);
-                        mPaint.setAlpha(80);
+                        mPaint.setAlpha(100);
+                        mPaint.setStyle(Paint.Style.STROKE);
+                        mPaint.setStrokeWidth(5.0f);
                         drawLine(mCanvas, x, y, mPaint);
+                        mPaint.setStyle(Paint.Style.FILL);
                         break;
                 }
             }
@@ -488,7 +490,9 @@ public class TouchPaint extends Activity {
         }
 
         private void drawLine(Canvas canvas, float x, float y, Paint paint) {
-            canvas.drawLine(mCurX, mCurY, x, y, paint);
+            if (mCurX > 0 && mCurY > 0) {
+                canvas.drawLine(mCurX, mCurY, x, y, paint);
+            }
         }
 
         /**

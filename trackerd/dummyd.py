@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import pubsub
-from trackerd import Conductor
+from trackerd import Switchboard
 from network import MonkeyServer
 
 
@@ -10,7 +10,7 @@ class DummyConductor(object):
     _helper = pubsub.PubSubHelper()
 
     def __init__(self):
-        self._config = Conductor._DEFAULT_CONF.copy()
+        self._config = Switchboard._DEFAULT_CONF.copy()
 
         self._mserver = MonkeyServer(self._config['server_host'],
                                      self._config['server_port'])
@@ -81,6 +81,7 @@ class DummyConductor(object):
 
     @_helper.handles('cmd-calib_abort')
     def _handle_cmd_calib_abort(self):
+        self._calib = False
         self._respond('calib_stopped')
 
     @_helper.handles(pubsub.UNHANDLED)

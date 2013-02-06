@@ -2,6 +2,8 @@
 
     <style name="AppTheme" parent="android:Theme.Holo" />
 
-    <style name="CalibrationTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen" />
+    <style name="CalibrationTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen" >
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
 
 </resources>

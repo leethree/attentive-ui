@@ -1,68 +1,114 @@
 #!/usr/bin/python
 
+import socket
+
 import pubsub
 from eyetracker.facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
+from smoothie import MovingWindow, FixationDetector, DispersionDetector
 
 
 class FeedProcessor(object):
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, upside_down=False):
         self._width = width
         self._height = height
+        self._upside_down = upside_down
 
         self._entered = False
-        self._lastx = None
-        self._lasty = None
+        self._lastx = 0.0
+        self._lasty = 0.0
+        self._last_weight = 0
         self._output_method = None
+
+        self._detector = FixationDetector()
+
+        # moving averagers
+        self._moving_avg_x = MovingWindow(32)
+        self._moving_avg_y = MovingWindow(32)
+
+    def set_fixation_detector(self, fixation_detector):
+        self._detector = fixation_detector
 
     def set_output_method(self, output_method):
         self._output_method = output_method
 
-    def process(self, x, y):
-        width = self._width
-        height = self._height
+    def process(self, gaze):
+        left, right = gaze
 
-        # Point is not moved.
-        if (x == self._lastx and y == self._lasty):
-            return False
+        if left.validity == 0 and right.validity == 0:
+            return
 
-        if (x > 0 and x < 1 and y > 0 and y < 1):
-            action = 'move' if self._entered else 'enter'
-            self._send_command('hover %s %d %d' % (
-                               action, x * width, y * height))
-            self._entered = True
+        # TODO(LeeThree): Mirror data in monocular cases instead of use data
+        # from single eye.
+        x = (float(left.p2d.x) * left.validity +
+             float(right.p2d.x) * right.validity)
+        y = (float(left.p2d.y) * left.validity +
+             float(right.p2d.y) * right.validity)
 
-        elif (self._entered):
-            self._send_command('hover move %d %d' % (x * width, y * height))
-            self._send_command('hover exit %d %d' % (x * width, y * height))
+        if self._upside_down:
+            # Mirror position
+            x = 1 - x
+            y = 1 - y
+
+        if self._detector.is_fixation(gaze):
+            self._moving_avg_x.push(x)
+            self._moving_avg_y.push(y)
+            x = self._moving_avg_x.get_average()
+            y = self._moving_avg_y.get_average()
+
+            # do nothing if the point hasn't moved
+            if (abs(x - self._lastx) * self._width < 5 and
+                abs(y - self._lasty) * self._height < 5):
+                return
+
+            self._lastx = x
+            self._lasty = y
+
+            if x > 0 and x < 1 and y > 0 and y < 1:
+                action = 'move' if self._entered else 'enter'
+                self._send_command(action, x, y)
+                self._entered = True
+
+            elif self._entered:
+                self._send_command('move', x, y)
+                self._send_command('exit', x, y)
+                self._entered = False
+
+        elif self._entered: # start saccade
+            self._moving_avg_x.clear()
+            self._moving_avg_y.clear()
+            self._send_command('exit', self._lastx, self._lasty)
             self._entered = False
 
-        self._lastx = x
-        self._lasty = y
 
-        return True
-
-    def _send_command(self, command):
+    def _send_command(self, command, x, y):
         if self._output_method is not None:
-            self._output_method(command)
+            self._output_method('hover %s %d %d' % (
+                                command, x * self._width, y * self._height))
+        # print '%s %d %d' % (command, x * self._width, y * self._height)
 
 
-class Conductor(object):
+class Switchboard(object):
 
     _helper = pubsub.PubSubHelper()
 
+    _EMULATOR_MODE = False
+
     _DEFAULT_CONF = {
-        'server_host': 'localhost', # Use socket.gethostname() for real device.
+        # Use 'socket.gethostname()' for real devices.
+        # Or use 'localhost' for emulators.
+        'server_host': 'localhost' if _EMULATOR_MODE else socket.gethostname(),
         'server_port': 10800,
         'monkey_host': 'localhost',
         'monkey_port': 1080,
         'display_width': 480,
-        'display_height': 800
+        'display_height': 800,
+        'upside_down': False if _EMULATOR_MODE else True
         }
 
     def __init__(self):
-        self._config = Conductor._DEFAULT_CONF.copy()
+        self._config = Switchboard._DEFAULT_CONF.copy()
 
         self._etf = EyeTrackerFacade()
         self._mserver = MonkeyServer(self._config['server_host'],
@@ -76,12 +122,9 @@ class Conductor(object):
     def main(self):
         with self._mserver:
             with self._etf:
-                try:
-                    while True:
-                        self._mserver.loop()
-                        self._etf.loop()
-                except KeyboardInterrupt:
-                    print "Interrupted by user."
+                while True:
+                    self._mserver.loop()
+                    self._etf.loop()
 
     @_helper.handles('etf')
     def _handle_etf_event(self, event, *args):
@@ -106,7 +149,7 @@ class Conductor(object):
         elif event == 'done':
             self._respond('calib_done')
         elif event == 'error':
-            self._respond('error', args[0])
+            self._respond('error', str(args[0]))
 
     @_helper.handles('conn')
     def _handle_conn(self, addr, mhandler):
@@ -133,7 +176,9 @@ class Conductor(object):
     def _handle_mfeeder_conn(self):
         print "Feeder connected."
         self._fprocessor = FeedProcessor(self._config['display_width'],
-                                         self._config['display_height'])
+                                         self._config['display_height'],
+                                         self._config['upside_down'])
+        self._fprocessor.set_fixation_detector(DispersionDetector())
         self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
@@ -165,7 +210,10 @@ class Conductor(object):
     @_helper.handles('cmd-calib_add')
     def _handle_cmd_calib_add(self, x, y):
         if self._calib is not None:
-            self._calib.add_point(float(x), float(y))
+            if self._config['upside_down']:
+                self._calib.add_point(1 - float(x), 1 - float(y))
+            else:
+                self._calib.add_point(float(x), float(y))
 
     @_helper.handles('cmd-calib_compute')
     def _handle_cmd_calib_compute(self):
@@ -188,5 +236,8 @@ class Conductor(object):
 
 
 if __name__ == '__main__':
-    Conductor().main()
+    try:
+        Switchboard().main()
+    except KeyboardInterrupt:
+        print "Interrupted by user."
     print "Script terminated."

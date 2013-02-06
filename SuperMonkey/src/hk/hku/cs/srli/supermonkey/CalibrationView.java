@@ -14,6 +14,8 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 
 public class CalibrationView extends View implements ValueAnimator.AnimatorUpdateListener {
     
@@ -23,6 +25,8 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
 
     public CalibrationView(Context context) {
         super(context);
+        // Enter low profile mode to avoid UI distraction.
+        setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
         dot = new DotWrapper();
         // Put the dot outside the top left corner.
         dot.setX(0 - dot.DEFAULT_R);
@@ -45,7 +49,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     
     public void shrinkPoint() {
         Log.v("CalibrationView", "shrinkPoint");
-        startAnimation(animatedResize(4), 1000);
+        startAnimation(animatedResize(5), 1000);
     }
     
     public void expandPoint() {
@@ -71,6 +75,12 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     private Animator animatedResize(float size) {
         ObjectAnimator oar = null;
         oar = ObjectAnimator.ofFloat(dot, "r", dot.r, size);
+        // Accelerate when shrinks.
+        if (dot.r > size) {
+            oar.setInterpolator(new AccelerateInterpolator());
+        } else {
+            oar.setInterpolator(new DecelerateInterpolator());
+        }
         oar.addUpdateListener(this);
         return oar;
     }
