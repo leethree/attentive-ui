@@ -136,8 +136,16 @@ public class TooltipManager {
     
     private void doHide(Tooltip tooltip) {
         if (tooltip != null) {
-            // Make sure it's attached before removing.
-            if (tooltip.getParent() != null) {
+            if (tooltip.isHovered()) { // The tooltip is currently in focus.
+                final Tooltip tooltipToHide = tooltip;
+                // Try to hide it later.
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        instance.doHide(tooltipToHide);
+                    }
+                }, 1000);
+            } else if (tooltip.getParent() != null) { // Make sure it's attached before removing.
                 WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
                 wm.removeView(tooltip);
             }
