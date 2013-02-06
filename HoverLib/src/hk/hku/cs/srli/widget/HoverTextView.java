@@ -48,14 +48,12 @@ public class HoverTextView extends TextView {
 
     @Override
     public void onHoverChanged(boolean hovered) {
-        Log.d("onHoverChanged", hovered ? "True" : "False");
         hover.onHoverChanged(hovered);
         super.onHoverChanged(hovered);
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        Log.d("onHoverEvent", event.toString());
         return hover.onHoverEvent(event) || super.onHoverEvent(event);
     }
 }

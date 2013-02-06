@@ -6,6 +6,7 @@ import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -32,6 +33,8 @@ public class Tooltip extends FrameLayout {
         PARAMS.setTitle("Tooltip");
     }
     
+    private HoverDelegate hover;
+    
     private TextView textView;
 
     public Tooltip(Context context) {
@@ -56,6 +59,8 @@ public class Tooltip extends FrameLayout {
         String text = a.getString(INDEX_OF_TEXT_ATTR);
         a.recycle();
         build(context, text);
+        
+        hover = new HoverDelegate(this);
     }
     
     private void build(Context context, String text) {
@@ -80,5 +85,16 @@ public class Tooltip extends FrameLayout {
     
     public void setText(int resid) {
         textView.setText(resid);
+    }
+    
+    @Override
+    public void onHoverChanged(boolean hovered) {
+        hover.onHoverChanged(hovered);
+    }
+    
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        hover.onHoverEvent(event);
+        return true; // Stop event from propaganda.
     }
 }
