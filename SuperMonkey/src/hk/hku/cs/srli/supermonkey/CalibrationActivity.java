@@ -114,7 +114,8 @@ public class CalibrationActivity extends Activity {
 
         @Override
         public void handleAdded() {
-            choreographer.nextMove();
+            // Stop animation from looping.
+            choreographer.setLooping(false);
         }
 
         @Override
@@ -141,12 +142,15 @@ public class CalibrationActivity extends Activity {
         
         private Deque<Movement> sequence;
         
+        private boolean looping;
+        
         public Choreographer() {
             sequence = new ArrayDeque<Movement>();
         }
         
         public void startDance() {
             prepareSequence();
+            looping = false;
             nextMove();
         }
         
@@ -159,9 +163,13 @@ public class CalibrationActivity extends Activity {
             }
         }
         
+        public void setLooping(boolean looping) {
+            this.looping = looping;
+        }
+        
         @Override
         public void onAnimationEnd(Animator animation) {
-            choreographer.nextMove();
+            this.nextMove();
         }
         
         private void prepareSequence() {
@@ -189,24 +197,44 @@ public class CalibrationActivity extends Activity {
             });
             // Calibrate twice for each point.
             for (int i = 0; i < 2; i++) {
-                sequence.add(new Movement() {
-                    @Override
-                    public void move() {
-                        cview.shrinkPoint();
-                    }
-                });
+                sequence.add(new ShrinkPoint());
                 sequence.add(new Movement() {
                     @Override
                     public void move() {
                         calibCtrl.addCalibrationPoint(x, y);
+                        // Start looping while eye tracker collects data.
+                        looping = true;
+                        Choreographer.this.nextMove();
                     }
                 });
-                sequence.add(new Movement() {
-                    @Override
-                    public void move() {
-                        cview.expandPoint();
-                    }
-                });
+                sequence.add(new ExpandPoint());
+                sequence.add(new LoopingTrap());
+            }
+        }
+        
+        private class ShrinkPoint implements Movement {
+            @Override
+            public void move() {
+                cview.shrinkPoint();
+            }
+        }
+        
+        private class ExpandPoint implements Movement {
+            @Override
+            public void move() {
+                cview.expandPoint();
+            }
+        }
+        
+        private class LoopingTrap implements Movement {
+            @Override
+            public void move() {
+                if (looping) {
+                    sequence.addFirst(new LoopingTrap());
+                    sequence.addFirst(new ExpandPoint());
+                    sequence.addFirst(new ShrinkPoint());
+                }
+                Choreographer.this.nextMove();
             }
         }
     }
