@@ -11,10 +11,10 @@ BUFFER_SIZE = 1024
 
 F_RATE = 10
 
-EMULATOR_NAME = '5554:JellyBeam'
+EMULATOR_NAME = '5554:Nexus_S'
 
-OFFSET_X = 30
-OFFSET_Y = 52
+OFFSET_X = 3
+OFFSET_Y = 25
 
 MAX_WIDTH = 480
 MAX_HEIGHT = 800
@@ -64,12 +64,10 @@ while (True):
 	if (x > 0 and x < MAX_WIDTH and y > 0 and y < MAX_HEIGHT):
 		if not entered:
 			sendCommand("hover enter " + str(lastx) + " " + str(lasty))
-			sendCommand("hover move " + str(lastx) + " " + str(lasty))
 			entered = True
 		sendCommand("hover move " + str(x) + " " + str(y))
 
 	elif (entered):
-		sendCommand("hover move " + str(x) + " " + str(y))
 		sendCommand("hover exit " + str(x) + " " + str(y))
 		entered = False
 	time.sleep(1.0 / F_RATE)

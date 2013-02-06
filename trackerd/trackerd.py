@@ -56,24 +56,26 @@ class FeedProcessor(object):
             self._output_method(command)
 
 
-class Conductor(object):
+class Switchboard(object):
 
     _helper = pubsub.PubSubHelper()
+
+    _EMULATOR_MODE = False
 
     _DEFAULT_CONF = {
         # Use 'socket.gethostname()' for real devices.
         # Or use 'localhost' for emulators.
-        'server_host': socket.gethostname(),
+        'server_host': 'localhost' if _EMULATOR_MODE else socket.gethostname(),
         'server_port': 10800,
         'monkey_host': 'localhost',
         'monkey_port': 1080,
         'display_width': 480,
         'display_height': 800,
-        'upside_down': True
+        'upside_down': False if _EMULATOR_MODE else True
         }
 
     def __init__(self):
-        self._config = Conductor._DEFAULT_CONF.copy()
+        self._config = Switchboard._DEFAULT_CONF.copy()
 
         self._etf = EyeTrackerFacade()
         self._mserver = MonkeyServer(self._config['server_host'],
@@ -87,12 +89,9 @@ class Conductor(object):
     def main(self):
         with self._mserver:
             with self._etf:
-                try:
-                    while True:
-                        self._mserver.loop()
-                        self._etf.loop()
-                except KeyboardInterrupt:
-                    print "Interrupted by user."
+                while True:
+                    self._mserver.loop()
+                    self._etf.loop()
 
     @_helper.handles('etf')
     def _handle_etf_event(self, event, *args):
@@ -203,5 +202,8 @@ class Conductor(object):
 
 
 if __name__ == '__main__':
-    Conductor().main()
+    try:
+        Switchboard().main()
+    except KeyboardInterrupt:
+        print "Interrupted by user."
     print "Script terminated."

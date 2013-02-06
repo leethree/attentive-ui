@@ -1,0 +1,11 @@
+<resources>
+    
+    <style name="HoverTheme.Holo.Light" parent="android:Theme.Holo.Light">
+        <item name="android:imageButtonStyle">@style/HoverImageButton</item>
+    </style>
+    
+    <style name="HoverImageButton" parent="android:Widget.Holo.Light.ImageButton">
+        <item name="android:background">@drawable/hoverbtn_default_holo_light</item>
+    </style>
+
+</resources>

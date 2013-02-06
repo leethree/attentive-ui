@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hk.hku.cs.srli.widget.Tooltip xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:drawable/toast_frame"
+    android:text="" />
