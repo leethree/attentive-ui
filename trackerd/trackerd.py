@@ -178,7 +178,7 @@ class Switchboard(object):
         self._fprocessor = FeedProcessor(self._config['display_width'],
                                          self._config['display_height'],
                                          self._config['upside_down'])
-        #self._fprocessor.set_fixation_detector(DispersionDetector())
+        self._fprocessor.set_fixation_detector(AccelDetector())
         self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
