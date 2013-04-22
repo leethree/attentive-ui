@@ -19,13 +19,13 @@ public class TextFragment extends DemoFragmentBase {
         
         textView = (TextView) rootView.findViewById(R.id.textView1);
      
-        rootView.findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                showTooltip();
-            }
-        });
+//        rootView.findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+//            
+//            @Override
+//            public void onClick(View v) {
+//                showTooltip();
+//            }
+//        });
         
         return rootView;
     }

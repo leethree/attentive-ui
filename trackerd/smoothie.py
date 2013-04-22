@@ -184,13 +184,13 @@ class DispersionDetector(FixationDetector):
                 ylist = [y for x, y in self._memory]
                 xdispersion = max(xlist) - min(xlist)
                 ydispersion = max(ylist) - min(ylist)
-                if xdispersion + ydispersion < 0.1:
+                if xdispersion + ydispersion < 0.2:
                     saccade = False
                     self._fix_x = sum(xlist) / len(xlist)
                     self._fix_y = sum(ylist) / len(ylist)
         else:
             x, y = float(left.p2d.x), float(left.p2d.y)
-            if abs(self._fix_x - x) + abs(self._fix_y - y) > 0.1:
+            if abs(self._fix_x - x) + abs(self._fix_y - y) > 0.2:
                 saccade = True
 
         self._set_saccade(saccade)
