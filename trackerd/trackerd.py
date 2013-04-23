@@ -23,6 +23,8 @@ class FeedProcessor(object):
 
         self._detector = FixationDetector()
 
+        self._avg = False
+
         # moving averagers
         self._moving_avg_x = MovingWindow(15)
         self._moving_avg_y = MovingWindow(15)
@@ -52,10 +54,12 @@ class FeedProcessor(object):
             y = 1 - y
 
         if self._detector.is_fixation(gaze):
-            self._moving_avg_x.push(x)
-            self._moving_avg_y.push(y)
-            x = self._moving_avg_x.get_average()
-            y = self._moving_avg_y.get_average()
+
+            if self._avg:
+                self._moving_avg_x.push(x)
+                self._moving_avg_y.push(y)
+                x = self._moving_avg_x.get_average()
+                y = self._moving_avg_y.get_average()
 
             # do nothing if the point hasn't moved
             if (abs(x - self._lastx) * self._width < 5 and
@@ -178,7 +182,7 @@ class Switchboard(object):
         self._fprocessor = FeedProcessor(self._config['display_width'],
                                          self._config['display_height'],
                                          self._config['upside_down'])
-        self._fprocessor.set_fixation_detector(AccelDetector())
+        # self._fprocessor.set_fixation_detector(AccelDetector())
         self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
