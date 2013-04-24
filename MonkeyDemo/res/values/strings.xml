@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">MonkeyDemo</string>
+    <string name="title_demo_list">Demos</string>
     <string name="title_demo_detail">Demo</string>
     <string name="dummy_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare blandit consectetur. Etiam porttitor fermentum nisl, id suscipit libero molestie vitae.</string>
     <string name="dummy_text2">Fusce eget nibh vel leo convallis posuere. Nullam accumsan hendrerit congue. Donec fringilla turpis blandit massa faucibus gravida ut nec est.</string>
