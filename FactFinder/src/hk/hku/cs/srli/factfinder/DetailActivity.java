@@ -3,12 +3,18 @@ package hk.hku.cs.srli.factfinder;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
+import hk.hku.cs.srli.factfinder.DummyData.Category;
+import hk.hku.cs.srli.factfinder.DummyData.FactItem;
+
 public class DetailActivity extends Activity {
+    
+    private FactItem mFact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,24 +22,21 @@ public class DetailActivity extends Activity {
         setContentView(R.layout.activity_detail);
         
         // get intent data
-        Intent i = getIntent();
+        Bundle b = getIntent().getExtras();
  
         // Selected image id
-        int id = i.getExtras().getInt("id");
+        int id = b.getInt("id", -1);
+        int section = b.getInt("section");
+        Log.v("onCreate", "id " + id + ", section " + section);
+        mFact = DummyData.getInstance(getResources()).getItem(Category.of(section), id);
         
-        setTitle(Integer.toString(id));
-        
+        setTitle(mFact.title);
+        Log.v("onCreate", "content " + mFact.content);
+        TextView text = (TextView) findViewById(R.id.content);
+        text.setText(mFact.content);
+
         // Show the Up button in the action bar.
-        setupActionBar();
-    }
-
-    /**
-     * Set up the {@link android.app.ActionBar}.
-     */
-    private void setupActionBar() {
-
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     @Override
