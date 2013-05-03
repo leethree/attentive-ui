@@ -101,7 +101,10 @@ public class SectionFragment extends Fragment {
                 imageView = (ImageView) convertView;
             }
 
-            imageView.setImageResource(getItem(position).thumbId);
+            // find image resource ID
+            int thumbId = mContext.getResources().getIdentifier(
+                    getItem(position).thumb, "drawable", mContext.getPackageName());
+            imageView.setImageResource(thumbId);
             return imageView;
         }
 

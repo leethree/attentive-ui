@@ -15,7 +15,7 @@ import java.util.Map;
 public class DummyData {
 
     public static enum Category {
-        PERSON(0), PLACE(1), PLANT(2);
+        PLACE(0), PERSON(1), PLANT(2);
         public final int id;
         private static final Map<Integer, Category> map;
         static {
@@ -36,7 +36,7 @@ public class DummyData {
     public static class FactItem {
         public int id;
         public Category category;
-        public int thumbId;
+        public String thumb;
         public String title;
         public String content;
     }
@@ -94,7 +94,7 @@ public class DummyData {
                  tag = parser.getName();
                  Log.v("parseData", "End tag " + tag);
                  if (tag.equals("item")) {
-                     item.thumbId = sThumbIds[item.category.id][item.id]; // assign a random thumbnail
+                     // add item to category.
                      getCatData(item.category).append(item.id, item);
                      Log.v("parseData", "New item " + item.toString());
                      item = null;
@@ -112,6 +112,8 @@ public class DummyData {
                          item.title = text;
                      } else if (tag.equals("content")) {
                          item.content = text;
+                     } else if (tag.equals("thumb")) {
+                         item.thumb = text;
                      }
                  }
              }
