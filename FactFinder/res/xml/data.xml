@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facts>
+    <item>
+	    <id>1</id>
+	    <category>0</category>
+	    <thumb>sample_0</thumb>
+	    <title>William</title>
+	    <content>Lorem ipsum</content>
+    </item>
+    <item>
+	    <id>2</id>
+	    <category>0</category>
+	    <thumb>sample_1</thumb>
+	    <title>Phillip</title>
+	    <content>Lorem 2 ipsum</content>
+    </item>
+</facts>

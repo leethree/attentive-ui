@@ -1,20 +1,22 @@
 package hk.hku.cs.srli.factfinder;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import hk.hku.cs.srli.factfinder.DummyData.Category;
+import hk.hku.cs.srli.factfinder.DummyData.FactItem;
 
 /**
  * A dummy fragment representing a section of the app, but that simply
@@ -58,26 +60,26 @@ public class SectionFragment extends Fragment {
     
     public static class ImageAdapter extends BaseAdapter {
         private Context mContext;
-        private int[] mImages;
+        private SparseArray<FactItem> mFacts;
 
         public ImageAdapter(Context c, int n) {
             mContext = c;
-            mImages = DummyData.sThumbIds[n];
+            mFacts = DummyData.getInstance(c.getResources()).getCatData(Category.of(n));
         }
 
         @Override
         public int getCount() {
-            return mImages.length;
+            return mFacts.size();
         }
 
         @Override
-        public Object getItem(int position) {
-            return null;
+        public FactItem getItem(int position) {
+            return mFacts.valueAt(position);
         }
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return mFacts.keyAt(position);
         }
 
         @Override
@@ -86,7 +88,7 @@ public class SectionFragment extends Fragment {
             if (convertView == null) {  // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
                 
-                // set size
+                // set sizes
                 int gutter = mContext.getResources().getDimensionPixelSize(R.dimen.grid_gutter);
                 int height = mContext.getResources().getDimensionPixelSize(R.dimen.grid_column_width);
                 LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, height);
@@ -99,7 +101,7 @@ public class SectionFragment extends Fragment {
                 imageView = (ImageView) convertView;
             }
 
-            imageView.setImageResource(mImages[position]);
+            imageView.setImageResource(getItem(position).thumbId);
             return imageView;
         }
 
