@@ -4,7 +4,7 @@
         android:id="@+id/action_star"
 		android:icon="@android:drawable/ic_menu_add"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/action_star"/>
 
 </menu>

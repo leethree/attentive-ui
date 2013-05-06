@@ -3,7 +3,9 @@
 
     <string name="app_name">FactFinder</string>
     <string name="action_star">Star</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_info">Info</string>
+    <string name="dialog_info_message">This application uses material from the Wikipedia articles and images, which are released under the Creative Commons Attribution-Share-Alike License 3.0.</string>
+    <string name="dialog_info_title">Info</string>
     <string name="title_section1">Places</string>
     <string name="title_section2">People</string>
     <string name="title_section3">Plants</string>
