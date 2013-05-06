@@ -17,10 +17,10 @@ public class DummyData {
     public static enum Category {
         PLACE(0), PERSON(1), PLANT(2);
         public final int id;
-        private static final Map<Integer, Category> map;
+        private static final SparseArray<Category> map;
         static {
-            map = new HashMap<Integer, DummyData.Category>(3);
-            for(Category s : Category.values()) map.put(s.id, s);
+            map = new SparseArray<Category>(3);
+            for(Category s : Category.values()) map.append(s.id, s);
         }
         private Category(int id) {
             this.id = id;
@@ -43,6 +43,7 @@ public class DummyData {
     
     private final Map<Category, SparseArray<FactItem>> mCatMap;
     
+    // singleton instance
     private static DummyData instance;
     
     private DummyData(Resources res) {
@@ -83,26 +84,21 @@ public class DummyData {
         String tag = null;
         while (eventType != XmlPullParser.END_DOCUMENT) {
              if(eventType == XmlPullParser.START_DOCUMENT) {
-                 Log.v("parseData", "Start document");
              } else if(eventType == XmlPullParser.START_TAG) {
                  tag = parser.getName();
-                 Log.v("parseData", "Start tag " + tag);
                  if (tag.equals("item")) {
                      item = new FactItem();
                  }
              } else if(eventType == XmlPullParser.END_TAG) {
                  tag = parser.getName();
-                 Log.v("parseData", "End tag " + tag);
                  if (tag.equals("item")) {
                      // add item to category.
                      getCatData(item.category).append(item.id, item);
-                     Log.v("parseData", "New item " + item.toString());
                      item = null;
                  }
                  tag = null;
              } else if(eventType == XmlPullParser.TEXT) {
                  String text = parser.getText();
-                 Log.v("parseData", "Text " + text);
                  if (item != null && tag != null) {
                      if (tag.equals("id")) {
                          item.id = Integer.parseInt(text);
@@ -120,46 +116,5 @@ public class DummyData {
              eventType = parser.next();
         }
     }
-    
-    // references to our images
-    public static int[][] sThumbIds = {
-            {
-                    R.drawable.sample_3,
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7,
-                    R.drawable.sample_0, R.drawable.sample_1,
-                    R.drawable.sample_2, R.drawable.sample_3,
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7,
-                    R.drawable.sample_0, R.drawable.sample_1,
-                    R.drawable.sample_2, R.drawable.sample_3,
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7
-            },
-            {
-                    R.drawable.sample_0, R.drawable.sample_1,
-                    R.drawable.sample_2, R.drawable.sample_3,
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7,
-                    R.drawable.sample_2, R.drawable.sample_3,
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7,
-                    R.drawable.sample_0, R.drawable.sample_1,
-                    R.drawable.sample_2, R.drawable.sample_3,
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7
-            },
-            {
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7,
-                    R.drawable.sample_2,
-                    R.drawable.sample_0, R.drawable.sample_1,
-                    R.drawable.sample_2, R.drawable.sample_3,
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7,
-                    R.drawable.sample_3,
-                    R.drawable.sample_4, R.drawable.sample_5,
-                    R.drawable.sample_6, R.drawable.sample_7
-            }
-    };
+
 }
