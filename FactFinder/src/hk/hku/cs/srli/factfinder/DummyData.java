@@ -28,9 +28,6 @@ public class DummyData {
         public static Category of(int i) {
             return map.get(i);
         }
-        public static Category parse(String s) {
-            return map.get(Integer.parseInt(s));
-        }
     }
     
     public static class FactItem {
@@ -103,7 +100,7 @@ public class DummyData {
                      if (tag.equals("id")) {
                          item.id = Integer.parseInt(text);
                      } else if (tag.equals("category")) {
-                         item.category = Category.parse(text);
+                         item.category = Category.of(Integer.parseInt(text));
                      } else if (tag.equals("title")) {
                          item.title = text;
                      } else if (tag.equals("content")) {

@@ -45,7 +45,7 @@ public class SectionFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        GridView gridview = (GridView) getView().findViewById(R.id.gridView1);
+        GridView gridview = (GridView) getView().findViewById(R.id.grid_view);
         gridview.setAdapter(new ImageAdapter(getActivity(), mSectionNumber));
         
         gridview.setOnItemClickListener(new OnItemClickListener() {
