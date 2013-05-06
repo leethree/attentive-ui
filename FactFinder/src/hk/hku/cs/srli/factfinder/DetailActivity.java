@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
@@ -34,6 +35,9 @@ public class DetailActivity extends Activity {
         Log.v("onCreate", "content " + mFact.content);
         TextView text = (TextView) findViewById(R.id.content);
         text.setText(mFact.content);
+        ImageView image = (ImageView) findViewById(R.id.image_view);
+        int thumbId = getResources().getIdentifier(mFact.thumb, "drawable", getPackageName());
+        image.setImageResource(thumbId);
 
         // Show the Up button in the action bar.
         getActionBar().setDisplayHomeAsUpEnabled(true);
