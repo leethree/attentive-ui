@@ -9,12 +9,12 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import hk.hku.cs.srli.factfinder.DummyData.Category;
 import hk.hku.cs.srli.factfinder.DummyData.FactItem;
@@ -86,28 +86,19 @@ public class SectionFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView;
             if (convertView == null) {  // if it's not recycled, initialize some attributes
-                imageView = new ImageView(mContext);
-                
-                // set sizes
-                int gutter = mContext.getResources().getDimensionPixelSize(R.dimen.grid_gutter);
-                int height = mContext.getResources().getDimensionPixelSize(R.dimen.grid_column_width);
-                LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, height);
-
-                imageView.setLayoutParams(lp);
-                imageView.setPadding(gutter, gutter, gutter, gutter);
-                imageView.setCropToPadding(true);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            } else {
-                imageView = (ImageView) convertView;
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.list_item, parent, false);
             }
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.item_image_view);
+            TextView textView = (TextView) convertView.findViewById(R.id.item_text_view);
 
             // find image resource ID
             int thumbId = mContext.getResources().getIdentifier(
                     getItem(position).thumb, "drawable", mContext.getPackageName());
             imageView.setImageResource(thumbId);
-            return imageView;
+            textView.setText(getItem(position).title);
+            return convertView;
         }
 
     }
