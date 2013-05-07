@@ -23,6 +23,7 @@ public class HoverDelegate {
     
     public void onHoverChanged(boolean hovered) {
         if (hovered && !this.hovered) {
+            if (onHoverEventListener != null) onHoverEventListener.onHoverEnter(view);
             checkForLongHover();
         } else if (!hovered && this.hovered) {
             if (onHoverEventListener != null) onHoverEventListener.onHoverExit(view);
@@ -63,7 +64,7 @@ public class HoverDelegate {
     }
     
     public interface OnHoverEventListener {
-        
+        public void onHoverEnter(View v);
         public void onHoverExit(View v);
     }
     

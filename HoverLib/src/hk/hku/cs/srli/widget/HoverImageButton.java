@@ -54,6 +54,11 @@ public class HoverImageButton extends ImageButton {
             public void onHoverExit(View v) {
                 TooltipManager.hide(HoverImageButton.this);
             }
+
+            @Override
+            public void onHoverEnter(View v) {
+                // Do nothing
+            }
         });
     }
     

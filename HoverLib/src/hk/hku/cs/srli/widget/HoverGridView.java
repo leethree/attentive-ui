@@ -4,52 +4,46 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.GridView;
 
-public class HoverTextView extends TextView {
+public class HoverGridView extends GridView {
     
     private HoverDelegate hover;
-
-    public HoverTextView(Context context) {
+    
+    public HoverGridView(Context context) {
         super(context);
         init();
     }
-    
-    public HoverTextView(Context context, AttributeSet attrs) {
+
+    public HoverGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
-    
-    public HoverTextView(Context context, AttributeSet attrs, int defStyle) {
+
+    public HoverGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
-    
+
     private void init() {
         hover = new HoverDelegate(this);
-        hover.setOnLongHoverListener(new HoverDelegate.OnLongHoverListener() {
-            
-            @Override
-            public boolean onLongHover(View v, int x, int y) {
-                TooltipManager.show(HoverTextView.this, getText());
-                return true;
-            }
-        });
         
         hover.setOnHoverEventListener(new HoverDelegate.OnHoverEventListener() {
             
             @Override
             public void onHoverExit(View v) {
-                TooltipManager.hide(HoverTextView.this);
+                // clear selection
+                setSelection(INVALID_POSITION);
             }
-
+            
             @Override
             public void onHoverEnter(View v) {
-                // Do nothing
+                requestFocusFromTouch();
+                setSelection(2);
             }
         });
     }
-
+    
     @Override
     public void onHoverChanged(boolean hovered) {
         hover.onHoverChanged(hovered);

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity$DummySectionFragment" >
 
-    <GridView
+    <hk.hku.cs.srli.widget.HoverGridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +16,6 @@
         android:paddingRight="10dp"
         android:stretchMode="columnWidth"
         android:verticalSpacing="0dp" >
-    </GridView>
+    </hk.hku.cs.srli.widget.HoverGridView>
 
 </RelativeLayout>

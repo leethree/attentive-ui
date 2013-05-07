@@ -19,10 +19,6 @@ import android.widget.TextView;
 import hk.hku.cs.srli.factfinder.DummyData.Category;
 import hk.hku.cs.srli.factfinder.DummyData.FactItem;
 
-/**
- * A dummy fragment representing a section of the app, but that simply
- * displays dummy text.
- */
 public class SectionFragment extends Fragment {
 
     /**
@@ -47,7 +43,7 @@ public class SectionFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         GridView gridview = (GridView) getView().findViewById(R.id.grid_view);
         gridview.setAdapter(new ImageAdapter(getActivity(), mSectionNumber));
-        
+
         gridview.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
