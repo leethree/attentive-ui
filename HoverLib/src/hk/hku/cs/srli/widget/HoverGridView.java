@@ -38,8 +38,19 @@ public class HoverGridView extends GridView {
             
             @Override
             public void onHoverEnter(View v) {
-                requestFocusFromTouch();
-                setSelection(2);
+            }
+        });
+        
+        hover.setOnHoverMoveListener(new HoverDelegate.OnHoverMoveListener() {
+            
+            @Override
+            public void onHoverMove(View v, int x, int y) {
+                int position = pointToPosition(x, y);
+                if (isInTouchMode()) {
+                    // exit touch mode
+                    requestFocusFromTouch();
+                }
+                setSelection(position);
             }
         });
     }

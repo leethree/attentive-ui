@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +48,6 @@ public class SectionFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Intent i = new Intent(getActivity(), DetailActivity.class);
-                Log.v("onItemClick", "id " + id + ", position " + position);
                 i.putExtra("id", (int) id).putExtra("section", mSectionNumber);
                 startActivity(i);
             }
