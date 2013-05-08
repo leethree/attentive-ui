@@ -28,19 +28,6 @@ public class HoverGridView extends GridView {
     private void init() {
         hover = new HoverDelegate(this);
         
-        hover.setOnHoverEventListener(new HoverDelegate.OnHoverEventListener() {
-            
-            @Override
-            public void onHoverExit(View v) {
-                // clear selection
-                setSelection(INVALID_POSITION);
-            }
-            
-            @Override
-            public void onHoverEnter(View v) {
-            }
-        });
-        
         hover.setOnHoverMoveListener(new HoverDelegate.OnHoverMoveListener() {
             
             @Override
@@ -58,6 +45,10 @@ public class HoverGridView extends GridView {
     @Override
     public void onHoverChanged(boolean hovered) {
         hover.onHoverChanged(hovered);
+        if (!hovered) {
+            // clear selection
+            setSelection(INVALID_POSITION);
+        }
         super.onHoverChanged(hovered);
     }
     

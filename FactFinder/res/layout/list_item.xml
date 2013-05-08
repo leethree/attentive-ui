@@ -15,17 +15,24 @@
         android:scaleType="centerCrop"
         android:src="@android:drawable/picture_frame" />
 
-    <TextView
-        android:id="@+id/item_text_view"
+    <hk.hku.cs.srli.widget.HoverDiscloseLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignBottom="@id/item_image_view"
         android:layout_alignLeft="@id/item_image_view"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="@dimen/grid_gutter"
-        android:background="#80000000"
-        android:padding="@dimen/grid_gutter"
-        android:text="TextView"
-        android:textColor="@android:color/white" />
+        android:layout_alignRight="@id/item_image_view"
+        android:layout_alignTop="@id/item_image_view" >
+
+        <TextView
+            android:id="@+id/item_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/grid_gutter"
+            android:background="#80000000"
+            android:padding="@dimen/grid_gutter"
+            android:text="TextView"
+            android:textColor="@android:color/white" />
+    </hk.hku.cs.srli.widget.HoverDiscloseLayout>
 
 </RelativeLayout>

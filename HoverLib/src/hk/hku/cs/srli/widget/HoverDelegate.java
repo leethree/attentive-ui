@@ -73,6 +73,7 @@ public class HoverDelegate {
         public boolean onLongHover(View v, int x, int y);
     }
     
+    // TODO: remove this and just use onHoverChanged. 
     public interface OnHoverEventListener {
         public void onHoverEnter(View v);
         public void onHoverExit(View v);
