@@ -4,7 +4,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-public class HoverDelegate {
+public class HoverHandler {
 
     private View view;
     private OnLongHoverListener onLongHoverListener;
@@ -18,7 +18,7 @@ public class HoverDelegate {
     private boolean hasPerformedLongHover = false;
     private CheckForLongHover pendingCheckForLongHover;
     
-    public HoverDelegate(View view) {
+    public HoverHandler(View view) {
         this.view = view;
     }
     

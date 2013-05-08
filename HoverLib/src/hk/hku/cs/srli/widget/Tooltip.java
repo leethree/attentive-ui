@@ -33,7 +33,7 @@ public class Tooltip extends FrameLayout {
         PARAMS.setTitle("Tooltip");
     }
     
-    private HoverDelegate hover;
+    private HoverHandler hover;
     
     private TextView textView;
 
@@ -60,7 +60,7 @@ public class Tooltip extends FrameLayout {
         a.recycle();
         build(context, text);
         
-        hover = new HoverDelegate(this);
+        hover = new HoverHandler(this);
     }
     
     private void build(Context context, String text) {

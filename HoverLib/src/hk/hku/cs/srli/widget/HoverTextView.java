@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 public class HoverTextView extends TextView {
     
-    private HoverDelegate hover;
+    private HoverHandler hover;
 
     public HoverTextView(Context context) {
         super(context);
@@ -26,8 +26,8 @@ public class HoverTextView extends TextView {
     }
     
     private void init() {
-        hover = new HoverDelegate(this);
-        hover.setOnLongHoverListener(new HoverDelegate.OnLongHoverListener() {
+        hover = new HoverHandler(this);
+        hover.setOnLongHoverListener(new HoverHandler.OnLongHoverListener() {
             
             @Override
             public boolean onLongHover(View v, int x, int y) {
@@ -36,7 +36,7 @@ public class HoverTextView extends TextView {
             }
         });
         
-        hover.setOnHoverEventListener(new HoverDelegate.OnHoverEventListener() {
+        hover.setOnHoverEventListener(new HoverHandler.OnHoverEventListener() {
             
             @Override
             public void onHoverExit(View v) {

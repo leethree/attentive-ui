@@ -8,7 +8,7 @@ import android.widget.GridView;
 
 public class HoverGridView extends GridView {
     
-    private HoverDelegate hover;
+    private HoverHandler hover;
     
     public HoverGridView(Context context) {
         super(context);
@@ -26,9 +26,9 @@ public class HoverGridView extends GridView {
     }
 
     private void init() {
-        hover = new HoverDelegate(this);
+        hover = new HoverHandler(this);
         
-        hover.setOnHoverMoveListener(new HoverDelegate.OnHoverMoveListener() {
+        hover.setOnHoverMoveListener(new HoverHandler.OnHoverMoveListener() {
             
             @Override
             public void onHoverMove(View v, int x, int y) {

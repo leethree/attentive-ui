@@ -11,7 +11,7 @@ import android.widget.ImageButton;
  */
 public class HoverImageButton extends ImageButton {
     
-    private HoverDelegate hover;
+    private HoverHandler hover;
     
     public HoverImageButton(Context context) {
         super(context);
@@ -38,8 +38,8 @@ public class HoverImageButton extends ImageButton {
                 return false;
             }
         });
-        hover = new HoverDelegate(this);
-        hover.setOnLongHoverListener(new HoverDelegate.OnLongHoverListener() {
+        hover = new HoverHandler(this);
+        hover.setOnLongHoverListener(new HoverHandler.OnLongHoverListener() {
             
             @Override
             public boolean onLongHover(View v, int x, int y) {
@@ -48,7 +48,7 @@ public class HoverImageButton extends ImageButton {
             }
         });
         
-        hover.setOnHoverEventListener(new HoverDelegate.OnHoverEventListener() {
+        hover.setOnHoverEventListener(new HoverHandler.OnHoverEventListener() {
             
             @Override
             public void onHoverExit(View v) {

@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 
 public class HoverDiscloseLayout extends FrameLayout {
 
-    private HoverDelegate hover;
+    private HoverHandler hover;
     
     public HoverDiscloseLayout(Context context) {
         super(context);
@@ -26,7 +26,7 @@ public class HoverDiscloseLayout extends FrameLayout {
     }
 
     private void init() {
-        hover = new HoverDelegate(this);
+        hover = new HoverHandler(this);
     }
     
     @Override
