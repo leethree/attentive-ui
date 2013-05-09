@@ -70,6 +70,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+        
+        Bundle bundle = savedInstanceState != null ? savedInstanceState : getIntent().getExtras();
+        if (bundle != null) {
+            mViewPager.setCurrentItem(bundle.getInt("pageItem", 0));
+        }
     }
 
     @Override
@@ -77,6 +82,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("pageItem", mViewPager.getCurrentItem());
     }
 
     @Override
