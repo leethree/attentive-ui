@@ -52,7 +52,8 @@ public class DetailActivity extends Activity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 Intent upIntent = getParentActivityIntent();
-                upIntent.putExtra("pageItem", mFact.category.id);
+                // return to the exisiting parent activity instead of creating a new one.
+                upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 navigateUpTo(upIntent);
                 return true;
         }
