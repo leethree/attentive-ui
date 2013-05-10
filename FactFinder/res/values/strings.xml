@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">FactFinder</string>
-    <string name="action_star">Star</string>
+    <string name="action_star">Share to social networks</string>
     <string name="action_info">Info</string>
     <string name="dialog_info_message">This application uses material from the Wikipedia articles and images, which are released under the Creative Commons Attribution-Share-Alike License 3.0.</string>
     <string name="dialog_info_title">Info</string>
@@ -13,5 +13,6 @@
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nulla augue, congue in ornare vel, ultricies et justo. Nam commodo consectetur tincidunt. Donec quis turpis eget ante ultricies lobortis. Aenean ornare faucibus magna, sit amet hendrerit ligula congue eget. Duis egestas mauris id mauris faucibus mollis. Etiam ac est sed tortor sollicitudin convallis sit amet eu ante. Phasellus laoreet bibendum adipiscing. Mauris eget dolor id elit tristique pharetra et eget libero. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Suspendisse facilisis, lorem fringilla condimentum iaculis, tortor eros venenatis leo, mollis volutpat massa arcu id justo. Integer non nisi vitae mi ultricies lacinia a id enim. Quisque vehicula turpis at eros bibendum venenatis sed non metus. Vestibulum sit amet massa massa.
 Vestibulum mauris est, interdum sit amet accumsan ut, mollis id sapien. Nulla nec ligula purus, vitae accumsan nunc. Donec euismod leo eu risus vehicula consectetur. Vestibulum aliquet sodales tincidunt. Mauris commodo augue id tellus placerat vel egestas velit bibendum. Suspendisse magna magna, consequat at dapibus non, lacinia et diam. Suspendisse potenti. Nunc sit amet purus eu purus consequat scelerisque. Quisque ac lacus ligula, in tempus eros. Morbi ante ipsum, interdum id condimentum a, hendrerit ac nisl. Morbi dictum justo ac nulla consectetur varius. Quisque neque nunc, scelerisque non tempor vel, luctus ut tellus. Donec posuere diam eu nunc pharetra congue. Vivamus porta, quam quis bibendum euismod, enim justo suscipit odio, in elementum odio dui ac est. Duis bibendum scelerisque odio, a fringilla purus pellentesque vitae.
 Vivamus venenatis est id nibh tempus viverra. Pellentesque sit amet tortor id arcu porttitor porta. Curabitur aliquet, ligula pellentesque molestie porta, tellus dolor bibendum lorem, a venenatis purus eros vitae tortor. Sed rhoncus sodales posuere. Aliquam erat volutpat. Mauris rutrum convallis tincidunt. In fermentum, arcu nec tincidunt posuere, enim magna venenatis massa, id laoreet neque risus pulvinar quam. Nulla vulputate leo eu lectus fringilla aliquam. Mauris at nibh risus, vel scelerisque diam. Proin id volutpat arcu. Vivamus tempus elementum imperdiet. Integer mollis est ut libero faucibus tempor. Maecenas nulla lacus, tempus et mollis vel, ullamcorper eu diam.</string>
+    <string name="action_open">Open Wikipedia page</string>
 
 </resources>

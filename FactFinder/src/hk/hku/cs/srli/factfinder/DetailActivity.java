@@ -2,11 +2,13 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import hk.hku.cs.srli.factfinder.DummyData.Category;
@@ -32,9 +34,21 @@ public class DetailActivity extends Activity {
         setTitle(mFact.title);
         TextView text = (TextView) findViewById(R.id.content);
         text.setText(mFact.content);
-        ImageView image = (ImageView) findViewById(R.id.image_view);
+        ImageButton image = (ImageButton) findViewById(R.id.image_view);
         int thumbId = getResources().getIdentifier(mFact.thumb, "drawable", getPackageName());
         image.setImageResource(thumbId);
+        image.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                ActionBar ab = getActionBar();
+                if (ab.isShowing()) {
+                    ab.hide();
+                } else {
+                    ab.show();
+                }
+            }
+        });
 
         // Show the Up button in the action bar.
         getActionBar().setDisplayHomeAsUpEnabled(true);
