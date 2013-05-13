@@ -1,7 +1,6 @@
 
 package hk.hku.cs.srli.factfinder;
 
-import com.actionbarsherlock.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -9,12 +8,13 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import java.util.Locale;
-
-import com.actionbarsherlock.app.SherlockActivity;
 
 public class MainActivity extends SherlockActivity implements ActionBar.TabListener {
 
