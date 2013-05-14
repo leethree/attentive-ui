@@ -4,6 +4,10 @@
         <item name="android:imageButtonStyle">@style/HoverImageButton</item>
         <item name="actionBarTabStyle">@style/HoverActionBarTabStyle</item>
         <item name="android:actionBarTabStyle">@style/HoverActionBarTabStyle</item>
+        
+        <!-- all selectable items -->
+        <item name="selectableItemBackground">@drawable/hoveritem_background_holo_light</item>
+        <item name="android:selectableItemBackground">@drawable/hoveritem_background_holo_light</item>
     </style>
     
     <!-- style for the tabs -->
