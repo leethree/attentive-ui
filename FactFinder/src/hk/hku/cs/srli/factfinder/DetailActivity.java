@@ -2,19 +2,20 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.os.Bundle;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import hk.hku.cs.srli.factfinder.DummyData.Category;
 import hk.hku.cs.srli.factfinder.DummyData.FactItem;
 
-public class DetailActivity extends Activity {
+public class DetailActivity extends SherlockActivity {
     
     private FactItem mFact;
 
@@ -41,7 +42,7 @@ public class DetailActivity extends Activity {
             
             @Override
             public void onClick(View v) {
-                ActionBar ab = getActionBar();
+                ActionBar ab = getSupportActionBar();
                 if (ab.isShowing()) {
                     ab.hide();
                 } else {
@@ -51,13 +52,13 @@ public class DetailActivity extends Activity {
         });
 
         // Show the Up button in the action bar.
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.detail, menu);
+        getSupportMenuInflater().inflate(R.menu.detail, menu);
         return true;
     }
 

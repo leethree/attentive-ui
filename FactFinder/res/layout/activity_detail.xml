@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".DetailActivity" >
 
-    <ImageButton
+    <hk.hku.cs.srli.widget.HoverImageButton
         android:id="@+id/image_view"
         android:layout_width="@dimen/grid_column_width"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:layout_marginRight="@dimen/grid_gutter"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:adjustViewBounds="true"
-        android:contentDescription="Thumbnail"
+        android:contentDescription="Tap to fullscreen"
         android:scaleType="centerInside"
         android:src="@android:drawable/picture_frame" />
 
