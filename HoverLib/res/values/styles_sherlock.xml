@@ -1,0 +1,15 @@
+<resources>
+    
+    <style name="HoverTheme.Sherlock.Light" parent="Theme.Sherlock.Light">
+        <item name="android:imageButtonStyle">@style/HoverImageButton</item>
+        <item name="actionBarTabStyle">@style/HoverActionBarTabStyle</item>
+        <item name="android:actionBarTabStyle">@style/HoverActionBarTabStyle</item>
+    </style>
+    
+    <!-- style for the tabs -->
+	<style name="HoverSherlockActionBarTabStyle" parent="Widget.Sherlock.Light.ActionBar.TabView">
+	    <item name="background">@drawable/hovertab_indicator_ab_holo</item>
+	    <item name="android:background">@drawable/hovertab_indicator_ab_holo</item>
+	</style>
+
+</resources>
