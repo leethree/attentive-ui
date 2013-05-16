@@ -65,7 +65,7 @@ public class Tooltip extends FrameLayout {
     
     private void build(Context context, String text) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tooltip_text, this, true);
-        textView = (TextView) rootView.findViewById(R.id.message); 
+        textView = (TextView) rootView.findViewById(R.id.message);
         textView.setText(text);
     }
     

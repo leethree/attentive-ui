@@ -23,23 +23,16 @@ public class HoverHandler {
     }
     
     public void onHoverChanged(boolean hovered) {
-        if (hovered && !this.hovered) {
-            if (onHoverEventListener != null) onHoverEventListener.onHoverEnter(view);
-            checkForLongHover();
-        } else if (!hovered && this.hovered) {
-            if (onHoverEventListener != null) onHoverEventListener.onHoverExit(view);
-        }
-        this.hovered = hovered;
+        // TODO: delete this method.
     }
     
     public boolean onHoverEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                // workaround for non-hoverable views.
-                view.setHovered(true);
+                setHoveredInternal(true);
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                view.setHovered(false);
+                setHoveredInternal(false);
                 break;
             case MotionEvent.ACTION_HOVER_MOVE:
                 if (hovered) {
@@ -73,7 +66,7 @@ public class HoverHandler {
         public boolean onLongHover(View v, int x, int y);
     }
     
-    // TODO: remove this and just use onHoverChanged. 
+    // TODO: remove this and just use onHoverChangedInternal. 
     public interface OnHoverEventListener {
         public void onHoverEnter(View v);
         public void onHoverExit(View v);
@@ -81,6 +74,25 @@ public class HoverHandler {
     
     public interface OnHoverMoveListener {
         public void onHoverMove(View v, int x, int y); 
+    }
+    
+    private void setHoveredInternal(boolean hovered) {
+        // Make sure it is actually changed.
+        if (hovered != this.hovered) {
+            this.hovered = hovered;
+            // change hover state
+            onHoverChangedInternal(hovered);
+            view.setHovered(hovered);
+        }
+    }
+    
+    private void onHoverChangedInternal(boolean hovered) {
+        if (hovered) {
+            checkForLongHover();
+            if (onHoverEventListener != null) onHoverEventListener.onHoverEnter(view);
+        } else {
+            if (onHoverEventListener != null) onHoverEventListener.onHoverExit(view);
+        }
     }
     
     private void checkForLongHover() {

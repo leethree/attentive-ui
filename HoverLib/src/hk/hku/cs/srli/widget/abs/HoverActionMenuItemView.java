@@ -34,6 +34,12 @@ public class HoverActionMenuItemView extends ActionMenuItemView implements Hover
         hover.setOnLongHoverListener(this);
     }
     
+    // Intercept hover events to prevent children from hovering.
+    @Override
+    public boolean onInterceptHoverEvent(MotionEvent event) {
+        return true;
+    }
+    
     @Override
     public void onHoverChanged(boolean hovered) {
         hover.onHoverChanged(hovered);
