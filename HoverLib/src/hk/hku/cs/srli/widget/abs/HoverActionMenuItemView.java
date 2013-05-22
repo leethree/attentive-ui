@@ -8,9 +8,11 @@ import android.view.View;
 import com.actionbarsherlock.internal.view.menu.ActionMenuItemView;
 
 import hk.hku.cs.srli.widget.HoverHandler;
+import hk.hku.cs.srli.widget.Tooltip;
 import hk.hku.cs.srli.widget.TooltipManager;
+import hk.hku.cs.srli.widget.TooltipManager.TooltipView;
 
-public class HoverActionMenuItemView extends ActionMenuItemView implements HoverHandler.OnLongHoverListener {
+public class HoverActionMenuItemView extends ActionMenuItemView implements TooltipView, HoverHandler.OnLongHoverListener {
     
     private HoverHandler hover;
     
@@ -42,7 +44,6 @@ public class HoverActionMenuItemView extends ActionMenuItemView implements Hover
     
     @Override
     public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
         super.onHoverChanged(hovered);
         if (!hovered) {
             // clear tooltip
@@ -52,12 +53,22 @@ public class HoverActionMenuItemView extends ActionMenuItemView implements Hover
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event) || super.onHoverEvent(event);
+        return hover.onHoverEvent(event);
     }
 
     @Override
     public boolean onLongHover(View v, int x, int y) {
         TooltipManager.show(this, getContentDescription(), x, y);
         return true;
+    }
+
+    @Override
+    public void setTooltip(Tooltip tooltip) {
+        if (tooltip != null) {
+            tooltip.setHoverHandler(hover);
+            hover.setTooltipMode(true);
+        } else {
+            hover.setTooltipMode(false);
+        }
     }
 }

@@ -44,16 +44,15 @@ public class HoverGridView extends GridView {
     
     @Override
     public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
+        super.onHoverChanged(hovered);
         if (!hovered) {
             // clear selection
             setSelection(INVALID_POSITION);
         }
-        super.onHoverChanged(hovered);
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event) || super.onHoverEvent(event);
+        return hover.onHoverEvent(event);
     }
 }

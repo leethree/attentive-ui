@@ -6,10 +6,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
+import hk.hku.cs.srli.widget.TooltipManager.TooltipView;
+
 /**
  * ImageButton with Hover support.
  */
-public class HoverImageButton extends ImageButton {
+public class HoverImageButton extends ImageButton implements TooltipView {
     
     private HoverHandler hover;
     
@@ -47,29 +49,26 @@ public class HoverImageButton extends ImageButton {
                 return true;
             }
         });
-        
-        hover.setOnHoverEventListener(new HoverHandler.OnHoverEventListener() {
-            
-            @Override
-            public void onHoverExit(View v) {
-                TooltipManager.hide(HoverImageButton.this);
-            }
-
-            @Override
-            public void onHoverEnter(View v) {
-                // Do nothing
-            }
-        });
     }
     
     @Override
     public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
         super.onHoverChanged(hovered);
+        if (!hovered) TooltipManager.hide(this);
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
         return hover.onHoverEvent(event) || super.onHoverEvent(event);
+    }
+    
+    @Override
+    public void setTooltip(Tooltip tooltip) {
+        if (tooltip != null) {
+            tooltip.setHoverHandler(hover);
+            hover.setTooltipMode(true);
+        } else {
+            hover.setTooltipMode(false);
+        }
     }
 }

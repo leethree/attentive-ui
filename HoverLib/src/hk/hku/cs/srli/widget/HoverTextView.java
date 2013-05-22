@@ -6,7 +6,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-public class HoverTextView extends TextView {
+import hk.hku.cs.srli.widget.TooltipManager.TooltipView;
+
+public class HoverTextView extends TextView implements TooltipView{
     
     private HoverHandler hover;
 
@@ -35,29 +37,22 @@ public class HoverTextView extends TextView {
                 return true;
             }
         });
-        
-        hover.setOnHoverEventListener(new HoverHandler.OnHoverEventListener() {
-            
-            @Override
-            public void onHoverExit(View v) {
-                TooltipManager.hide(HoverTextView.this);
-            }
-
-            @Override
-            public void onHoverEnter(View v) {
-                // Do nothing
-            }
-        });
     }
 
     @Override
     public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
         super.onHoverChanged(hovered);
+        if (!hovered) TooltipManager.hide(this);
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
         return hover.onHoverEvent(event) || super.onHoverEvent(event);
+    }
+    
+    @Override
+    public void setTooltip(Tooltip tooltip) {
+        tooltip.setHoverHandler(hover);
+        hover.setTooltipMode(true);
     }
 }

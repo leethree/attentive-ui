@@ -8,31 +8,30 @@ public class HoverHandler {
 
     private View view;
     private OnLongHoverListener onLongHoverListener;
-    private OnHoverEventListener onHoverEventListener;
     private OnHoverMoveListener onHoverMoveListener;
     
     private boolean hovered = false;
+    private boolean tooltipMode = false;
+    private boolean tooltipHovered = false;
     private float hoverX;
     private float hoverY;
     
     private boolean hasPerformedLongHover = false;
-    private CheckForLongHover pendingCheckForLongHover;
+    private CheckForLongHover pendingCheckForLongHover = new CheckForLongHover();
     
     public HoverHandler(View view) {
         this.view = view;
     }
     
-    public void onHoverChanged(boolean hovered) {
-        // TODO: delete this method.
-    }
-    
     public boolean onHoverEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                setHoveredInternal(true);
+                hovered = true;
+                onHoverChangedInternal(true);
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                setHoveredInternal(false);
+                hovered = false;
+                onHoverChangedInternal(false);
                 break;
             case MotionEvent.ACTION_HOVER_MOVE:
                 if (hovered) {
@@ -49,12 +48,28 @@ public class HoverHandler {
         return false;
     }
     
-    public void setOnLongHoverListener(OnLongHoverListener onLongHoverListener) {
-        this.onLongHoverListener = onLongHoverListener;
+    public void setTooltipMode(boolean on) {
+        this.tooltipMode = on;
     }
     
-    public void setOnHoverEventListener(OnHoverEventListener onHoverEventListener) {
-        this.onHoverEventListener = onHoverEventListener;
+    public boolean onTooltipHoverEvent(MotionEvent event) {
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                tooltipHovered = true;
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                tooltipHovered = false;
+                break;
+        }
+        return false;
+    }
+    
+    private boolean isHoveredInternal() {
+        return hovered || (tooltipMode && tooltipHovered);
+    }
+    
+    public void setOnLongHoverListener(OnLongHoverListener onLongHoverListener) {
+        this.onLongHoverListener = onLongHoverListener;
     }
     
     public void setOnHoverMoveListener(OnHoverMoveListener onHoverMoveListener) {
@@ -66,42 +81,50 @@ public class HoverHandler {
         public boolean onLongHover(View v, int x, int y);
     }
     
-    // TODO: remove this and just use onHoverChangedInternal. 
-    public interface OnHoverEventListener {
-        public void onHoverEnter(View v);
-        public void onHoverExit(View v);
-    }
-    
     public interface OnHoverMoveListener {
         public void onHoverMove(View v, int x, int y); 
     }
     
-    private void setHoveredInternal(boolean hovered) {
-        // Make sure it is actually changed.
-        if (hovered != this.hovered) {
-            this.hovered = hovered;
-            // change hover state
-            onHoverChangedInternal(hovered);
-            view.setHovered(hovered);
+    private void setHoveredExternal(boolean hovered) {
+        view.setHovered(hovered);
+        if (hovered) {
+            checkForLongHover();
         }
     }
     
     private void onHoverChangedInternal(boolean hovered) {
-        if (hovered) {
-            checkForLongHover();
-            if (onHoverEventListener != null) onHoverEventListener.onHoverEnter(view);
-        } else {
-            if (onHoverEventListener != null) onHoverEventListener.onHoverExit(view);
+        // Make sure the change is consistent.
+        if (hovered == isHoveredInternal()) {
+            // change hover state
+            checkForHoverChange(hovered);
+        }
+    }
+    
+    private void checkForHoverChange(boolean hovering) {
+        if (hovering != view.isHovered()) {
+            view.postDelayed(new CheckForHoverChange(hovering),
+                    ViewConfiguration.getTapTimeout());
+        }
+    }
+    
+    private class CheckForHoverChange implements Runnable {
+        private final boolean hovering;
+        
+        public CheckForHoverChange(boolean hovering) {
+            this.hovering = hovering;
+        }
+        
+        public void run() {
+            // if still in the same hovered state.
+            if (isHoveredInternal() == hovering) {
+                setHoveredExternal(hovering);
+            }
         }
     }
     
     private void checkForLongHover() {
         if (onLongHoverListener != null) {
             hasPerformedLongHover = false;
-
-            if (pendingCheckForLongHover == null) {
-                pendingCheckForLongHover = new CheckForLongHover();
-            }
 
             view.postDelayed(pendingCheckForLongHover,
                     ViewConfiguration.getLongPressTimeout());
@@ -111,7 +134,7 @@ public class HoverHandler {
     private class CheckForLongHover implements Runnable {
 
         public void run() {
-            if (hovered && !hasPerformedLongHover
+            if (view.isHovered() && !hasPerformedLongHover
                     && onLongHoverListener != null) {
                 final int[] screenPos = new int[2];
                 getLocalCoordinate(screenPos);

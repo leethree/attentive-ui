@@ -37,18 +37,17 @@ public class HoverDiscloseLayout extends FrameLayout {
 
     @Override
     public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
+        super.onHoverChanged(hovered);
         if (hovered) {
             setAllChildrenVisibility(VISIBLE);
         } else {
             setAllChildrenVisibility(INVISIBLE);
         }
-        super.onHoverChanged(hovered);
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event) || super.onHoverEvent(event);
+        return hover.onHoverEvent(event);
     }
     
     private void setAllChildrenVisibility(int visibility) {

@@ -59,8 +59,6 @@ public class Tooltip extends FrameLayout {
         String text = a.getString(INDEX_OF_TEXT_ATTR);
         a.recycle();
         build(context, text);
-        
-        hover = new HoverHandler(this);
     }
     
     private void build(Context context, String text) {
@@ -87,14 +85,17 @@ public class Tooltip extends FrameLayout {
         textView.setText(resid);
     }
     
-    @Override
-    public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
+    public void setHoverHandler(HoverHandler hover) {
+        this.hover = hover;
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        hover.onHoverEvent(event);
-        return true; // Stop event from propaganda.
+        if (hover != null) {
+            hover.onTooltipHoverEvent(event);
+            return true; // Stop event from propaganda.
+        } else {
+            return false;
+        }
     }
 }

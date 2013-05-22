@@ -69,7 +69,7 @@ class FeedProcessor(object):
             self._lastx = x
             self._lasty = y
 
-            if x > 0 and x < 1 and y > 0 and y < 1:
+            if -0.1 < x < 1.1 and -0.1 < y < 1.1:
                 action = 'move' if self._entered else 'enter'
                 self._send_command(action, x, y)
                 self._entered = True
