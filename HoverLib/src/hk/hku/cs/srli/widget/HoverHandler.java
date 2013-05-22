@@ -56,9 +56,11 @@ public class HoverHandler {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
                 tooltipHovered = true;
+                onHoverChangedInternal(true);
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
                 tooltipHovered = false;
+                onHoverChangedInternal(false);
                 break;
         }
         return false;

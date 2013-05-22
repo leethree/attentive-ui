@@ -59,7 +59,7 @@ public class HoverImageButton extends ImageButton implements TooltipView {
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event) || super.onHoverEvent(event);
+        return hover.onHoverEvent(event);
     }
     
     @Override

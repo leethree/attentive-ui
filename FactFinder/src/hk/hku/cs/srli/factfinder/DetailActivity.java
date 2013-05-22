@@ -35,7 +35,7 @@ public class DetailActivity extends SherlockActivity {
         setTitle(mFact.title);
         TextView text = (TextView) findViewById(R.id.content);
         text.setText(mFact.content);
-        ImageButton image = (ImageButton) findViewById(R.id.image_view);
+        final ImageButton image = (ImageButton) findViewById(R.id.image_view);
         int thumbId = getResources().getIdentifier(mFact.thumb, "drawable", getPackageName());
         image.setImageResource(thumbId);
         image.setOnClickListener(new View.OnClickListener() {
@@ -45,8 +45,10 @@ public class DetailActivity extends SherlockActivity {
                 ActionBar ab = getSupportActionBar();
                 if (ab.isShowing()) {
                     ab.hide();
+                    image.setContentDescription("Tap to exit fullscreen");
                 } else {
                     ab.show();
+                    image.setContentDescription("Tap to fullscreen");
                 }
             }
         });

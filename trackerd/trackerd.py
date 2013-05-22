@@ -23,7 +23,7 @@ class FeedProcessor(object):
 
         self._detector = FixationDetector()
 
-        self._avg = False
+        self._avg = True
 
         # moving averagers
         self._moving_avg_x = MovingWindow(15)
