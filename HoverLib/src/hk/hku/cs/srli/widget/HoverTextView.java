@@ -52,7 +52,11 @@ public class HoverTextView extends TextView implements TooltipView{
     
     @Override
     public void setTooltip(Tooltip tooltip) {
-        tooltip.setHoverHandler(hover);
-        hover.setTooltipMode(true);
+        if (tooltip != null) {
+            tooltip.setHoverHandler(hover);
+            hover.setTooltipMode(true);
+        } else {
+            hover.setTooltipMode(false);
+        }
     }
 }

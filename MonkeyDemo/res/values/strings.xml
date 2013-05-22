@@ -4,8 +4,8 @@
     <string name="app_name">MonkeyDemo</string>
     <string name="title_demo_list">Demos</string>
     <string name="title_demo_detail">Demo</string>
-    <string name="dummy_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare blandit consectetur. Etiam porttitor fermentum nisl, id suscipit libero molestie vitae.</string>
-    <string name="dummy_text2">Fusce eget nibh vel leo convallis posuere. Nullam accumsan hendrerit congue. Donec fringilla turpis blandit massa faucibus gravida ut nec est.</string>
-    <string name="dummy_text3">Mauris vitae ullamcorper sem. Aliquam rhoncus elementum lectus, eget aliquam lorem porta in. Sed ornare dui ut augue varius a pulvinar ipsum consectetur.</string>
+    <string name="dummy_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare blandit consectetur. Etiam porttitor fermentum nisl, id suscipit libero molestie vitae. Vivamus tristique laoreet ultrices. Aenean tempor quam ut dolor accumsan ultricies. Cras vitae dolor metus. Fusce sed orci sem.</string>
+    <string name="dummy_text2">Fusce eget nibh vel leo convallis posuere. Nullam accumsan hendrerit congue. Donec fringilla turpis blandit massa faucibus gravida ut nec est. Morbi nec turpis leo, vitae tempor leo. Sed non diam risus, eu tempus lacus.</string>
+    <string name="dummy_text3">Mauris vitae ullamcorper sem. Aliquam rhoncus elementum lectus, eget aliquam lorem porta in. Sed ornare dui ut augue varius a pulvinar ipsum consectetur. Phasellus sed mauris justo, non mattis nibh. Phasellus euismod, purus in scelerisque porttitor, dolor neque cursus lacus, eget tincidunt erat tellus vel nunc. Proin a leo dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in tellus lorem.</string>
 
 </resources>
