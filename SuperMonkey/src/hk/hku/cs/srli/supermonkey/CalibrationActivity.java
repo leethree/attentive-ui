@@ -175,10 +175,14 @@ public class CalibrationActivity extends Activity {
         private void prepareSequence() {
             sequence.clear();
             addPoint(0.1f, 0.1f);
+            addPoint(0.5f, 0.1f);
             addPoint(0.9f, 0.1f);
+            addPoint(0.9f, 0.5f);
             addPoint(0.5f, 0.5f);
-            addPoint(0.9f, 0.9f);
+            addPoint(0.1f, 0.5f);
             addPoint(0.1f, 0.9f);
+            addPoint(0.5f, 0.9f);
+            addPoint(0.9f, 0.9f);
             // Hide the point when animation is finished.
             sequence.add(new Movement() {
                 @Override
@@ -195,21 +199,19 @@ public class CalibrationActivity extends Activity {
                     cview.movePointTo(x, y);
                 }
             });
-            // Calibrate twice for each point.
-            for (int i = 0; i < 2; i++) {
-                sequence.add(new ShrinkPoint());
-                sequence.add(new Movement() {
-                    @Override
-                    public void move() {
-                        calibCtrl.addCalibrationPoint(x, y);
-                        // Start looping while eye tracker collects data.
-                        looping = true;
-                        Choreographer.this.nextMove();
-                    }
-                });
-                sequence.add(new ExpandPoint());
-                sequence.add(new LoopingTrap());
-            }
+            // Calibrate for each point.
+            sequence.add(new ShrinkPoint());
+            sequence.add(new Movement() {
+                @Override
+                public void move() {
+                    calibCtrl.addCalibrationPoint(x, y);
+                    // Start looping while eye tracker collects data.
+                    looping = true;
+                    Choreographer.this.nextMove();
+                }
+            });
+            sequence.add(new ExpandPoint());
+            sequence.add(new LoopingTrap());
         }
         
         private class ShrinkPoint implements Movement {

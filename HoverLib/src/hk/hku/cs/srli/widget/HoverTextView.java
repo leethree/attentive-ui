@@ -2,14 +2,17 @@ package hk.hku.cs.srli.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-public class HoverTextView extends TextView {
+import hk.hku.cs.srli.widget.util.HoverHandler;
+import hk.hku.cs.srli.widget.util.TooltipManager;
+import hk.hku.cs.srli.widget.util.HoverHandler.OnLongHoverListener;
+
+public class HoverTextView extends TextView implements OnLongHoverListener {
     
-    private HoverDelegate hover;
+    private HoverHandler hover;
 
     public HoverTextView(Context context) {
         super(context);
@@ -27,33 +30,27 @@ public class HoverTextView extends TextView {
     }
     
     private void init() {
-        hover = new HoverDelegate(this);
-        hover.setOnLongHoverListener(new HoverDelegate.OnLongHoverListener() {
-            
-            @Override
-            public boolean onLongHover(View v, int x, int y) {
-                TooltipManager.show(HoverTextView.this, getText());
-                return true;
-            }
-        });
-        
-        hover.setOnHoverEventListener(new HoverDelegate.OnHoverEventListener() {
-            
-            @Override
-            public void onHoverExit(View v) {
-                TooltipManager.hide(HoverTextView.this);
-            }
-        });
+        hover = new HoverHandler(this);
+        hover.setOnLongHoverListener(this);
     }
 
     @Override
     public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
         super.onHoverChanged(hovered);
+        if (!hovered) {
+            TooltipManager.hide(this);
+            hover.dettachTooltip();
+        }
+    }
+    
+    @Override
+    public boolean onLongHover(View v, int x, int y) {
+        hover.attachTooltip(TooltipManager.show(HoverTextView.this, getText()));
+        return true;
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event) || super.onHoverEvent(event);
+        return hover.onHoverEvent(event);
     }
 }

@@ -12,6 +12,10 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import hk.hku.cs.srli.widget.util.HoverHandler;
+
+import java.lang.ref.WeakReference;
+
 public class Tooltip extends FrameLayout {
     
     private static final int[] ATTRS = new int[] { android.R.attr.text };
@@ -33,7 +37,7 @@ public class Tooltip extends FrameLayout {
         PARAMS.setTitle("Tooltip");
     }
     
-    private HoverDelegate hover;
+    private WeakReference<HoverHandler> hover;
     
     private TextView textView;
 
@@ -59,13 +63,11 @@ public class Tooltip extends FrameLayout {
         String text = a.getString(INDEX_OF_TEXT_ATTR);
         a.recycle();
         build(context, text);
-        
-        hover = new HoverDelegate(this);
     }
     
     private void build(Context context, String text) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tooltip_text, this, true);
-        textView = (TextView) rootView.findViewById(R.id.message); 
+        textView = (TextView) rootView.findViewById(R.id.message);
         textView.setText(text);
     }
     
@@ -87,14 +89,17 @@ public class Tooltip extends FrameLayout {
         textView.setText(resid);
     }
     
-    @Override
-    public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
+    public void setHoverHandler(HoverHandler hover) {
+        this.hover = new WeakReference<HoverHandler>(hover);
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        hover.onHoverEvent(event);
-        return true; // Stop event from propaganda.
+        if (hover != null) {
+            hover.get().onTooltipHoverEvent(event);
+            return true; // Stop event from propaganda.
+        } else {
+            return false;
+        }
     }
 }
