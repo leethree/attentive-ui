@@ -33,7 +33,7 @@ public class Tooltip extends FrameLayout {
         PARAMS.setTitle("Tooltip");
     }
     
-    private HoverDelegate hover;
+    private HoverHandler hover;
     
     private TextView textView;
 
@@ -59,13 +59,11 @@ public class Tooltip extends FrameLayout {
         String text = a.getString(INDEX_OF_TEXT_ATTR);
         a.recycle();
         build(context, text);
-        
-        hover = new HoverDelegate(this);
     }
     
     private void build(Context context, String text) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tooltip_text, this, true);
-        textView = (TextView) rootView.findViewById(R.id.message); 
+        textView = (TextView) rootView.findViewById(R.id.message);
         textView.setText(text);
     }
     
@@ -87,14 +85,17 @@ public class Tooltip extends FrameLayout {
         textView.setText(resid);
     }
     
-    @Override
-    public void onHoverChanged(boolean hovered) {
-        hover.onHoverChanged(hovered);
+    public void setHoverHandler(HoverHandler hover) {
+        this.hover = hover;
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        hover.onHoverEvent(event);
-        return true; // Stop event from propaganda.
+        if (hover != null) {
+            hover.onTooltipHoverEvent(event);
+            return true; // Stop event from propaganda.
+        } else {
+            return false;
+        }
     }
 }

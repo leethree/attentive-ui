@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="4"
+        android:maxLines="3"
         android:text="@string/dummy_text2"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="4"
         android:text="@string/dummy_text3"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
