@@ -16,8 +16,8 @@ EMULATOR_NAME = '5554:Nexus_S'
 OFFSET_X = 3
 OFFSET_Y = 25
 
-MAX_WIDTH = 480
-MAX_HEIGHT = 800
+MAX_WIDTH = 800
+MAX_HEIGHT = 480
 
 def getCursorPostion():
 	rect = win32gui.GetWindowRect(win32gui.FindWindow(None, EMULATOR_NAME))

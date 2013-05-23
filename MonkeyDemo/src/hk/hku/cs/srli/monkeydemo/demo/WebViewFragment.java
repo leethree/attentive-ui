@@ -13,7 +13,7 @@ import hk.hku.cs.srli.monkeydemo.R;
 
 public class WebViewFragment extends DemoFragmentBase {
     
-    private static final String URL = "file:///android_asset/parallax.html";
+    private static final String URL = "file:///android_asset/spacelab.html";
     
     private WebView webView;
 
@@ -27,7 +27,7 @@ public class WebViewFragment extends DemoFragmentBase {
         
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setBuiltInZoomControls(false);
         
         webView.setWebViewClient(new WebViewClient());
         

@@ -5,7 +5,7 @@ import socket
 import pubsub
 from eyetracker.facade import EyeTrackerFacade
 from network import MonkeyServer, MonkeyFeeder
-from smoothie import MovingWindow, FixationDetector, DispersionDetector
+from smoothie import MovingWindow, FixationDetector, AccelDetector, DispersionDetector
 
 
 class FeedProcessor(object):
@@ -23,9 +23,11 @@ class FeedProcessor(object):
 
         self._detector = FixationDetector()
 
+        self._avg_enabled = True
+
         # moving averagers
-        self._moving_avg_x = MovingWindow(32)
-        self._moving_avg_y = MovingWindow(32)
+        self._moving_avg_x = MovingWindow(15)
+        self._moving_avg_y = MovingWindow(15)
 
     def set_fixation_detector(self, fixation_detector):
         self._detector = fixation_detector
@@ -52,10 +54,12 @@ class FeedProcessor(object):
             y = 1 - y
 
         if self._detector.is_fixation(gaze):
-            self._moving_avg_x.push(x)
-            self._moving_avg_y.push(y)
-            x = self._moving_avg_x.get_average()
-            y = self._moving_avg_y.get_average()
+
+            if self._avg_enabled:
+                self._moving_avg_x.push(x)
+                self._moving_avg_y.push(y)
+                x = self._moving_avg_x.get_average()
+                y = self._moving_avg_y.get_average()
 
             # do nothing if the point hasn't moved
             if (abs(x - self._lastx) * self._width < 5 and
@@ -65,7 +69,7 @@ class FeedProcessor(object):
             self._lastx = x
             self._lasty = y
 
-            if x > 0 and x < 1 and y > 0 and y < 1:
+            if -0.1 < x < 1.1 and -0.1 < y < 1.1:
                 action = 'move' if self._entered else 'enter'
                 self._send_command(action, x, y)
                 self._entered = True
@@ -178,7 +182,7 @@ class Switchboard(object):
         self._fprocessor = FeedProcessor(self._config['display_width'],
                                          self._config['display_height'],
                                          self._config['upside_down'])
-        self._fprocessor.set_fixation_detector(DispersionDetector())
+        # self._fprocessor.set_fixation_detector(AccelDetector())
         self._fprocessor.set_output_method(self._mfeeder.send_data)
         pubsub.subscribe('data', self._fprocessor.process)
         self._etf.start_tracking()
