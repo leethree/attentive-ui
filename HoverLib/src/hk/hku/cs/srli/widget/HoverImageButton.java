@@ -66,9 +66,9 @@ public class HoverImageButton extends ImageButton implements TooltipView {
     public void setTooltip(Tooltip tooltip) {
         if (tooltip != null) {
             tooltip.setHoverHandler(hover);
-            hover.setTooltipMode(true);
+            hover.setTooltipEnabled(true);
         } else {
-            hover.setTooltipMode(false);
+            hover.setTooltipEnabled(false);
         }
     }
 }

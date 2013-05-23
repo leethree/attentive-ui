@@ -23,7 +23,7 @@ class FeedProcessor(object):
 
         self._detector = FixationDetector()
 
-        self._avg = True
+        self._avg_enabled = True
 
         # moving averagers
         self._moving_avg_x = MovingWindow(15)
@@ -55,7 +55,7 @@ class FeedProcessor(object):
 
         if self._detector.is_fixation(gaze):
 
-            if self._avg:
+            if self._avg_enabled:
                 self._moving_avg_x.push(x)
                 self._moving_avg_y.push(y)
                 x = self._moving_avg_x.get_average()

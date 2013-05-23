@@ -10,9 +10,13 @@ public class HoverHandler {
     private OnLongHoverListener onLongHoverListener;
     private OnHoverMoveListener onHoverMoveListener;
     
-    private boolean hovered = false;
-    private boolean tooltipMode = false;
-    private boolean tooltipHovered = false;
+    /**
+     * Internal hover state.
+     */
+    private boolean hovering = false;
+    private boolean viewEntered = false;
+    private boolean tooltipEnabled = false;
+    private boolean tooltipEntered = false;
     private float hoverX;
     private float hoverY;
     
@@ -26,20 +30,21 @@ public class HoverHandler {
     public boolean onHoverEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                hovered = true;
-                onHoverChangedInternal(true);
+                viewEntered = true;
+                refreshInternalHoverState();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                hovered = false;
-                onHoverChangedInternal(false);
+                viewEntered = false;
+                refreshInternalHoverState();
                 break;
             case MotionEvent.ACTION_HOVER_MOVE:
-                if (hovered) {
+                if (viewEntered) {
                     hoverX = event.getRawX();
                     hoverY = event.getRawY();
                     if (onHoverMoveListener != null) {
                         final int[] screenPos = new int[2];
                         getLocalCoordinate(screenPos);
+                        // fire hover move event
                         onHoverMoveListener.onHoverMove(view, screenPos[0], screenPos[1]);
                     }
                 }
@@ -48,26 +53,22 @@ public class HoverHandler {
         return false;
     }
     
-    public void setTooltipMode(boolean on) {
-        this.tooltipMode = on;
+    public void setTooltipEnabled(boolean enabled) {
+        this.tooltipEnabled = enabled;
     }
     
     public boolean onTooltipHoverEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                tooltipHovered = true;
-                onHoverChangedInternal(true);
+                tooltipEntered = true;
+                refreshInternalHoverState();
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                tooltipHovered = false;
-                onHoverChangedInternal(false);
+                tooltipEntered = false;
+                refreshInternalHoverState();
                 break;
         }
         return false;
-    }
-    
-    private boolean isHoveredInternal() {
-        return hovered || (tooltipMode && tooltipHovered);
     }
     
     public void setOnLongHoverListener(OnLongHoverListener onLongHoverListener) {
@@ -79,7 +80,6 @@ public class HoverHandler {
     }
     
     public interface OnLongHoverListener {
-        
         public boolean onLongHover(View v, int x, int y);
     }
     
@@ -94,31 +94,35 @@ public class HoverHandler {
         }
     }
     
-    private void onHoverChangedInternal(boolean hovered) {
-        // Make sure the change is consistent.
-        if (hovered == isHoveredInternal()) {
-            // change hover state
-            checkForHoverChange(hovered);
+    private void refreshInternalHoverState() {
+        boolean toHover = viewEntered || (tooltipEnabled && tooltipEntered);
+        // check if the state is really different
+        if (toHover != hovering) {
+            // change internal hover state
+            hovering = toHover;
+            // try to change external hover state
+            checkForExternalHoverChange(hovering);
         }
     }
     
-    private void checkForHoverChange(boolean hovering) {
+    private void checkForExternalHoverChange(boolean hovering) {
         if (hovering != view.isHovered()) {
+            // delay external hover change
             view.postDelayed(new CheckForHoverChange(hovering),
                     ViewConfiguration.getTapTimeout());
         }
     }
     
     private class CheckForHoverChange implements Runnable {
-        private final boolean hovering;
+        private final boolean oldHoverState;
         
         public CheckForHoverChange(boolean hovering) {
-            this.hovering = hovering;
+            oldHoverState = hovering;
         }
         
         public void run() {
-            // if still in the same hovered state.
-            if (isHoveredInternal() == hovering) {
+            // if still in the same internal hover state.
+            if (hovering == oldHoverState) {
                 setHoveredExternal(hovering);
             }
         }
@@ -140,9 +144,9 @@ public class HoverHandler {
                     && onLongHoverListener != null) {
                 final int[] screenPos = new int[2];
                 getLocalCoordinate(screenPos);
-                if (onLongHoverListener.onLongHover(view, screenPos[0], screenPos[1])) {
-                    hasPerformedLongHover = true;
-                }
+                // fire long hover event
+                hasPerformedLongHover = 
+                        onLongHoverListener.onLongHover(view, screenPos[0], screenPos[1]);
             }
         }
     }

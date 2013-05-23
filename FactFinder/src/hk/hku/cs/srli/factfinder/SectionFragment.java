@@ -80,9 +80,8 @@ public class SectionFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {  // if it's not recycled, initialize some attributes
-                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.list_item, parent, false);
+            if (convertView == null) {  // if it's not recycled, inflate it.
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
             }
             ImageView imageView = (ImageView) convertView.findViewById(R.id.item_image_view);
             TextView textView = (TextView) convertView.findViewById(R.id.item_text_view);

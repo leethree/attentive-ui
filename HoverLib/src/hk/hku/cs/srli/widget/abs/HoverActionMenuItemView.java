@@ -66,9 +66,9 @@ public class HoverActionMenuItemView extends ActionMenuItemView implements Toolt
     public void setTooltip(Tooltip tooltip) {
         if (tooltip != null) {
             tooltip.setHoverHandler(hover);
-            hover.setTooltipMode(true);
+            hover.setTooltipEnabled(true);
         } else {
-            hover.setTooltipMode(false);
+            hover.setTooltipEnabled(false);
         }
     }
 }
