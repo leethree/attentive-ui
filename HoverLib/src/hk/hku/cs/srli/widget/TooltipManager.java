@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
 
 public class TooltipManager {
@@ -34,67 +35,59 @@ public class TooltipManager {
         return instance;
     }
     
-    public static void show(TooltipView view, CharSequence text) {
-        show(view, text, 0, 0);
+    public static Tooltip show(View view, CharSequence text) {
+        return show(view, text, 0, 0);
     }
     
-    public static void show(TooltipView view, CharSequence text, int xoffset, int yoffset) {
-        getInstance(view.getContext()).showTooltipNow(view, text, xoffset, yoffset);
+    public static Tooltip show(View view, CharSequence text, int xoffset, int yoffset) {
+        return getInstance(view.getContext()).showTooltipNow(view, text, xoffset, yoffset);
     }
     
-    public static void show(TooltipView view, CharSequence text, long delay) {
-        show(view, text, 0, 0, delay);
+    public static Tooltip show(View view, CharSequence text, long delay) {
+        return show(view, text, 0, 0, delay);
     }
     
-    public static void show(TooltipView view, CharSequence text, int xoffset, int yoffset, long delay) {
+    public static Tooltip show(View view, CharSequence text, int xoffset, int yoffset, long delay) {
         if (delay > 0) {
-            getInstance(view.getContext()).showTooltipLater(view, text, xoffset, yoffset, delay);
+            return getInstance(view.getContext()).showTooltipLater(view, text, xoffset, yoffset, delay);
         } else {
-            show(view, text, xoffset, yoffset);
+            return show(view, text, xoffset, yoffset);
         }
     }
     
-    public static void showAndHide(TooltipView view, CharSequence text, long duration) {
-        showAndHide(view, text, 0, 0, duration);
+    public static Tooltip showAndHide(View view, CharSequence text, long duration) {
+        return showAndHide(view, text, 0, 0, duration);
     }
     
-    public static void showAndHide(TooltipView view, CharSequence text, int xoffset, int yoffset, long duration) {
+    public static Tooltip showAndHide(View view, CharSequence text, int xoffset, int yoffset, long duration) {
         if (duration > 0) {
-            getInstance(view.getContext()).showTooltipNow(view, text, xoffset, yoffset);
+            Tooltip ret = getInstance(view.getContext()).showTooltipNow(view, text, xoffset, yoffset);
             instance.hideTooltipLater(duration);
+            return ret;
         }
+        return null;
     }
     
-    public static void hide(TooltipView view) {
-        view.setTooltip(null); // TODO: find a more elegant way to do this.
+    public static void hide(View view) {
         getInstance(view.getContext()).hideTooltipNow();
     }
     
-    public static void hide(TooltipView view, long delay) {
-        view.setTooltip(null);
+    public static void hide(View view, long delay) {
         if (delay > 0) {
             getInstance(view.getContext()).hideTooltipLater(delay);
         } else {
             hide(view);
         }
     }
-    
-    public interface TooltipView {
-        public Context getContext();
-        public void setTooltip(Tooltip tooltip);
-        public void getLocationOnScreen(int[] screenPos);
-        public void getWindowVisibleDisplayFrame(Rect displayFrame);
-    }
-    
-    private void showTooltipNow(TooltipView view, CharSequence text, int xoffset, int yoffset) {
+     
+    private Tooltip showTooltipNow(View view, CharSequence text, int xoffset, int yoffset) {
         final Tooltip tooltip = makeTooltip(text);
-        view.setTooltip(tooltip);
         doShow(tooltip, makeParams(view, xoffset, yoffset));
+        return tooltip;
     }
     
-    private void showTooltipLater(TooltipView view, CharSequence text, int xoffset, int yoffset, long delay) {
+    private Tooltip showTooltipLater(View view, CharSequence text, int xoffset, int yoffset, long delay) {
         final Tooltip tooltip = makeTooltip(text);
-        view.setTooltip(tooltip);
         final WindowManager.LayoutParams params = makeParams(view, xoffset, yoffset);
         handler.postDelayed(new Runnable() {
             @Override
@@ -102,6 +95,7 @@ public class TooltipManager {
                 instance.doShow(tooltip, params);
             }
         }, delay);
+        return tooltip;
     }
     
     private void hideTooltipNow() {
@@ -125,7 +119,7 @@ public class TooltipManager {
         return tooltip;
     }
     
-    private WindowManager.LayoutParams makeParams(TooltipView view, int xoffset, int yoffset) {
+    private WindowManager.LayoutParams makeParams(View view, int xoffset, int yoffset) {
         final int[] screenPos = new int[2];
         final Rect displayFrame = new Rect();
         view.getLocationOnScreen(screenPos);

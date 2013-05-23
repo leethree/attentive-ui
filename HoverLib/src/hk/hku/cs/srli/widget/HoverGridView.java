@@ -6,7 +6,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
 
-public class HoverGridView extends GridView {
+import hk.hku.cs.srli.widget.HoverHandler.OnHoverMoveListener;
+
+public class HoverGridView extends GridView implements OnHoverMoveListener {
     
     private HoverHandler hover;
     
@@ -27,20 +29,9 @@ public class HoverGridView extends GridView {
 
     private void init() {
         hover = new HoverHandler(this);
-        
-        hover.setOnHoverMoveListener(new HoverHandler.OnHoverMoveListener() {
-            
-            @Override
-            public void onHoverMove(View v, int x, int y) {
-                int position = pointToPosition(x, y);
-                if (isInTouchMode()) {
-                    // exit touch mode
-                    requestFocusFromTouch();
-                }
-                setSelection(position);
-            }
-        });
+        hover.setOnHoverMoveListener(this);
     }
+
     
     @Override
     public void onHoverChanged(boolean hovered) {
@@ -49,6 +40,17 @@ public class HoverGridView extends GridView {
             // clear selection
             setSelection(INVALID_POSITION);
         }
+    }
+    
+    @Override
+    public void onHoverMove(View v, int x, int y) {
+        int position = pointToPosition(x, y);
+        if (isInTouchMode()) {
+            // exit touch mode
+            // TODO: find a way to get back to touch mode.
+            requestFocusFromTouch();
+        }
+        setSelection(position);
     }
     
     @Override

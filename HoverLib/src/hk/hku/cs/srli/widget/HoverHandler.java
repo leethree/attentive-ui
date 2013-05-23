@@ -53,8 +53,13 @@ public class HoverHandler {
         return false;
     }
     
-    public void setTooltipEnabled(boolean enabled) {
-        this.tooltipEnabled = enabled;
+    public void attachTooltip(Tooltip tooltip) {
+        tooltip.setHoverHandler(this);
+        tooltipEnabled = true;
+    }
+    
+    public void dettachTooltip() {
+        tooltipEnabled = false;
     }
     
     public boolean onTooltipHoverEvent(MotionEvent event) {

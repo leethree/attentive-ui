@@ -6,9 +6,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import hk.hku.cs.srli.widget.TooltipManager.TooltipView;
+import hk.hku.cs.srli.widget.HoverHandler.OnLongHoverListener;
 
-public class HoverTextView extends TextView implements TooltipView{
+public class HoverTextView extends TextView implements OnLongHoverListener {
     
     private HoverHandler hover;
 
@@ -29,34 +29,26 @@ public class HoverTextView extends TextView implements TooltipView{
     
     private void init() {
         hover = new HoverHandler(this);
-        hover.setOnLongHoverListener(new HoverHandler.OnLongHoverListener() {
-            
-            @Override
-            public boolean onLongHover(View v, int x, int y) {
-                TooltipManager.show(HoverTextView.this, getText());
-                return true;
-            }
-        });
+        hover.setOnLongHoverListener(this);
     }
 
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
-        if (!hovered) TooltipManager.hide(this);
+        if (!hovered) {
+            TooltipManager.hide(this);
+            hover.dettachTooltip();
+        }
+    }
+    
+    @Override
+    public boolean onLongHover(View v, int x, int y) {
+        hover.attachTooltip(TooltipManager.show(HoverTextView.this, getText()));
+        return true;
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event) || super.onHoverEvent(event);
-    }
-    
-    @Override
-    public void setTooltip(Tooltip tooltip) {
-        if (tooltip != null) {
-            tooltip.setHoverHandler(hover);
-            hover.setTooltipEnabled(true);
-        } else {
-            hover.setTooltipEnabled(false);
-        }
+        return hover.onHoverEvent(event);
     }
 }

@@ -12,6 +12,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
+
 public class Tooltip extends FrameLayout {
     
     private static final int[] ATTRS = new int[] { android.R.attr.text };
@@ -33,7 +35,7 @@ public class Tooltip extends FrameLayout {
         PARAMS.setTitle("Tooltip");
     }
     
-    private HoverHandler hover;
+    private WeakReference<HoverHandler> hover;
     
     private TextView textView;
 
@@ -86,13 +88,13 @@ public class Tooltip extends FrameLayout {
     }
     
     public void setHoverHandler(HoverHandler hover) {
-        this.hover = hover;
+        this.hover = new WeakReference<HoverHandler>(hover);
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
         if (hover != null) {
-            hover.onTooltipHoverEvent(event);
+            hover.get().onTooltipHoverEvent(event);
             return true; // Stop event from propaganda.
         } else {
             return false;
