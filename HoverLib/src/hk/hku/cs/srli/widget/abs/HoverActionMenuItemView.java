@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.actionbarsherlock.internal.view.menu.ActionMenuItemView;
+import com.actionbarsherlock.internal.view.menu.MenuItemImpl;
 
 import hk.hku.cs.srli.widget.util.HoverHandler;
 import hk.hku.cs.srli.widget.util.TooltipManager;
@@ -34,6 +35,14 @@ public class HoverActionMenuItemView extends ActionMenuItemView
         hover = new HoverHandler(this);
         hover.setOnLongHoverListener(this);
     }
+    
+    @Override
+    public void initialize(MenuItemImpl itemData, int menuType) { 
+        super.initialize(itemData, menuType);
+        // XXX: workaround for getting long content description
+        setContentDescription(itemData.getTitle());
+    }
+    
     
     // Intercept hover events to prevent children from hovering.
     @Override
