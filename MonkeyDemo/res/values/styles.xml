@@ -5,7 +5,7 @@
     </style>
     
     <!-- Application theme. -->
-    <style name="AppTheme" parent="@HoverTheme.Holo.Light">
+    <style name="AppTheme" parent="HoverTheme.Holo.Light">
     </style>
 
 </resources>

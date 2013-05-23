@@ -5,13 +5,13 @@
         android:icon="@android:drawable/ic_menu_share"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/action_star"
-        android:titleCondensed="Share" />
+        android:title="@string/action_share"
+        android:titleCondensed="@string/action_share_short" />
     <item
         android:id="@+id/action_open_in_browser"
         android:icon="@android:drawable/ic_menu_set_as"
         android:showAsAction="ifRoom|withText"
         android:title="@string/action_open"
-        android:titleCondensed="Open" />
+        android:titleCondensed="@string/action_open_short" />
 
 </menu>

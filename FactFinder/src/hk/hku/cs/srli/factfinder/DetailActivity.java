@@ -45,10 +45,10 @@ public class DetailActivity extends SherlockActivity {
                 ActionBar ab = getSupportActionBar();
                 if (ab.isShowing()) {
                     ab.hide();
-                    image.setContentDescription("Tap to exit fullscreen");
+                    image.setContentDescription(getString(R.string.hint_fullscreen_exit));
                 } else {
                     ab.show();
-                    image.setContentDescription("Tap to fullscreen");
+                    image.setContentDescription(getString(R.string.hint_fullscreen));
                 }
             }
         });
@@ -70,7 +70,7 @@ public class DetailActivity extends SherlockActivity {
             case android.R.id.home:
                 Intent upIntent = getParentActivityIntent();
                 // return to the exisiting parent activity instead of creating a new one.
-                upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 navigateUpTo(upIntent);
                 return true;
         }
