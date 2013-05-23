@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.ImageButton;
 
-import hk.hku.cs.srli.widget.HoverHandler.OnLongHoverListener;
+import hk.hku.cs.srli.widget.util.HoverHandler;
+import hk.hku.cs.srli.widget.util.TooltipManager;
+import hk.hku.cs.srli.widget.util.HoverHandler.OnLongHoverListener;
 
 /**
  * ImageButton with Hover support.

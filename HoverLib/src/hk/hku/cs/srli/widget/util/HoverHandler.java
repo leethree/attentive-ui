@@ -1,8 +1,10 @@
-package hk.hku.cs.srli.widget;
+package hk.hku.cs.srli.widget.util;
 
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+
+import hk.hku.cs.srli.widget.Tooltip;
 
 public class HoverHandler {
 

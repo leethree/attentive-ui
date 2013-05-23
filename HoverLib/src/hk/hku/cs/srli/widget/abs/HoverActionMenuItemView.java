@@ -7,8 +7,8 @@ import android.view.View;
 
 import com.actionbarsherlock.internal.view.menu.ActionMenuItemView;
 
-import hk.hku.cs.srli.widget.HoverHandler;
-import hk.hku.cs.srli.widget.TooltipManager;
+import hk.hku.cs.srli.widget.util.HoverHandler;
+import hk.hku.cs.srli.widget.util.TooltipManager;
 
 public class HoverActionMenuItemView extends ActionMenuItemView
         implements HoverHandler.OnLongHoverListener {

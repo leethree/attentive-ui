@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
+import hk.hku.cs.srli.widget.util.HoverHandler;
+
 public class HoverDiscloseLayout extends FrameLayout {
 
     private HoverHandler hover;

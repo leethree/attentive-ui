@@ -6,7 +6,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
 
-import hk.hku.cs.srli.widget.HoverHandler.OnHoverMoveListener;
+import hk.hku.cs.srli.widget.util.HoverHandler;
+import hk.hku.cs.srli.widget.util.HoverHandler.OnHoverMoveListener;
 
 public class HoverGridView extends GridView implements OnHoverMoveListener {
     

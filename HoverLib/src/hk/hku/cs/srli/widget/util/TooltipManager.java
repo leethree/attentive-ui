@@ -1,4 +1,4 @@
-package hk.hku.cs.srli.widget;
+package hk.hku.cs.srli.widget.util;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -7,6 +7,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+
+import hk.hku.cs.srli.widget.R;
+import hk.hku.cs.srli.widget.Tooltip;
 
 public class TooltipManager {
 
