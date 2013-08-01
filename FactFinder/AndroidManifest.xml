@@ -30,6 +30,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="hk.hku.cs.srli.factfinder.MainActivity" />
         </activity>
+        <activity
+            android:name="hk.hku.cs.srli.factfinder.OrderActivity"
+            android:label="@string/title_activity_order"
+            android:parentActivityName="hk.hku.cs.srli.factfinder.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hk.hku.cs.srli.factfinder.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

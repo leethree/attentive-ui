@@ -4,6 +4,7 @@ package hk.hku.cs.srli.factfinder;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -102,6 +103,10 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
                     .setMessage(R.string.dialog_info_message)
                     .setTitle(R.string.dialog_info_title).create();
             dialog.show();
+            return true;
+        } else if (item.getItemId() == R.id.action_view_order) {
+            Intent i = new Intent(this, OrderActivity.class);
+            startActivity(i);
             return true;
         }
         return super.onOptionsItemSelected(item);
