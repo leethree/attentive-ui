@@ -1,27 +1,29 @@
 
 package hk.hku.cs.srli.factfinder;
 
-import android.content.Intent;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.android.apps.dashclock.ui.SwipeDismissListViewTouchListener;
 
-public class OrderActivity extends SherlockActivity {
+public class OrderFragment extends Fragment {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order);
-        // Show the Up button in the action bar.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_order, container, false);
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         
-        ListView listView = (ListView) findViewById(R.id.listView1);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+        ListView listView = (ListView) getView().findViewById(R.id.listView1);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1, 
                 DummyData.getInstance(getResources()).getOrder());
@@ -47,26 +49,6 @@ public class OrderActivity extends SherlockActivity {
                         });
         listView.setOnTouchListener(touchListener);
         listView.setOnScrollListener(touchListener.makeScrollListener());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getSupportMenuInflater().inflate(R.menu.order, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent upIntent = getParentActivityIntent();
-                // return to the exisiting parent activity instead of creating a new one.
-                upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                navigateUpTo(upIntent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 }

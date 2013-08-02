@@ -105,8 +105,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             dialog.show();
             return true;
         } else if (item.getItemId() == R.id.action_view_order) {
-            Intent i = new Intent(this, OrderActivity.class);
-            startActivity(i);
+            // XXX
             return true;
         }
         return super.onOptionsItemSelected(item);
