@@ -9,6 +9,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.android.apps.dashclock.ui.SwipeDismissListViewTouchListener;
 
 public class OrderActivity extends SherlockActivity {
 
@@ -19,11 +20,33 @@ public class OrderActivity extends SherlockActivity {
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
-        ListView list = (ListView) findViewById(R.id.listView1);
-        list.setAdapter(new ArrayAdapter<String>(this, 
+        ListView listView = (ListView) findViewById(R.id.listView1);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1, 
-                DummyData.getInstance(getResources()).getOrder()));
+                DummyData.getInstance(getResources()).getOrder());
+        listView.setAdapter(adapter);
+        
+        SwipeDismissListViewTouchListener touchListener =
+                new SwipeDismissListViewTouchListener(
+                        listView,
+                        new SwipeDismissListViewTouchListener.DismissCallbacks() {
+                            
+                            @Override
+                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    adapter.remove(adapter.getItem(position));
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                            
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
+                        });
+        listView.setOnTouchListener(touchListener);
+        listView.setOnScrollListener(touchListener.makeScrollListener());
     }
 
     @Override
