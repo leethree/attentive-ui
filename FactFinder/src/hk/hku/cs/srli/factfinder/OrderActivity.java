@@ -1,8 +1,10 @@
 
 package hk.hku.cs.srli.factfinder;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -16,6 +18,12 @@ public class OrderActivity extends SherlockActivity {
         setContentView(R.layout.activity_order);
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
+        ListView list = (ListView) findViewById(R.id.listView1);
+        list.setAdapter(new ArrayAdapter<String>(this, 
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1, 
+                DummyData.getInstance(getResources()).getOrder()));
     }
 
     @Override
@@ -29,14 +37,10 @@ public class OrderActivity extends SherlockActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // This ID represents the Home or Up button. In the case of this
-                // activity, the Up button is shown. Use NavUtils to allow users
-                // to navigate up one level in the application structure. For
-                // more details, see the Navigation pattern on Android Design:
-                //
-                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-                //
-                NavUtils.navigateUpFromSameTask(this);
+                Intent upIntent = getParentActivityIntent();
+                // return to the exisiting parent activity instead of creating a new one.
+                upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                navigateUpTo(upIntent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

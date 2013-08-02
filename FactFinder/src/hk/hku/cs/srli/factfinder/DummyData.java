@@ -9,7 +9,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DummyData {
@@ -39,12 +41,19 @@ public class DummyData {
     }
     
     private final Map<Category, SparseArray<FactItem>> mCatMap;
+    private final List<String> mOrder;
     
     // singleton instance
     private static DummyData instance;
     
     private DummyData(Resources res) {
         mCatMap = new HashMap<DummyData.Category, SparseArray<FactItem>>(3);
+        mOrder = new ArrayList<String>();
+        // XXX dummy data, remove this later
+        for (int i = 0; i < 15; i++) {
+            mOrder.add("Item " + (i + 1));
+        }
+        
         for(Category s : Category.values()) {
             mCatMap.put(s, new SparseArray<DummyData.FactItem>());
         }
@@ -73,6 +82,10 @@ public class DummyData {
     
     public FactItem getItem(Category cat, int id) {
         return mCatMap.get(cat).get(id);
+    }
+    
+    public List<String> getOrder() {
+        return mOrder;
     }
     
     private void parseData(XmlPullParser parser) throws XmlPullParserException, IOException {
