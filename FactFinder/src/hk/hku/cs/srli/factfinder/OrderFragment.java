@@ -2,16 +2,14 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.app.Fragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SlidingPaneLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.google.android.apps.dashclock.ui.SwipeDismissListViewTouchListener;
 
@@ -20,6 +18,7 @@ public class OrderFragment extends Fragment {
     private boolean mCollapsed = true;
     SlidingPaneLayout mSlidingPane;
     ListView mListView;
+    Button mInvisibleButton;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,29 +36,36 @@ public class OrderFragment extends Fragment {
                 DummyData.getInstance(getResources()).getOrder());
         mListView.setAdapter(adapter);
         
+        mInvisibleButton = (Button) getView().findViewById(R.id.invisibleButton);
+        mInvisibleButton.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                mSlidingPane.openPane();
+            }
+        });
+        
         mSlidingPane = (SlidingPaneLayout) getActivity().findViewById(R.id.slidingPaneLayout);
         mSlidingPane.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             
             @Override
             public void onPanelSlide(View arg0, float arg1) {
                 mCollapsed = true;
-                mListView.setEnabled(false);
+                mInvisibleButton.setVisibility(View.VISIBLE);
             }
             
             @Override
             public void onPanelOpened(View arg0) {
                 mCollapsed = false;
-                mListView.setEnabled(true);
+                mInvisibleButton.setVisibility(View.INVISIBLE);
             }
             
             @Override
             public void onPanelClosed(View arg0) {
                 mCollapsed = true;
-                mListView.setEnabled(false);
+                mInvisibleButton.setVisibility(View.VISIBLE);
             }
         });
-        //mCollapsed = !mSlidingPane.isOpen();
-        Log.v("mCollapsed", "" + mCollapsed);
         
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
@@ -81,16 +87,6 @@ public class OrderFragment extends Fragment {
                         });
         mListView.setOnTouchListener(touchListener);
         mListView.setOnScrollListener(touchListener.makeScrollListener());
-        
-        RelativeLayout paneLayout = (RelativeLayout) getView();
-        paneLayout.setClickable(true);
-        paneLayout.setOnClickListener(new View.OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                mSlidingPane.openPane();
-            }
-        });
     }
 
 }

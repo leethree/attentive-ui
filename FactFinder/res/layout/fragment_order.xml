@@ -21,4 +21,15 @@
         android:layout_below="@+id/textView1" >
     </ListView>
 
+    <Button
+        android:id="@+id/invisibleButton"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:text="" />
+
 </RelativeLayout>
