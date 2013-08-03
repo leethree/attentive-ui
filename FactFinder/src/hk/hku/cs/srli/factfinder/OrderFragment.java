@@ -32,11 +32,9 @@ public class OrderFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         
         mListView = (ListView) getView().findViewById(R.id.orderListView);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1, 
-                DummyData.getInstance(getResources()).getOrder());
+        final ArrayAdapter<String> adapter = DummyData.getInstance(getActivity()).getOrder().getAdapter();
         mListView.setAdapter(adapter);
+        mListView.setEmptyView(getView().findViewById(R.id.textEmpty));
         
         mInvisibleButton = (Button) getView().findViewById(R.id.invisibleButton);
         mInvisibleButton.setOnClickListener(new View.OnClickListener() {

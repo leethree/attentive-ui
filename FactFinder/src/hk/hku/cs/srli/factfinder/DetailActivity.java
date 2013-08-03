@@ -4,8 +4,10 @@ package hk.hku.cs.srli.factfinder;
 import android.os.Bundle;
 import android.content.Intent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -30,7 +32,7 @@ public class DetailActivity extends SherlockActivity {
         // Selected image id
         int id = b.getInt("id", -1);
         int section = b.getInt("section");
-        mFact = DummyData.getInstance(getResources()).getItem(Category.of(section), id);
+        mFact = DummyData.getInstance(this).getItem(Category.of(section), id);
         
         setTitle(mFact.title);
         TextView text = (TextView) findViewById(R.id.content);
@@ -50,6 +52,16 @@ public class DetailActivity extends SherlockActivity {
                     ab.show();
                     image.setContentDescription(getString(R.string.hint_fullscreen));
                 }
+            }
+        });
+        
+        Button addButton = (Button) findViewById(R.id.buttonAddOrder);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                DummyData.getInstance(DetailActivity.this).getOrder().add(mFact.title);
+                Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -60,7 +60,7 @@ public class SectionFragment extends Fragment {
 
         public ImageAdapter(Context c, int n) {
             mContext = c;
-            mFacts = DummyData.getInstance(c.getResources()).getCatData(Category.of(n));
+            mFacts = DummyData.getInstance(c).getCatData(Category.of(n));
         }
 
         @Override

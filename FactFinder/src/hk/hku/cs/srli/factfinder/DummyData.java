@@ -1,7 +1,7 @@
 
 package hk.hku.cs.srli.factfinder;
 
-import android.content.res.Resources;
+import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -9,9 +9,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DummyData {
@@ -41,24 +39,20 @@ public class DummyData {
     }
     
     private final Map<Category, SparseArray<FactItem>> mCatMap;
-    private final List<String> mOrder;
+    private final Order mOrder;
     
     // singleton instance
     private static DummyData instance;
     
-    private DummyData(Resources res) {
+    private DummyData(Context context) {
         mCatMap = new HashMap<DummyData.Category, SparseArray<FactItem>>(3);
-        mOrder = new ArrayList<String>();
-        // XXX dummy data, remove this later
-        for (int i = 0; i < 15; i++) {
-            mOrder.add("Item " + (i + 1));
-        }
+        mOrder = new Order(context);
         
         for(Category s : Category.values()) {
             mCatMap.put(s, new SparseArray<DummyData.FactItem>());
         }
         
-        XmlPullParser parser = res.getXml(R.xml.data);
+        XmlPullParser parser = context.getResources().getXml(R.xml.data);
         
         try {
             parseData(parser);
@@ -69,9 +63,9 @@ public class DummyData {
         }
     }
     
-    public static DummyData getInstance(Resources res) {
+    public static DummyData getInstance(Context context) {
         if (instance == null) {
-            instance = new DummyData(res);
+            instance = new DummyData(context);
         }
         return instance;
     }
@@ -84,7 +78,7 @@ public class DummyData {
         return mCatMap.get(cat).get(id);
     }
     
-    public List<String> getOrder() {
+    public Order getOrder() {
         return mOrder;
     }
     
