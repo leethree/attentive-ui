@@ -13,10 +13,12 @@ import android.widget.ListView;
 
 import com.google.android.apps.dashclock.ui.SwipeDismissListViewTouchListener;
 
+import hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout;
+
 public class OrderFragment extends Fragment {
 
     private boolean mCollapsed = true;
-    SlidingPaneLayout mSlidingPane;
+    FFSlidingPaneLayout mSlidingPane;
     ListView mListView;
     Button mInvisibleButton;
     
@@ -29,7 +31,7 @@ public class OrderFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         
-        mListView = (ListView) getView().findViewById(R.id.listView1);
+        mListView = (ListView) getView().findViewById(R.id.orderListView);
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1, 
@@ -45,25 +47,28 @@ public class OrderFragment extends Fragment {
             }
         });
         
-        mSlidingPane = (SlidingPaneLayout) getActivity().findViewById(R.id.slidingPaneLayout);
+        mSlidingPane = (FFSlidingPaneLayout) getActivity().findViewById(R.id.slidingPaneLayout);
         mSlidingPane.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             
             @Override
             public void onPanelSlide(View arg0, float arg1) {
                 mCollapsed = true;
                 mInvisibleButton.setVisibility(View.VISIBLE);
+                mSlidingPane.setTouchOnChildren(true);
             }
             
             @Override
             public void onPanelOpened(View arg0) {
                 mCollapsed = false;
                 mInvisibleButton.setVisibility(View.INVISIBLE);
+                mSlidingPane.setTouchOnChildren(false);
             }
             
             @Override
             public void onPanelClosed(View arg0) {
                 mCollapsed = true;
                 mInvisibleButton.setVisibility(View.VISIBLE);
+                mSlidingPane.setTouchOnChildren(true);
             }
         });
         
