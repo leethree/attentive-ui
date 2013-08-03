@@ -1,6 +1,7 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
@@ -28,4 +29,15 @@ public class Order {
         mAdapter.add(title);
     }
     
+    public String getSumText() {
+        return "Total: " + mItems.size();
+    }
+    
+    public void submit() {
+        mAdapter.clear();
+    }
+    
+    public void registerObserver(DataSetObserver observer) {
+        mAdapter.registerDataSetObserver(observer);
+    }
 }

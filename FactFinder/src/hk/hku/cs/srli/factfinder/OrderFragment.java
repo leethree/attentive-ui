@@ -2,6 +2,7 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.app.Fragment;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.apps.dashclock.ui.SwipeDismissListViewTouchListener;
 
@@ -18,9 +21,10 @@ import hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout;
 public class OrderFragment extends Fragment {
 
     private boolean mCollapsed = true;
-    FFSlidingPaneLayout mSlidingPane;
-    ListView mListView;
-    Button mInvisibleButton;
+    private FFSlidingPaneLayout mSlidingPane;
+    private ListView mListView;
+    private Button mInvisibleButton;
+    private Order mOrder;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,7 +36,8 @@ public class OrderFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         
         mListView = (ListView) getView().findViewById(R.id.orderListView);
-        final ArrayAdapter<String> adapter = DummyData.getInstance(getActivity()).getOrder().getAdapter();
+        mOrder = DummyData.getInstance(getActivity()).getOrder();
+        final ArrayAdapter<String> adapter = mOrder.getAdapter();
         mListView.setAdapter(adapter);
         mListView.setEmptyView(getView().findViewById(R.id.textEmpty));
         
@@ -90,6 +95,23 @@ public class OrderFragment extends Fragment {
                         });
         mListView.setOnTouchListener(touchListener);
         mListView.setOnScrollListener(touchListener.makeScrollListener());
+        
+        adapter.registerDataSetObserver(new DataSetObserver() {
+           @Override
+            public void onChanged() {
+               TextView sum = (TextView) getView().findViewById(R.id.textOrderSum);
+               sum.setText(mOrder.getSumText());
+            } 
+        });
+        
+        Button submitButton = (Button) getView().findViewById(R.id.buttonOrder);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                mOrder.submit();
+                Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
-
 }
