@@ -133,22 +133,15 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Total number of sections.
+            return DummyData.getInstance(MainActivity.this).getNumberOfCategories();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
+            String name = DummyData.getInstance(MainActivity.this).getCategoryAt(position).getName();
+            return name.toUpperCase(l);
         }
     }
 

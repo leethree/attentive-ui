@@ -9,50 +9,53 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DummyData {
 
-    public static enum Category {
-        PLACE(0), PERSON(1), PLANT(2);
-        public final int id;
-        private static final SparseArray<Category> map;
-        static {
-            map = new SparseArray<Category>(3);
-            for(Category s : Category.values()) map.append(s.id, s);
-        }
-        private Category(int id) {
+    public static class Category {
+        private final int id;
+        private String name;
+        private SparseArray<FactItem> items;
+        
+        public Category(int id, String name) {
             this.id = id;
+            this.name = name;
+            items = new SparseArray<DummyData.FactItem>();
         }
-        public static Category of(int i) {
-            return map.get(i);
+        
+        public String getName() {
+            return name;
+        }
+        
+        public SparseArray<FactItem> getItems() {
+            return items;
+        }
+        
+        @Override
+        public String toString() {
+            return "" + id + ": " + name;
         }
     }
     
     public static class FactItem {
         public int id;
-        public Category category;
+        public int category;
         public String thumb;
         public String title;
         public String content;
     }
     
-    private final Map<Category, SparseArray<FactItem>> mCatMap;
+    private final SparseArray<Category> mCatMap;
     private final Order mOrder;
     
     // singleton instance
     private static DummyData instance;
     
     private DummyData(Context context) {
-        mCatMap = new HashMap<DummyData.Category, SparseArray<FactItem>>(3);
+        mCatMap = new SparseArray<Category>();
         mOrder = new Order(context);
-        
-        for(Category s : Category.values()) {
-            mCatMap.put(s, new SparseArray<DummyData.FactItem>());
-        }
-        
-        XmlPullParser parser = context.getResources().getXml(R.xml.data);
+
+        XmlPullParser parser = context.getResources().getXml(R.xml.cheesecake);
         
         try {
             parseData(parser);
@@ -70,12 +73,16 @@ public class DummyData {
         return instance;
     }
     
-    public SparseArray<FactItem> getCatData(Category cat) {
-        return mCatMap.get(cat);
+    public int getNumberOfCategories() {
+        return mCatMap.size();
     }
     
-    public FactItem getItem(Category cat, int id) {
-        return mCatMap.get(cat).get(id);
+    public Category getCategoryAt(int index) {
+        return mCatMap.valueAt(index);
+    }
+    
+    public FactItem getItem(int index, int id) {
+        return getCategoryAt(index).items.get(id);
     }
     
     public Order getOrder() {
@@ -86,28 +93,40 @@ public class DummyData {
         int eventType = parser.getEventType();
         FactItem item = null;
         String tag = null;
+        boolean parsingCategory = false;
+        int catId = 0;
         while (eventType != XmlPullParser.END_DOCUMENT) {
              if(eventType == XmlPullParser.START_DOCUMENT) {
              } else if(eventType == XmlPullParser.START_TAG) {
                  tag = parser.getName();
                  if (tag.equals("item")) {
                      item = new FactItem();
+                 } else if (tag.equals("category-name")) {
+                     parsingCategory = true; 
                  }
              } else if(eventType == XmlPullParser.END_TAG) {
                  tag = parser.getName();
                  if (tag.equals("item")) {
                      // add item to category.
-                     getCatData(item.category).append(item.id, item);
+                     mCatMap.get(item.category).items.append(item.id, item);
                      item = null;
+                 } else if (tag.equals("category-name")) {
+                     parsingCategory = false; 
                  }
                  tag = null;
              } else if(eventType == XmlPullParser.TEXT) {
                  String text = parser.getText();
-                 if (item != null && tag != null) {
+                 if (parsingCategory) {
+                     if (tag.equals("id")) {
+                         catId = Integer.parseInt(text);
+                     } else if (tag.equals("name")) {
+                         mCatMap.put(catId, new Category(catId, text));
+                     }
+                 } else if (item != null && tag != null) {
                      if (tag.equals("id")) {
                          item.id = Integer.parseInt(text);
                      } else if (tag.equals("category")) {
-                         item.category = Category.of(Integer.parseInt(text));
+                         item.category = Integer.parseInt(text);
                      } else if (tag.equals("title")) {
                          item.title = text;
                      } else if (tag.equals("content")) {

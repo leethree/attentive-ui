@@ -4,6 +4,7 @@ package hk.hku.cs.srli.factfinder;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -14,7 +15,8 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-import hk.hku.cs.srli.factfinder.DummyData.Category;
+import java.io.IOException;
+
 import hk.hku.cs.srli.factfinder.DummyData.FactItem;
 
 public class DetailActivity extends SherlockActivity {
@@ -32,14 +34,22 @@ public class DetailActivity extends SherlockActivity {
         // Selected image id
         int id = b.getInt("id", -1);
         int section = b.getInt("section");
-        mFact = DummyData.getInstance(this).getItem(Category.of(section), id);
+        mFact = DummyData.getInstance(this).getItem(section, id);
         
         setTitle(mFact.title);
         TextView text = (TextView) findViewById(R.id.content);
         text.setText(mFact.content);
         final ImageButton image = (ImageButton) findViewById(R.id.image_view);
-        int thumbId = getResources().getIdentifier(mFact.thumb, "drawable", getPackageName());
-        image.setImageResource(thumbId);
+
+        try {
+            // Load image from assets
+            image.setImageDrawable(
+                    Drawable.createFromResourceStream(getResources(), null, 
+                            getAssets().open(mFact.thumb), null));
+        } catch (IOException e) {
+            // Image loading failed, use placeholder instead.
+            image.setImageResource(R.drawable.placeholder);
+        }
         image.setOnClickListener(new View.OnClickListener() {
             
             @Override
