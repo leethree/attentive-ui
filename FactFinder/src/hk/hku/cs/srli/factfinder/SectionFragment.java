@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-import hk.hku.cs.srli.factfinder.DummyData.FactItem;
+import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 
 public class SectionFragment extends Fragment {
 
@@ -58,7 +58,7 @@ public class SectionFragment extends Fragment {
     
     public static class ImageAdapter extends BaseAdapter {
         private Context mContext;
-        private SparseArray<FactItem> mFacts;
+        private SparseArray<DataItem> mFacts;
 
         public ImageAdapter(Context c, int section) {
             mContext = c;
@@ -71,7 +71,7 @@ public class SectionFragment extends Fragment {
         }
 
         @Override
-        public FactItem getItem(int position) {
+        public DataItem getItem(int position) {
             return mFacts.valueAt(position);
         }
 

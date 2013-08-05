@@ -5,7 +5,7 @@ import android.content.Context;
 
 public class FFApp extends Application {
 
-    private DummyData mData;
+    private DataSet mData;
     private Order mOrder;
     
     public FFApp() {
@@ -15,7 +15,7 @@ public class FFApp extends Application {
     public void onCreate() {
         super.onCreate();
         // initialize dataset
-        mData = new DummyData(this);
+        mData = new DataSet(this);
         mOrder = new Order(this);
     }
     
@@ -24,7 +24,7 @@ public class FFApp extends Application {
         return (FFApp) context.getApplicationContext();
     }
     
-    public static DummyData getData(Context context) {
+    public static DataSet getData(Context context) {
         return getApp(context).mData;
     }
     

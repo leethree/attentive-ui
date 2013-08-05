@@ -17,11 +17,11 @@ import com.actionbarsherlock.view.MenuItem;
 
 import java.io.IOException;
 
-import hk.hku.cs.srli.factfinder.DummyData.FactItem;
+import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 
 public class DetailActivity extends SherlockActivity {
     
-    private FactItem mFact;
+    private DataItem mFact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

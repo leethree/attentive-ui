@@ -10,24 +10,24 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class DummyData {
+public class DataSet {
 
     public static class Category {
         private final int id;
         private String name;
-        private SparseArray<FactItem> items;
+        private SparseArray<DataItem> items;
         
         public Category(int id, String name) {
             this.id = id;
             this.name = name;
-            items = new SparseArray<DummyData.FactItem>();
+            items = new SparseArray<DataSet.DataItem>();
         }
         
         public String getName() {
             return name;
         }
         
-        public SparseArray<FactItem> getItems() {
+        public SparseArray<DataItem> getItems() {
             return items;
         }
         
@@ -37,7 +37,7 @@ public class DummyData {
         }
     }
     
-    public static class FactItem {
+    public static class DataItem {
         public int id;
         public int category;
         public String thumb;
@@ -47,7 +47,7 @@ public class DummyData {
     
     private final SparseArray<Category> mCatMap;
         
-    public DummyData(Context context) {
+    public DataSet(Context context) {
         mCatMap = new SparseArray<Category>();
 
         XmlPullParser parser = context.getResources().getXml(R.xml.cheesecake);
@@ -55,9 +55,9 @@ public class DummyData {
         try {
             parseData(parser);
         } catch (XmlPullParserException e) {
-            Log.e("DummyData", "XML Error", e);
+            Log.e("DataSet", "XML Error", e);
         } catch (IOException e) {
-            Log.e("DummyData", "XML Error", e);
+            Log.e("DataSet", "XML Error", e);
         }
     }
 
@@ -69,13 +69,13 @@ public class DummyData {
         return mCatMap.valueAt(index);
     }
     
-    public FactItem getItem(int index, int id) {
+    public DataItem getItem(int index, int id) {
         return getCategoryAt(index).items.get(id);
     }
     
     private void parseData(XmlPullParser parser) throws XmlPullParserException, IOException {
         int eventType = parser.getEventType();
-        FactItem item = null;
+        DataItem item = null;
         String tag = null;
         boolean parsingCategory = false;
         int catId = 0;
@@ -84,7 +84,7 @@ public class DummyData {
              } else if(eventType == XmlPullParser.START_TAG) {
                  tag = parser.getName();
                  if (tag.equals("item")) {
-                     item = new FactItem();
+                     item = new DataItem();
                  } else if (tag.equals("category-name")) {
                      parsingCategory = true; 
                  }
