@@ -62,7 +62,7 @@ public class SectionFragment extends Fragment {
 
         public ImageAdapter(Context c, int section) {
             mContext = c;
-            mFacts = DummyData.getInstance(c).getCategoryAt(section).getItems();
+            mFacts = FFApp.getData(c).getCategoryAt(section).getItems();
         }
 
         @Override

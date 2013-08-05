@@ -37,7 +37,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -134,13 +134,13 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         @Override
         public int getCount() {
             // Total number of sections.
-            return DummyData.getInstance(MainActivity.this).getNumberOfCategories();
+            return FFApp.getData(MainActivity.this).getNumberOfCategories();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             Locale l = Locale.getDefault();
-            String name = DummyData.getInstance(MainActivity.this).getCategoryAt(position).getName();
+            String name = FFApp.getData(MainActivity.this).getCategoryAt(position).getName();
             return name.toUpperCase(l);
         }
     }

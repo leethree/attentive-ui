@@ -34,9 +34,9 @@ public class OrderFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        
+
         mListView = (ListView) getView().findViewById(R.id.orderListView);
-        mOrder = DummyData.getInstance(getActivity()).getOrder();
+        mOrder = FFApp.getOrder(getActivity());
         final ArrayAdapter<String> adapter = mOrder.getAdapter();
         mListView.setAdapter(adapter);
         mListView.setEmptyView(getView().findViewById(R.id.textEmpty));
@@ -96,13 +96,7 @@ public class OrderFragment extends Fragment {
         mListView.setOnTouchListener(touchListener);
         mListView.setOnScrollListener(touchListener.makeScrollListener());
         
-        adapter.registerDataSetObserver(new DataSetObserver() {
-           @Override
-            public void onChanged() {
-               TextView sum = (TextView) getView().findViewById(R.id.textOrderSum);
-               sum.setText(mOrder.getSumText());
-            } 
-        });
+        adapter.registerDataSetObserver(dso);
         
         Button submitButton = (Button) getView().findViewById(R.id.buttonOrder);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -114,4 +108,19 @@ public class OrderFragment extends Fragment {
             }
         });
     }
+    
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mOrder.getAdapter().unregisterDataSetObserver(dso);
+    }
+    
+    private DataSetObserver dso = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+           TextView sum = (TextView) getView().findViewById(R.id.textOrderSum);
+           sum.setText(mOrder.getSumText());
+        } 
+    };
+
 }

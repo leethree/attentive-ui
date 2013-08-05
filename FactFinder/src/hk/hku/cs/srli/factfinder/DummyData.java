@@ -46,14 +46,9 @@ public class DummyData {
     }
     
     private final SparseArray<Category> mCatMap;
-    private final Order mOrder;
-    
-    // singleton instance
-    private static DummyData instance;
-    
-    private DummyData(Context context) {
+        
+    public DummyData(Context context) {
         mCatMap = new SparseArray<Category>();
-        mOrder = new Order(context);
 
         XmlPullParser parser = context.getResources().getXml(R.xml.cheesecake);
         
@@ -65,14 +60,7 @@ public class DummyData {
             Log.e("DummyData", "XML Error", e);
         }
     }
-    
-    public static DummyData getInstance(Context context) {
-        if (instance == null) {
-            instance = new DummyData(context);
-        }
-        return instance;
-    }
-    
+
     public int getNumberOfCategories() {
         return mCatMap.size();
     }
@@ -83,10 +71,6 @@ public class DummyData {
     
     public FactItem getItem(int index, int id) {
         return getCategoryAt(index).items.get(id);
-    }
-    
-    public Order getOrder() {
-        return mOrder;
     }
     
     private void parseData(XmlPullParser parser) throws XmlPullParserException, IOException {

@@ -34,9 +34,12 @@ public class DetailActivity extends SherlockActivity {
         // Selected image id
         int id = b.getInt("id", -1);
         int section = b.getInt("section");
-        mFact = DummyData.getInstance(this).getItem(section, id);
+        mFact = FFApp.getData(this).getItem(section, id);
         
         setTitle(mFact.title);
+        TextView title = (TextView) findViewById(R.id.textTitle);
+        title.setText(mFact.title);
+        
         TextView text = (TextView) findViewById(R.id.content);
         text.setText(mFact.content);
         final ImageButton image = (ImageButton) findViewById(R.id.image_view);
@@ -87,7 +90,7 @@ public class DetailActivity extends SherlockActivity {
                 dialog.show();
                 break;
             case R.id.action_add:
-                DummyData.getInstance(DetailActivity.this).getOrder().add(mFact.title);
+                FFApp.getOrder(DetailActivity.this).add(mFact.title);
                 Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
                 // continue below and return to home
             case android.R.id.home:
