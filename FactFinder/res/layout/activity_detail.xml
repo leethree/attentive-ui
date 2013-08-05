@@ -37,12 +37,4 @@
             android:text="@string/lorem_ipsum" />
     </ScrollView>
 
-    <Button
-        android:id="@+id/buttonAddOrder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/image_view"
-        android:layout_below="@+id/image_view"
-        android:text="Add to order" />
-
 </RelativeLayout>

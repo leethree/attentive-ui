@@ -2,9 +2,9 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.os.Bundle;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,16 +54,6 @@ public class DetailActivity extends SherlockActivity {
                 }
             }
         });
-        
-        Button addButton = (Button) findViewById(R.id.buttonAddOrder);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                DummyData.getInstance(DetailActivity.this).getOrder().add(mFact.title);
-                Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -79,6 +69,17 @@ public class DetailActivity extends SherlockActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_add_with_edit:
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle("Customize a dish")
+                        .setMessage("Add this dish:" + mFact.title)
+                        .create();
+                dialog.show();
+                break;
+            case R.id.action_add:
+                DummyData.getInstance(DetailActivity.this).getOrder().add(mFact.title);
+                Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
+                // continue below and return to home
             case android.R.id.home:
                 Intent upIntent = getParentActivityIntent();
                 // return to the exisiting parent activity instead of creating a new one.
