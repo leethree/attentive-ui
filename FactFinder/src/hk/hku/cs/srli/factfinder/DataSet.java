@@ -47,10 +47,10 @@ public class DataSet {
     
     private final SparseArray<Category> mCatMap;
         
-    public DataSet(Context context) {
+    public DataSet(Context context, int dataSource) {
         mCatMap = new SparseArray<Category>();
 
-        XmlPullParser parser = context.getResources().getXml(R.xml.cheesecake);
+        XmlPullParser parser = context.getResources().getXml(dataSource);
         
         try {
             parseData(parser);

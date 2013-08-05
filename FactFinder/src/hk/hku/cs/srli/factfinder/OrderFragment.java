@@ -2,6 +2,7 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.widget.SlidingPaneLayout;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import com.google.android.apps.dashclock.ui.SwipeDismissListViewTouchListener;
 
+import java.util.List;
+
 import hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout;
 
 public class OrderFragment extends Fragment {
@@ -25,6 +28,7 @@ public class OrderFragment extends Fragment {
     private ListView mListView;
     private Button mInvisibleButton;
     private Order mOrder;
+    private OrderAdapter mAdapter;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,8 +41,9 @@ public class OrderFragment extends Fragment {
 
         mListView = (ListView) getView().findViewById(R.id.orderListView);
         mOrder = FFApp.getOrder(getActivity());
-        final ArrayAdapter<String> adapter = mOrder.getAdapter();
-        mListView.setAdapter(adapter);
+        mAdapter = new OrderAdapter(getActivity(), mOrder.getItemList()); 
+        mOrder.setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
         mListView.setEmptyView(getView().findViewById(R.id.textEmpty));
         
         mInvisibleButton = (Button) getView().findViewById(R.id.invisibleButton);
@@ -83,9 +88,9 @@ public class OrderFragment extends Fragment {
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    adapter.remove(adapter.getItem(position));
+                                    mAdapter.remove(mAdapter.getItem(position));
                                 }
-                                adapter.notifyDataSetChanged();
+                                mAdapter.notifyDataSetChanged();
                             }
                             
                             @Override
@@ -96,7 +101,13 @@ public class OrderFragment extends Fragment {
         mListView.setOnTouchListener(touchListener);
         mListView.setOnScrollListener(touchListener.makeScrollListener());
         
-        adapter.registerDataSetObserver(dso);
+        mAdapter.registerDataSetObserver(new DataSetObserver() {
+            
+            @Override
+            public void onChanged() {
+                refreshOrder();
+            } 
+        });
         
         Button submitButton = (Button) getView().findViewById(R.id.buttonOrder);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -107,20 +118,22 @@ public class OrderFragment extends Fragment {
                 Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
             }
         });
+        
+        refreshOrder();
     }
-    
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mOrder.getAdapter().unregisterDataSetObserver(dso);
-    }
-    
-    private DataSetObserver dso = new DataSetObserver() {
-        @Override
-        public void onChanged() {
-           TextView sum = (TextView) getView().findViewById(R.id.textOrderSum);
-           sum.setText(mOrder.getSumText());
-        } 
-    };
 
+    private void refreshOrder() {
+        TextView sum = (TextView) getView().findViewById(R.id.textOrderSum);
+        sum.setText(mOrder.getSumText());
+    }
+
+    public static class OrderAdapter extends ArrayAdapter<String> {
+
+        public OrderAdapter(Context context, List<String> objects) {
+            super(context, 
+                    android.R.layout.simple_list_item_1,
+                    android.R.id.text1, 
+                    objects);
+        }
+    }
 }

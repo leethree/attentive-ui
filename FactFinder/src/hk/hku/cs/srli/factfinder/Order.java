@@ -1,8 +1,7 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,23 +9,24 @@ import java.util.List;
 public class Order {
 
     private final List<String> mItems;
-    private final ArrayAdapter<String> mAdapter;
+    private BaseAdapter mAdapter;
     
     public Order(Context context) {
         mItems = new ArrayList<String>();
-        
-        mAdapter = new ArrayAdapter<String>(context, 
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1, 
-                mItems);
+        mAdapter = null;
     }
     
-    public ArrayAdapter<String> getAdapter() {
-        return mAdapter;
+    public List<String> getItemList() {
+        return mItems;
     }
-
+    
+    public void setAdapter(BaseAdapter adapter) {
+        this.mAdapter = adapter;
+    }
+    
     public void add(String title) {
-        mAdapter.add(title);
+        mItems.add(title);
+        mAdapter.notifyDataSetChanged();
     }
     
     public String getSumText() {
@@ -34,10 +34,7 @@ public class Order {
     }
     
     public void submit() {
-        mAdapter.clear();
-    }
-    
-    public void registerObserver(DataSetObserver observer) {
-        mAdapter.registerDataSetObserver(observer);
+        mItems.clear();
+        mAdapter.notifyDataSetChanged();
     }
 }

@@ -15,7 +15,7 @@ public class FFApp extends Application {
     public void onCreate() {
         super.onCreate();
         // initialize dataset
-        mData = new DataSet(this);
+        mData = new DataSet(this, R.xml.cheesecake);
         mOrder = new Order(this);
     }
     
