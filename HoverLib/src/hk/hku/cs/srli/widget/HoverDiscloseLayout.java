@@ -49,7 +49,9 @@ public class HoverDiscloseLayout extends FrameLayout {
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event);
+        hover.onHoverEvent(event);
+        // do not consume the event
+        return false;
     }
     
     private void setAllChildrenVisibility(int visibility) {

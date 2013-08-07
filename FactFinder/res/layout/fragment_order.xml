@@ -22,10 +22,12 @@
             android:text="Total: 0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <Button
+        <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/buttonOrder"
-            android:layout_width="200dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
+            android:src="@android:drawable/ic_menu_send"
+            android:contentDescription="Submit order"
             android:text="Submit order" />
 
     </LinearLayout>
@@ -66,15 +68,16 @@
 
     </LinearLayout>
 
-    <Button
+    <hk.hku.cs.srli.widget.HoverImageButton
         android:id="@+id/invisibleButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent"
-        android:text="" />
+        android:background="@drawable/hoveritem_background_holo_light"
+        android:contentDescription="Tap to review your order"
+        android:src="@android:color/transparent" />
 
 </RelativeLayout>

@@ -41,9 +41,11 @@ public class HoverImageButton extends ImageButton
     }
     @Override
     public boolean onLongClick(View v) {
-        Tooltip tp = TooltipManager.showAndHide(HoverImageButton.this, getContentDescription(),
-                getWidth() / 2, getHeight() / 2, TooltipManager.LONG_DELAY);
-        hover.attachTooltip(tp);
+        if (getContentDescription() != null && getContentDescription().length() > 0) {
+            Tooltip tp = TooltipManager.showAndHide(HoverImageButton.this, getContentDescription(),
+                    getWidth() / 2, getHeight() / 2, TooltipManager.LONG_DELAY);
+            hover.attachTooltip(tp);
+        }
         return true;
     }
     @Override
@@ -56,8 +58,10 @@ public class HoverImageButton extends ImageButton
     }
     @Override
     public boolean onLongHover(View v, int x, int y) {
-        Tooltip tp = TooltipManager.show(HoverImageButton.this, getContentDescription(), x, y);
-        hover.attachTooltip(tp);
+        if (getContentDescription() != null && getContentDescription().length() > 0) {
+            Tooltip tp = TooltipManager.show(HoverImageButton.this, getContentDescription(), x, y);
+            hover.attachTooltip(tp);
+        }
         return true;
     }
     @Override

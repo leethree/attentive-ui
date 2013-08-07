@@ -34,11 +34,7 @@ public class HoverHandler {
             case MotionEvent.ACTION_HOVER_ENTER:
                 viewEntered = true;
                 refreshInternalHoverState();
-                break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                viewEntered = false;
-                refreshInternalHoverState();
-                break;
+                return true;
             case MotionEvent.ACTION_HOVER_MOVE:
                 if (viewEntered) {
                     hoverX = event.getRawX();
@@ -50,6 +46,10 @@ public class HoverHandler {
                         onHoverMoveListener.onHoverMove(view, screenPos[0], screenPos[1]);
                     }
                 }
+                return true;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                viewEntered = false;
+                refreshInternalHoverState();
                 break;
         }
         return false;
