@@ -3,6 +3,7 @@ package hk.hku.cs.srli.factfinder;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -15,8 +16,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import hk.hku.cs.srli.factfinder.DummyData.Category;
-import hk.hku.cs.srli.factfinder.DummyData.FactItem;
+import java.io.IOException;
+
+import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 
 public class SectionFragment extends Fragment {
 
@@ -56,11 +58,11 @@ public class SectionFragment extends Fragment {
     
     public static class ImageAdapter extends BaseAdapter {
         private Context mContext;
-        private SparseArray<FactItem> mFacts;
+        private SparseArray<DataItem> mFacts;
 
-        public ImageAdapter(Context c, int n) {
+        public ImageAdapter(Context c, int section) {
             mContext = c;
-            mFacts = DummyData.getInstance(c.getResources()).getCatData(Category.of(n));
+            mFacts = FFApp.getData(c).getCategoryAt(section).getItems();
         }
 
         @Override
@@ -69,7 +71,7 @@ public class SectionFragment extends Fragment {
         }
 
         @Override
-        public FactItem getItem(int position) {
+        public DataItem getItem(int position) {
             return mFacts.valueAt(position);
         }
 
@@ -86,10 +88,15 @@ public class SectionFragment extends Fragment {
             ImageView imageView = (ImageView) convertView.findViewById(R.id.item_image_view);
             TextView textView = (TextView) convertView.findViewById(R.id.item_text_view);
 
-            // find image resource ID
-            int thumbId = mContext.getResources().getIdentifier(
-                    getItem(position).thumb, "drawable", mContext.getPackageName());
-            imageView.setImageResource(thumbId);
+            // find image from assets
+            try {
+                imageView.setImageDrawable(
+                        Drawable.createFromResourceStream(mContext.getResources(), null, 
+                                mContext.getAssets().open(getItem(position).thumb), null));
+            } catch (IOException e) {
+                // Image loading failed, use placeholder instead.
+                imageView.setImageResource(R.drawable.placeholder);
+            }
             textView.setText(getItem(position).title);
             return convertView;
         }

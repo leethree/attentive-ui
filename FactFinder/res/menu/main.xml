@@ -6,5 +6,10 @@
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
         android:title="@string/action_info"/>
+    <item
+        android:id="@+id/action_view_order"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:orderInCategory="50"
+        android:title="View Order" android:showAsAction="always" />
 
 </menu>

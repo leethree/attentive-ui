@@ -1,6 +1,22 @@
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pager"
+    android:id="@+id/slidingPaneLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity" />
+    android:layout_height="match_parent">
+      
+    <fragment
+        android:name="hk.hku.cs.srli.factfinder.OrderFragment"
+        android:id="@+id/left_pane"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left" />
+
+	<android.support.v4.view.ViewPager
+	    android:id="@+id/pager"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_marginLeft="200dp"
+	    tools:context=".MainActivity" />
+
+</hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout>
