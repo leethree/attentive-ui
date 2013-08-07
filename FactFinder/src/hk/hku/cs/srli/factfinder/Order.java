@@ -31,12 +31,12 @@ public class Order {
         mAdapter.notifyDataSetChanged();
     }
     
-    public String getSumText() {
+    public int getSum() {
         int sum = 0;
         for (DataItem item : mItems) {
             sum += item.price;
         }
-        return "Total: $" + sum / 100.0;
+        return sum;
     }
     
     public void submit() {

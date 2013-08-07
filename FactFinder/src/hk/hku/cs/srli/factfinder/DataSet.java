@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class DataSet {
 
@@ -45,13 +46,13 @@ public class DataSet {
         public String name; // short name
         public String content;
         public int price; // in cents
-        
-        @Override
-        public String toString() {
-            return name + ": $" + price / 100.0;
-        }
     }
     
+    public static String formatMoney(int price) {
+        return "$" + sDf.format(price * 0.01);
+    }
+    
+    private static final DecimalFormat sDf = new DecimalFormat("#0.00");
     private final SparseArray<Category> mCatMap;
         
     public DataSet(Context context, int dataSource) {

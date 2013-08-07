@@ -125,16 +125,23 @@ public class OrderFragment extends Fragment {
 
     private void refreshOrder() {
         TextView sum = (TextView) getView().findViewById(R.id.textOrderSum);
-        sum.setText(mOrder.getSumText());
+        sum.setText("Total: " + DataSet.formatMoney(mOrder.getSum()));
     }
 
     public static class OrderAdapter extends ArrayAdapter<DataItem> {
 
         public OrderAdapter(Context context, List<DataItem> objects) {
-            super(context, 
-                    android.R.layout.simple_list_item_1,
-                    android.R.id.text1, 
-                    objects);
+            super(context, R.layout.order_item, R.id.textViewLeft, objects);
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+            TextView text1 = (TextView) view.findViewById(R.id.textViewLeft);
+            text1.setText(getItem(position).name);
+            TextView text2 = (TextView) view.findViewById(R.id.textViewRight);
+            text2.setText(DataSet.formatMoney(getItem(position).price));
+            return view;
         }
     }
 }
