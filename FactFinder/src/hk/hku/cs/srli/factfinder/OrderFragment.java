@@ -19,6 +19,7 @@ import com.google.android.apps.dashclock.ui.SwipeDismissListViewTouchListener;
 
 import java.util.List;
 
+import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 import hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout;
 
 public class OrderFragment extends Fragment {
@@ -127,9 +128,9 @@ public class OrderFragment extends Fragment {
         sum.setText(mOrder.getSumText());
     }
 
-    public static class OrderAdapter extends ArrayAdapter<String> {
+    public static class OrderAdapter extends ArrayAdapter<DataItem> {
 
-        public OrderAdapter(Context context, List<String> objects) {
+        public OrderAdapter(Context context, List<DataItem> objects) {
             super(context, 
                     android.R.layout.simple_list_item_1,
                     android.R.id.text1, 

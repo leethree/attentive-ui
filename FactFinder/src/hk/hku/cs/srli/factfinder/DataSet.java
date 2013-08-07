@@ -41,8 +41,15 @@ public class DataSet {
         public int id;
         public int category;
         public String thumb;
-        public String title;
+        public String title; // full name
+        public String name; // short name
         public String content;
+        public int price; // in cents
+        
+        @Override
+        public String toString() {
+            return name + ": $" + price / 100.0;
+        }
     }
     
     private final SparseArray<Category> mCatMap;
@@ -113,10 +120,14 @@ public class DataSet {
                          item.category = Integer.parseInt(text);
                      } else if (tag.equals("title")) {
                          item.title = text;
+                     } else if (tag.equals("name")) {
+                         item.name = text;
                      } else if (tag.equals("content")) {
                          item.content = text;
                      } else if (tag.equals("thumb")) {
                          item.thumb = text;
+                     } else if (tag.equals("price")) {
+                         item.price = (int) (Double.parseDouble(text) * 100);
                      }
                  }
              }

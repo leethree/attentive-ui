@@ -3,20 +3,22 @@ package hk.hku.cs.srli.factfinder;
 import android.content.Context;
 import android.widget.BaseAdapter;
 
+import hk.hku.cs.srli.factfinder.DataSet.DataItem;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
 
-    private final List<String> mItems;
+    private final List<DataItem> mItems;
     private BaseAdapter mAdapter;
     
     public Order(Context context) {
-        mItems = new ArrayList<String>();
+        mItems = new ArrayList<DataItem>();
         mAdapter = null;
     }
     
-    public List<String> getItemList() {
+    public List<DataItem> getItemList() {
         return mItems;
     }
     
@@ -24,13 +26,17 @@ public class Order {
         this.mAdapter = adapter;
     }
     
-    public void add(String title) {
-        mItems.add(title);
+    public void add(DataItem item) {
+        mItems.add(item);
         mAdapter.notifyDataSetChanged();
     }
     
     public String getSumText() {
-        return "Total: " + mItems.size();
+        int sum = 0;
+        for (DataItem item : mItems) {
+            sum += item.price;
+        }
+        return "Total: $" + sum / 100.0;
     }
     
     public void submit() {

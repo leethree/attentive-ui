@@ -36,7 +36,7 @@ public class DetailActivity extends SherlockActivity {
         int section = b.getInt("section");
         mFact = FFApp.getData(this).getItem(section, id);
         
-        setTitle(mFact.title);
+        setTitle(FFApp.getData(this).getCategoryAt(section).getName());
         TextView title = (TextView) findViewById(R.id.textTitle);
         title.setText(mFact.title);
         
@@ -90,7 +90,7 @@ public class DetailActivity extends SherlockActivity {
                 dialog.show();
                 break;
             case R.id.action_add:
-                FFApp.getOrder(DetailActivity.this).add(mFact.title);
+                FFApp.getOrder(DetailActivity.this).add(mFact);
                 Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
                 // continue below and return to home
             case android.R.id.home:
