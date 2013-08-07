@@ -88,7 +88,7 @@ public class DetailActivity extends SherlockActivity {
                         .setMessage("Add this dish:" + mFact.title)
                         .create();
                 dialog.show();
-                break;
+                return true;
             case R.id.action_add:
                 FFApp.getOrder(DetailActivity.this).add(mFact);
                 Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
