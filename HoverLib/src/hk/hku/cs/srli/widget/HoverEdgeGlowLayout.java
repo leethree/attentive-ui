@@ -7,9 +7,9 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EdgeEffect;
 import android.widget.FrameLayout;
 
+import hk.hku.cs.srli.widget.util.EdgeEffect;
 import hk.hku.cs.srli.widget.util.HoverHandler;
 import hk.hku.cs.srli.widget.util.HoverHandler.OnHoverMoveListener;
 
