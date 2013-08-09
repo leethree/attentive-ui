@@ -15,10 +15,11 @@ public class DemoContent {
     public static Map<String, DemoItem> ITEM_MAP = new HashMap<String, DemoItem>();
 
     static {
-        // Add 3 sample items.
+        // Add 4 sample items.
         addItem(new DemoItem("1", "Buttons", new ButtonsFragment()));
         addItem(new DemoItem("2", "Web", new WebViewFragment()));
         addItem(new DemoItem("3", "Ellipsis", new TextFragment()));
+        addItem(new DemoItem("4", "Scroll", new ScrollFragment()));
     }
 
     private static void addItem(DemoItem item) {

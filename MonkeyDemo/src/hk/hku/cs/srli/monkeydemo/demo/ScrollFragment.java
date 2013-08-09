@@ -2,11 +2,11 @@ package hk.hku.cs.srli.monkeydemo.demo;
 
 import hk.hku.cs.srli.monkeydemo.R;
 
-public class TextFragment extends DemoFragmentBase {
-    
+public class ScrollFragment extends DemoFragmentBase {
+
     @Override
     protected int getLayoutResource() {
-        return R.layout.fragment_text;
+        return R.layout.fragment_scroll;
     }
     
 }

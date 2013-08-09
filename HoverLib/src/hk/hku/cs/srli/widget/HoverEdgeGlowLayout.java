@@ -84,14 +84,16 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
         float deltaX = x - lastX;
         float deltaY = y - lastY;
         // the height and width below are inverted by purpose
-        if (deltaX < 0)
-            leftEdge.onPull(- deltaX * (1 - x) / factor);
-        else
+        if (deltaX < 0) {
+            leftEdge.onPull(-deltaX * (1 - x) / factor);
+        } else {
             rightEdge.onPull(deltaX * x / factor);
-        if (deltaY < 0)
-            topEdge.onPull(- deltaY * (1 - y) / factor);
-        else
+        }
+        if (deltaY < 0) {
+            topEdge.onPull(-deltaY * (1 - y) / factor);
+        } else {
             bottomEdge.onPull(deltaY * y / factor);
+        }
         lastX = x;
         lastY = y;
         if (deltaX != 0 || deltaY != 0) {
@@ -104,36 +106,38 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
     public void draw(Canvas canvas) {
         super.draw(canvas);
         boolean needsInvalidate = false;
-        final int height = getHeight() - getPaddingTop() - getPaddingBottom();
-        final int width = getWidth() - getPaddingLeft() - getPaddingRight();
+        final int outerHeight = getHeight();
+        final int outerWidth = getWidth();
+        final int innerHeight = outerHeight - getPaddingTop() - getPaddingBottom();
+        final int innerWidth = outerWidth - getPaddingLeft() - getPaddingRight();
         if (!topEdge.isFinished()) {
             final int restoreCount = canvas.save();
-            canvas.translate(-getPaddingLeft(), -getPaddingTop());
-            topEdge.setSize(width, height);
+            canvas.translate(getPaddingLeft(), 0);
+            topEdge.setSize(innerWidth, outerHeight);
             needsInvalidate |= topEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
         if (!rightEdge.isFinished()) {
             final int restoreCount = canvas.save();
             canvas.rotate(90);
-            canvas.translate(-getPaddingTop(), -width + getPaddingLeft());
-            rightEdge.setSize(height, width);
+            canvas.translate(getPaddingTop(), -outerWidth);
+            rightEdge.setSize(innerHeight, outerWidth);
             needsInvalidate |= rightEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
         if (!bottomEdge.isFinished()) {
             final int restoreCount = canvas.save();
             canvas.rotate(180);
-            canvas.translate(-width + getPaddingLeft(), -height + getPaddingTop());
-            bottomEdge.setSize(width, height);
+            canvas.translate(-innerWidth - getPaddingLeft(), -outerHeight);
+            bottomEdge.setSize(innerWidth, outerHeight);
             needsInvalidate |= bottomEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
         if (!leftEdge.isFinished()) {
             final int restoreCount = canvas.save();
             canvas.rotate(270);
-            canvas.translate(-height + getPaddingTop(), -getPaddingLeft());
-            leftEdge.setSize(height, width);
+            canvas.translate(-innerHeight - getPaddingTop(), 0);
+            leftEdge.setSize(innerHeight, outerWidth);
             needsInvalidate |= leftEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }

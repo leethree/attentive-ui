@@ -16,7 +16,7 @@
             android:layout_weight="1"
             android:contentDescription="Edit"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_edit" />
 
         <hk.hku.cs.srli.widget.HoverImageButton
@@ -25,7 +25,7 @@
             android:layout_weight="1"
             android:contentDescription="Upload"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_upload" />
 
         <hk.hku.cs.srli.widget.HoverImageButton
@@ -34,7 +34,7 @@
             android:layout_weight="1"
             android:contentDescription="Search"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_search" />
     </TableRow>
 
@@ -50,7 +50,7 @@
             android:layout_weight="1"
             android:contentDescription="Directions"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_directions" />
 
         <hk.hku.cs.srli.widget.HoverImageButton
@@ -59,7 +59,7 @@
             android:layout_weight="1"
             android:contentDescription="Compass"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_compass" />
 
         <hk.hku.cs.srli.widget.HoverImageButton
@@ -68,7 +68,7 @@
             android:layout_weight="1"
             android:contentDescription="Save"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_save" />
     </TableRow>
 
@@ -84,7 +84,7 @@
             android:layout_weight="1"
             android:contentDescription="Share"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_share" />
 
         <hk.hku.cs.srli.widget.HoverImageButton
@@ -93,7 +93,7 @@
             android:layout_weight="1"
             android:contentDescription="More"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_more" />
 
         <hk.hku.cs.srli.widget.HoverImageButton
@@ -102,7 +102,7 @@
             android:layout_weight="1"
             android:contentDescription="Send"
             android:padding="20dp"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@android:drawable/ic_menu_send" />
     </TableRow>
 
