@@ -18,6 +18,7 @@
 
 package hk.hku.cs.srli.widget.util;
 
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 
 import android.content.Context;
@@ -49,8 +50,6 @@ import hk.hku.cs.srli.widget.R;
  * {@link #draw(Canvas)} method.</p>
  */
 public class EdgeEffect {
-    @SuppressWarnings("UnusedDeclaration")
-    private static final String TAG = "EdgeEffect";
 
     // Time it will take the effect to fully recede in ms
     private static final int RECEDE_TIME = 1000;
@@ -173,6 +172,11 @@ public class EdgeEffect {
     void setPosition(int x, int y) {
         mX = x;
         mY = y;
+    }
+    
+    public void setColor(int color) {
+        mEdge.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        mGlow.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
     /**

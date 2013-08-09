@@ -73,6 +73,12 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
         rightEdge = new EdgeEffect(getContext());
         topEdge = new EdgeEffect(getContext());
         bottomEdge = new EdgeEffect(getContext());
+        
+        leftEdge.setColor(leftEdgeColor);
+        rightEdge.setColor(rightEdgeColor);
+        topEdge.setColor(topEdgeColor);
+        bottomEdge.setColor(bottomEdgeColor);
+        
         setWillNotDraw(false);
     }
     
@@ -186,6 +192,13 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
         if (!right) rightEdge.finish();
         if (!top) topEdge.finish();
         if (!bottom) bottomEdge.finish();
+    }
+    
+    public void setEdgeGlowColor(int left, int top, int right, int bottom) {
+        leftEdgeColor = left;
+        rightEdgeColor = right;
+        topEdgeColor = top;
+        bottomEdgeColor = bottom;
     }
     
     private boolean areEdgeEffectsFinished() {

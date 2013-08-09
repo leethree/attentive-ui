@@ -5,6 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
     app:topEdgeGlow="true"
+    app:topEdgeColor="@android:color/holo_red_dark"
     app:bottomEdgeGlow="true" >
 
     <ScrollView
