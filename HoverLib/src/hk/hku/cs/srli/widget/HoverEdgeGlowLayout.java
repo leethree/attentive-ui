@@ -2,6 +2,7 @@
 package hk.hku.cs.srli.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -14,6 +15,16 @@ import hk.hku.cs.srli.widget.util.HoverHandler.OnHoverMoveListener;
 
 public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListener {
 
+    private boolean leftEdgeGlow = false;
+    private boolean rightEdgeGlow = false;
+    private boolean topEdgeGlow = false;
+    private boolean bottomEdgeGlow = false;
+    
+    private int leftEdgeColor = android.R.color.holo_blue_bright;
+    private int rightEdgeColor = android.R.color.holo_blue_bright;
+    private int topEdgeColor = android.R.color.holo_blue_bright;
+    private int bottomEdgeColor = android.R.color.holo_blue_bright;
+    
     private HoverHandler hover;
     private EdgeEffect leftEdge;
     private EdgeEffect rightEdge;
@@ -25,26 +36,43 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
     
     public HoverEdgeGlowLayout(Context context) {
         super(context);
-        init(context);
+        init(null, 0);
     }
 
     public HoverEdgeGlowLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init(attrs, 0);
     }
 
     public HoverEdgeGlowLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
+        init(attrs, defStyle);
     }
 
-    private void init(Context context) {
+    private void init(AttributeSet attrs, int defStyle) {
+        // Load attributes
+        final TypedArray a = getContext().obtainStyledAttributes(
+                attrs, R.styleable.EdgeGlow, defStyle, 0);
+        
+        try {
+            leftEdgeGlow = a.getBoolean(R.styleable.EdgeGlow_leftEdgeGlow, leftEdgeGlow);
+            rightEdgeGlow = a.getBoolean(R.styleable.EdgeGlow_rightEdgeGlow, rightEdgeGlow);
+            topEdgeGlow = a.getBoolean(R.styleable.EdgeGlow_topEdgeGlow, topEdgeGlow);
+            bottomEdgeGlow = a.getBoolean(R.styleable.EdgeGlow_bottomEdgeGlow, bottomEdgeGlow);
+            leftEdgeColor = a.getColor(R.styleable.EdgeGlow_leftEdgeColor, leftEdgeColor);
+            rightEdgeColor = a.getColor(R.styleable.EdgeGlow_rightEdgeColor, rightEdgeColor);
+            topEdgeColor = a.getColor(R.styleable.EdgeGlow_topEdgeColor, topEdgeColor);
+            bottomEdgeColor = a.getColor(R.styleable.EdgeGlow_bottomEdgeColor, bottomEdgeColor);
+        } finally {
+            a.recycle();
+        }
+
         hover = new HoverHandler(this);
         hover.setOnHoverMoveListener(this);
-        leftEdge = new EdgeEffect(context);
-        rightEdge = new EdgeEffect(context);
-        topEdge = new EdgeEffect(context);
-        bottomEdge = new EdgeEffect(context);
+        leftEdge = new EdgeEffect(getContext());
+        rightEdge = new EdgeEffect(getContext());
+        topEdge = new EdgeEffect(getContext());
+        bottomEdge = new EdgeEffect(getContext());
         setWillNotDraw(false);
     }
     
@@ -60,11 +88,13 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
         super.onHoverChanged(hovered);
         if (!hovered) {
             // release all edge effects
-            leftEdge.onRelease();
-            rightEdge.onRelease();
-            topEdge.onRelease();
-            bottomEdge.onRelease();
-            postInvalidateOnAnimation();
+            if (leftEdgeGlow) leftEdge.onRelease();
+            if (rightEdgeGlow) rightEdge.onRelease();
+            if (topEdgeGlow) topEdge.onRelease();
+            if (bottomEdgeGlow) bottomEdge.onRelease();
+            if (!areEdgeEffectsFinished()) {
+                postInvalidateOnAnimation();
+            }
         }
     }
     
@@ -85,19 +115,19 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
         float deltaY = y - lastY;
         // the height and width below are inverted by purpose
         if (deltaX < 0) {
-            leftEdge.onPull(-deltaX * (1 - x) / factor);
+            if (leftEdgeGlow) leftEdge.onPull(-deltaX * (1 - x) / factor);
         } else {
-            rightEdge.onPull(deltaX * x / factor);
+            if (rightEdgeGlow) rightEdge.onPull(deltaX * x / factor);
         }
         if (deltaY < 0) {
-            topEdge.onPull(-deltaY * (1 - y) / factor);
+            if (topEdgeGlow) topEdge.onPull(-deltaY * (1 - y) / factor);
         } else {
-            bottomEdge.onPull(deltaY * y / factor);
+            if (bottomEdgeGlow) bottomEdge.onPull(deltaY * y / factor);
         }
         lastX = x;
         lastY = y;
-        if (deltaX != 0 || deltaY != 0) {
-            // edge effects activated
+        if (!areEdgeEffectsFinished()) {
+            // edge effects not finished, refresh UI
             postInvalidateOnAnimation();
         }
     }
@@ -110,14 +140,14 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
         final int outerWidth = getWidth();
         final int innerHeight = outerHeight - getPaddingTop() - getPaddingBottom();
         final int innerWidth = outerWidth - getPaddingLeft() - getPaddingRight();
-        if (!topEdge.isFinished()) {
+        if (topEdgeGlow && !topEdge.isFinished()) {
             final int restoreCount = canvas.save();
             canvas.translate(getPaddingLeft(), 0);
             topEdge.setSize(innerWidth, outerHeight);
             needsInvalidate |= topEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
-        if (!rightEdge.isFinished()) {
+        if (rightEdgeGlow && !rightEdge.isFinished()) {
             final int restoreCount = canvas.save();
             canvas.rotate(90);
             canvas.translate(getPaddingTop(), -outerWidth);
@@ -125,7 +155,7 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
             needsInvalidate |= rightEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
-        if (!bottomEdge.isFinished()) {
+        if (bottomEdgeGlow && !bottomEdge.isFinished()) {
             final int restoreCount = canvas.save();
             canvas.rotate(180);
             canvas.translate(-innerWidth - getPaddingLeft(), -outerHeight);
@@ -133,7 +163,7 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
             needsInvalidate |= bottomEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
-        if (!leftEdge.isFinished()) {
+        if (leftEdgeGlow && !leftEdge.isFinished()) {
             final int restoreCount = canvas.save();
             canvas.rotate(270);
             canvas.translate(-innerHeight - getPaddingTop(), 0);
@@ -145,5 +175,21 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
             // Keep animating
             postInvalidateOnAnimation();
         }
+    }
+    
+    public void setEdgeGlow(boolean left, boolean top, boolean right, boolean bottom) {
+        leftEdgeGlow = left;
+        rightEdgeGlow = right;
+        topEdgeGlow = top;
+        bottomEdgeGlow = bottom;
+        if (!left) leftEdge.finish();
+        if (!right) rightEdge.finish();
+        if (!top) topEdge.finish();
+        if (!bottom) bottomEdge.finish();
+    }
+    
+    private boolean areEdgeEffectsFinished() {
+        return leftEdge.isFinished() && rightEdge.isFinished()
+                && topEdge.isFinished() && bottomEdge.isFinished();
     }
 }

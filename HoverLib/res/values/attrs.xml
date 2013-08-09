@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+   <declare-styleable name="EdgeGlow">
+       <attr name="leftEdgeGlow" format="boolean" />
+       <attr name="rightEdgeGlow" format="boolean" />
+       <attr name="topEdgeGlow" format="boolean" />
+       <attr name="bottomEdgeGlow" format="boolean" />
+       <attr name="leftEdgeColor" format="color" />
+       <attr name="rightEdgeColor" format="color" />
+       <attr name="topEdgeColor" format="color" />
+       <attr name="bottomEdgeColor" format="color" />
+   </declare-styleable>
+
+</resources>
