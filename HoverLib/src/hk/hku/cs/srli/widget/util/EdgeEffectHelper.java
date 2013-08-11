@@ -9,7 +9,11 @@ import hk.hku.cs.srli.widget.R;
 import hk.hku.cs.srli.widget.util.HoverHandler.OnHoverMoveListener;
 
 public class EdgeEffectHelper implements OnHoverMoveListener {
-
+    
+    public static final int DEFAULT_COLOR = 0;
+    public static final int SCROLL_COLOR = android.R.color.holo_blue_dark;
+    public static final int OVERSCROLL_COLOR = android.R.color.darker_gray;
+    
     private View view;
     
     private EdgeEffect leftEdge;
@@ -23,10 +27,10 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
     private boolean bottomEdgeGlow = false;
     
     // use transparent color as default
-    private int leftEdgeColor = 0;
-    private int rightEdgeColor = 0;
-    private int topEdgeColor = 0;
-    private int bottomEdgeColor = 0;
+    private int leftEdgeColor = DEFAULT_COLOR;
+    private int rightEdgeColor = DEFAULT_COLOR;
+    private int topEdgeColor = DEFAULT_COLOR;
+    private int bottomEdgeColor = DEFAULT_COLOR;
     
     private boolean hoverMoving;
     
@@ -168,11 +172,15 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
         if (!bottom) bottomEdge.finish();
     }
     
-    public void setEdgeGlowColor(int left, int top, int right, int bottom) {
-        leftEdgeColor = left;
-        rightEdgeColor = right;
-        topEdgeColor = top;
-        bottomEdgeColor = bottom;
+    public void setEdgeGlowColorRes(int left, int top, int right, int bottom) {
+        if (left != 0) leftEdgeColor = view.getResources().getColor(left);
+        else leftEdgeColor = 0;
+        if (right != 0) rightEdgeColor = view.getResources().getColor(right);
+        else rightEdgeColor = 0;
+        if (top != 0) topEdgeColor = view.getResources().getColor(top);
+        else topEdgeColor = 0;
+        if (bottom != 0) bottomEdgeColor = view.getResources().getColor(bottom);
+        else bottomEdgeColor = 0;
         updateColors();
     }
 
@@ -182,9 +190,13 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
     }
     
     private void updateColors() {
-        if (leftEdgeColor != 0) leftEdge.setColor(leftEdgeColor); else leftEdge.clearColor();
-        if (rightEdgeColor != 0) rightEdge.setColor(rightEdgeColor);  else rightEdge.clearColor();
-        if (topEdgeColor != 0) topEdge.setColor(topEdgeColor); else topEdge.clearColor();
-        if (bottomEdgeColor != 0) bottomEdge.setColor(bottomEdgeColor); else bottomEdge.clearColor();
+        if (leftEdgeColor != 0) leftEdge.setColor(leftEdgeColor); 
+        else leftEdge.clearColor();
+        if (rightEdgeColor != 0) rightEdge.setColor(rightEdgeColor);
+        else rightEdge.clearColor();
+        if (topEdgeColor != 0) topEdge.setColor(topEdgeColor);
+        else topEdge.clearColor();
+        if (bottomEdgeColor != 0) bottomEdge.setColor(bottomEdgeColor);
+        else bottomEdge.clearColor();
     }
 }

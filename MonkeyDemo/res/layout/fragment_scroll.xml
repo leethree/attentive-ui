@@ -1,27 +1,16 @@
-<hk.hku.cs.srli.widget.HoverEdgeGlowLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<hk.hku.cs.srli.widget.HoverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/HoverEdgeGlowLayout1"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    app:topEdgeGlow="true"
-    app:topEdgeColor="@android:color/holo_red_dark"
-    app:bottomEdgeGlow="true" >
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never"
+    android:layout_margin="20dp" >
 
-    <ScrollView
-        android:id="@+id/scrollView1"
+    <TextView
+        android:id="@+id/textView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never"
-        android:padding="20dp" >
+        android:layout_height="wrap_content"
+        android:text="@string/dummy_text_long"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/dummy_text_long"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-        
-    </ScrollView>
-
-</hk.hku.cs.srli.widget.HoverEdgeGlowLayout>
+</hk.hku.cs.srli.widget.HoverScrollView>
