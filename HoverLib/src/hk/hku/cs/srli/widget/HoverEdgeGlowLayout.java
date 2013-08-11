@@ -20,10 +20,11 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
     private boolean topEdgeGlow = false;
     private boolean bottomEdgeGlow = false;
     
-    private int leftEdgeColor = android.R.color.holo_blue_bright;
-    private int rightEdgeColor = android.R.color.holo_blue_bright;
-    private int topEdgeColor = android.R.color.holo_blue_bright;
-    private int bottomEdgeColor = android.R.color.holo_blue_bright;
+    // use transparent color as default
+    private int leftEdgeColor = 0;
+    private int rightEdgeColor = 0;
+    private int topEdgeColor = 0;
+    private int bottomEdgeColor = 0;
     
     private HoverHandler hover;
     private EdgeEffect leftEdge;
@@ -73,11 +74,8 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
         rightEdge = new EdgeEffect(getContext());
         topEdge = new EdgeEffect(getContext());
         bottomEdge = new EdgeEffect(getContext());
-        
-        leftEdge.setColor(leftEdgeColor);
-        rightEdge.setColor(rightEdgeColor);
-        topEdge.setColor(topEdgeColor);
-        bottomEdge.setColor(bottomEdgeColor);
+
+        updateColors();
         
         setWillNotDraw(false);
     }
@@ -199,10 +197,18 @@ public class HoverEdgeGlowLayout extends FrameLayout implements OnHoverMoveListe
         rightEdgeColor = right;
         topEdgeColor = top;
         bottomEdgeColor = bottom;
+        updateColors();
     }
     
     private boolean areEdgeEffectsFinished() {
         return leftEdge.isFinished() && rightEdge.isFinished()
                 && topEdge.isFinished() && bottomEdge.isFinished();
+    }
+    
+    private void updateColors() {
+        if (leftEdgeColor != 0) leftEdge.setColor(leftEdgeColor); else leftEdge.clearColor();
+        if (rightEdgeColor != 0) rightEdge.setColor(rightEdgeColor);  else rightEdge.clearColor();
+        if (topEdgeColor != 0) topEdge.setColor(topEdgeColor); else topEdge.clearColor();
+        if (bottomEdgeColor != 0) bottomEdge.setColor(bottomEdgeColor); else bottomEdge.clearColor();
     }
 }

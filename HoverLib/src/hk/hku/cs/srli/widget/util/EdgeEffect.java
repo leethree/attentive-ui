@@ -174,6 +174,11 @@ public class EdgeEffect {
         mY = y;
     }
     
+    public void clearColor() {
+        mEdge.clearColorFilter();
+        mGlow.clearColorFilter();
+    }
+    
     public void setColor(int color) {
         mEdge.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         mGlow.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
