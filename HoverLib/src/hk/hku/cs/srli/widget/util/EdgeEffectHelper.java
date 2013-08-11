@@ -1,0 +1,190 @@
+package hk.hku.cs.srli.widget.util;
+
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.util.AttributeSet;
+import android.view.View;
+
+import hk.hku.cs.srli.widget.R;
+import hk.hku.cs.srli.widget.util.HoverHandler.OnHoverMoveListener;
+
+public class EdgeEffectHelper implements OnHoverMoveListener {
+
+    private View view;
+    
+    private EdgeEffect leftEdge;
+    private EdgeEffect rightEdge;
+    private EdgeEffect topEdge;
+    private EdgeEffect bottomEdge;
+    
+    private boolean leftEdgeGlow = false;
+    private boolean rightEdgeGlow = false;
+    private boolean topEdgeGlow = false;
+    private boolean bottomEdgeGlow = false;
+    
+    // use transparent color as default
+    private int leftEdgeColor = 0;
+    private int rightEdgeColor = 0;
+    private int topEdgeColor = 0;
+    private int bottomEdgeColor = 0;
+    
+    private boolean hoverMoving;
+    
+    // last hover positions
+    private int lastX;
+    private int lastY;
+    
+    public EdgeEffectHelper(View view) {
+        this.view = view; 
+        
+        leftEdge = new EdgeEffect(view.getContext());
+        rightEdge = new EdgeEffect(view.getContext());
+        topEdge = new EdgeEffect(view.getContext());
+        bottomEdge = new EdgeEffect(view.getContext());
+        
+        hoverMoving = false;
+    }
+    
+    public void applyStyledAttributes(AttributeSet attrs, int defStyle) {
+        // Load attributes
+        final TypedArray a = view.getContext().obtainStyledAttributes(
+                attrs, R.styleable.EdgeGlow, defStyle, 0);
+        
+        try {
+            leftEdgeGlow = a.getBoolean(R.styleable.EdgeGlow_leftEdgeGlow, false);
+            rightEdgeGlow = a.getBoolean(R.styleable.EdgeGlow_rightEdgeGlow, false);
+            topEdgeGlow = a.getBoolean(R.styleable.EdgeGlow_topEdgeGlow, false);
+            bottomEdgeGlow = a.getBoolean(R.styleable.EdgeGlow_bottomEdgeGlow, false);
+            leftEdgeColor = a.getColor(R.styleable.EdgeGlow_leftEdgeColor, 0);
+            rightEdgeColor = a.getColor(R.styleable.EdgeGlow_rightEdgeColor, 0);
+            topEdgeColor = a.getColor(R.styleable.EdgeGlow_topEdgeColor, 0);
+            bottomEdgeColor = a.getColor(R.styleable.EdgeGlow_bottomEdgeColor, 0);
+        } finally {
+            a.recycle();
+        }
+        
+        updateColors();
+    }
+
+    @Override
+    public void onHoverMove(View v, int x, int y) {
+        if (!hoverMoving) {
+            // prepare to move!
+            lastX = x;
+            lastY = y;
+            hoverMoving = true;
+            return;
+        }
+        
+        final float width = view.getWidth();
+        final float height = view.getHeight();
+        final float factor = width * height;
+        float deltaX = x - lastX;
+        float deltaY = y - lastY;
+        // the height and width below are inverted by purpose
+        if (deltaX < 0) {
+            if (leftEdgeGlow) leftEdge.onPull(-deltaX * (1 - x) / factor);
+        } else {
+            if (rightEdgeGlow) rightEdge.onPull(deltaX * x / factor);
+        }
+        if (deltaY < 0) {
+            if (topEdgeGlow) topEdge.onPull(-deltaY * (1 - y) / factor);
+        } else {
+            if (bottomEdgeGlow) bottomEdge.onPull(deltaY * y / factor);
+        }
+        lastX = x;
+        lastY = y;
+        if (!areEdgeEffectsFinished()) {
+            // edge effects not finished, refresh UI
+            view.postInvalidateOnAnimation();
+        }
+    }
+    
+    public void onHoverChanged(boolean hovered) {
+        if (!hovered) {
+            // release all edge effects
+            if (leftEdgeGlow) leftEdge.onRelease();
+            if (rightEdgeGlow) rightEdge.onRelease();
+            if (topEdgeGlow) topEdge.onRelease();
+            if (bottomEdgeGlow) bottomEdge.onRelease();
+            hoverMoving = false;
+            if (!areEdgeEffectsFinished()) {
+                view.postInvalidateOnAnimation();
+            }
+        }
+    }
+    
+    public void draw(Canvas canvas) {
+        boolean needsInvalidate = false;
+        final int outerHeight = view.getHeight();
+        final int outerWidth = view.getWidth();
+        final int innerHeight = outerHeight - view.getPaddingTop() - view.getPaddingBottom();
+        final int innerWidth = outerWidth - view.getPaddingLeft() - view.getPaddingRight();
+        if (topEdgeGlow && !topEdge.isFinished()) {
+            final int restoreCount = canvas.save();
+            canvas.translate(view.getPaddingLeft(), 0);
+            topEdge.setSize(innerWidth, outerHeight);
+            needsInvalidate |= topEdge.draw(canvas);
+            canvas.restoreToCount(restoreCount);
+        }
+        if (rightEdgeGlow && !rightEdge.isFinished()) {
+            final int restoreCount = canvas.save();
+            canvas.rotate(90);
+            canvas.translate(view.getPaddingTop(), -outerWidth);
+            rightEdge.setSize(innerHeight, outerWidth);
+            needsInvalidate |= rightEdge.draw(canvas);
+            canvas.restoreToCount(restoreCount);
+        }
+        if (bottomEdgeGlow && !bottomEdge.isFinished()) {
+            final int restoreCount = canvas.save();
+            canvas.rotate(180);
+            canvas.translate(-innerWidth - view.getPaddingLeft(), -outerHeight);
+            bottomEdge.setSize(innerWidth, outerHeight);
+            needsInvalidate |= bottomEdge.draw(canvas);
+            canvas.restoreToCount(restoreCount);
+        }
+        if (leftEdgeGlow && !leftEdge.isFinished()) {
+            final int restoreCount = canvas.save();
+            canvas.rotate(270);
+            canvas.translate(-innerHeight - view.getPaddingTop(), 0);
+            leftEdge.setSize(innerHeight, outerWidth);
+            needsInvalidate |= leftEdge.draw(canvas);
+            canvas.restoreToCount(restoreCount);
+        }
+        if (needsInvalidate) {
+            // Keep animating
+            view.postInvalidateOnAnimation();
+        }
+    }
+    
+    public void setEdgeGlow(boolean left, boolean top, boolean right, boolean bottom) {
+        leftEdgeGlow = left;
+        rightEdgeGlow = right;
+        topEdgeGlow = top;
+        bottomEdgeGlow = bottom;
+        if (!left) leftEdge.finish();
+        if (!right) rightEdge.finish();
+        if (!top) topEdge.finish();
+        if (!bottom) bottomEdge.finish();
+    }
+    
+    public void setEdgeGlowColor(int left, int top, int right, int bottom) {
+        leftEdgeColor = left;
+        rightEdgeColor = right;
+        topEdgeColor = top;
+        bottomEdgeColor = bottom;
+        updateColors();
+    }
+
+    private boolean areEdgeEffectsFinished() {
+        return leftEdge.isFinished() && rightEdge.isFinished()
+                && topEdge.isFinished() && bottomEdge.isFinished();
+    }
+    
+    private void updateColors() {
+        if (leftEdgeColor != 0) leftEdge.setColor(leftEdgeColor); else leftEdge.clearColor();
+        if (rightEdgeColor != 0) rightEdge.setColor(rightEdgeColor);  else rightEdge.clearColor();
+        if (topEdgeColor != 0) topEdge.setColor(topEdgeColor); else topEdge.clearColor();
+        if (bottomEdgeColor != 0) bottomEdge.setColor(bottomEdgeColor); else bottomEdge.clearColor();
+    }
+}
