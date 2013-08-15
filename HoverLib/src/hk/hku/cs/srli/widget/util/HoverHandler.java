@@ -116,7 +116,7 @@ public class HoverHandler {
         if (hovering != view.isHovered()) {
             // delay external hover change
             view.postDelayed(new CheckForHoverChange(hovering),
-                    ViewConfiguration.getTapTimeout());
+                    ViewConfiguration.getTapTimeout() * 2);
         }
     }
     
@@ -140,7 +140,7 @@ public class HoverHandler {
             hasPerformedLongHover = false;
 
             view.postDelayed(pendingCheckForLongHover,
-                    ViewConfiguration.getLongPressTimeout());
+                    ViewConfiguration.getLongPressTimeout() * 2);
         }
     }
     

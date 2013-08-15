@@ -18,10 +18,10 @@
     <hk.hku.cs.srli.widget.HoverDiscloseLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@id/item_image_view"
-        android:layout_alignLeft="@id/item_image_view"
-        android:layout_alignRight="@id/item_image_view"
-        android:layout_alignTop="@id/item_image_view" >
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
 
         <TextView
             android:id="@+id/item_text_view"

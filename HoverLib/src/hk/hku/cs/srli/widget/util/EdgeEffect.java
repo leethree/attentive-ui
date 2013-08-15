@@ -129,6 +129,8 @@ public class EdgeEffect {
     private final int mGlowHeight;
     private final int mGlowWidth;
     private final int mMaxEffectHeight;
+    
+    private boolean mDecay = true;
 
     /**
      * Construct a new EdgeEffect with a theme appropriate for the provided context.
@@ -182,6 +184,10 @@ public class EdgeEffect {
     public void setColor(int color) {
         mEdge.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         mGlow.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+    }
+    
+    public void setDecay(boolean decay) {
+        this.mDecay = decay;
     }
 
     /**
@@ -281,6 +287,9 @@ public class EdgeEffect {
 
         mStartTime = AnimationUtils.currentAnimationTimeMillis();
         mDuration = RECEDE_TIME;
+        
+        // start decaying
+        mDecay = true;
     }
 
     /**
@@ -338,7 +347,11 @@ public class EdgeEffect {
      *         animation
      */
     public boolean draw(Canvas canvas) {
-        update();
+        return draw(canvas, true, true);
+    }
+    
+    public boolean draw(Canvas canvas, boolean drawGlow, boolean drawEdge) {
+        if (mDecay) update();
 
         mGlow.setAlpha((int) (Math.max(0, Math.min(mGlowAlpha, 1)) * 255));
 
@@ -354,7 +367,7 @@ public class EdgeEffect {
             mGlow.setBounds(0, 0, mWidth, glowBottom);
         }
 
-        mGlow.draw(canvas);
+        if (drawGlow) mGlow.draw(canvas);
 
         mEdge.setAlpha((int) (Math.max(0, Math.min(mEdgeAlpha, 1)) * 255));
 
@@ -367,13 +380,13 @@ public class EdgeEffect {
             // Stretch the edge to fit.
             mEdge.setBounds(0, 0, mWidth, edgeBottom);
         }
-        mEdge.draw(canvas);
+        if (drawEdge) mEdge.draw(canvas);
 
         if (mState == STATE_RECEDE && glowBottom == 0 && edgeBottom == 0) {
             mState = STATE_IDLE;
         }
 
-        return mState != STATE_IDLE;
+        return !isFinished();
     }
 
     /**
