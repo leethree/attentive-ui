@@ -36,7 +36,8 @@ public class HoverHandler {
                 refreshInternalHoverState();
                 return true;
             case MotionEvent.ACTION_HOVER_MOVE:
-                if (viewEntered) {
+                // trigger onHover events only if it's already hovered.
+                if (viewEntered && view.isHovered()) {
                     hoverX = event.getRawX();
                     hoverY = event.getRawY();
                     if (onHoverMoveListener != null) {
@@ -140,7 +141,7 @@ public class HoverHandler {
             hasPerformedLongHover = false;
 
             view.postDelayed(pendingCheckForLongHover,
-                    ViewConfiguration.getLongPressTimeout());
+                    ViewConfiguration.getLongPressTimeout() * 2);
         }
     }
     
