@@ -2,7 +2,7 @@
 <hk.hku.cs.srli.widget.HoverEdgeGlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:leftEdgeGlow="true"
     app:rightEdgeGlow="true"
     app:leftEdgeColor="@android:color/holo_orange_dark"
@@ -10,9 +10,9 @@
     
 	<LinearLayout
 	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
+	    android:layout_height="wrap_content"
 	    android:background="@android:color/background_light"
-	    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+	    android:minHeight="?android:attr/listPreferredItemHeight"
 	    android:orientation="horizontal"
 	    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
 	    android:paddingStart="?android:attr/listPreferredItemPaddingStart" >

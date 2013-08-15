@@ -33,12 +33,6 @@ public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListene
     private int topEdgeColor = DEFAULT_COLOR;
     private int bottomEdgeColor = DEFAULT_COLOR;
     
-    private boolean hoverMoving;
-    
-    // last hover positions
-    private int lastX;
-    private int lastY;
-    
     public EdgeEffectHelper(View view) {
         this.view = view; 
         
@@ -46,8 +40,6 @@ public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListene
         rightEdge = new EdgeEffect(view.getContext());
         topEdge = new EdgeEffect(view.getContext());
         bottomEdge = new EdgeEffect(view.getContext());
-        
-        hoverMoving = false;
     }
     
     public void applyStyledAttributes(AttributeSet attrs, int defStyle) {
@@ -73,32 +65,15 @@ public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListene
 
     @Override
     public void onHoverMove(View v, int x, int y) {
-        if (!hoverMoving) {
-            // prepare to move!
-            lastX = x;
-            lastY = y;
-            hoverMoving = true;
-            return;
-        }
+        final float ratioX = (float) x / view.getWidth();
+        final float ratioY = (float) y / view.getHeight();
+        final float factor = 0.8f;
         
-        final float doubleWidth = view.getWidth() * 2;
-        final float doubleHeight = view.getHeight() * 2;
-        float deltaX = x - lastX;
-        float deltaY = y - lastY;
-        
-        if (deltaX < -5) {
-            if (leftEdgeGlow) leftEdge.onPull(0.5f - x / doubleWidth);
-        } else if (deltaX > 5) {
-            if (rightEdgeGlow) rightEdge.onPull(x / doubleWidth);
-        }
-        if (deltaY < -5) {
-            if (topEdgeGlow) topEdge.onPull(0.5f - y / doubleHeight);
-        } else if (deltaY > 5) {
-            if (bottomEdgeGlow) bottomEdge.onPull(y / doubleHeight);
-        }
+        if (leftEdgeGlow) leftEdge.onDrift(ratioX * factor);
+        if (rightEdgeGlow) rightEdge.onDrift((1 - ratioX) * factor);
+        if (topEdgeGlow) topEdge.onDrift(ratioY * factor);
+        if (bottomEdgeGlow) bottomEdge.onDrift((1 - ratioY) * factor);
 
-        lastX = x;
-        lastY = y;
         if (!areEdgeEffectsFinished()) {
             // edge effects not finished, refresh UI
             view.postInvalidateOnAnimation();
@@ -107,34 +82,25 @@ public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListene
     
     @Override
     public boolean onLongHover(View v, int x, int y) {
-        if (leftEdgeGlow) leftEdge.onPull(0.25f);
-        if (rightEdgeGlow) rightEdge.onPull(0.25f);
-        if (topEdgeGlow) topEdge.onPull(0.25f);
-        if (bottomEdgeGlow) bottomEdge.onPull(0.25f);
-        
-        if (!areEdgeEffectsFinished()) {
-            view.postInvalidateOnAnimation();
-        }
-        
-        // prevent decaying
-        leftEdge.setDecay(false);
-        rightEdge.setDecay(false);
-        topEdge.setDecay(false);
-        bottomEdge.setDecay(false);
+        // TODO: remove this method
         return true;
     }
     
     public void onHoverChanged(boolean hovered) {
-        if (!hovered) {
+        if (hovered) {
+            if (leftEdgeGlow) leftEdge.onRampUp();
+            if (rightEdgeGlow) rightEdge.onRampUp();
+            if (topEdgeGlow) topEdge.onRampUp();
+            if (bottomEdgeGlow) bottomEdge.onRampUp();
+        } else {
             // release all edge effects
-            if (leftEdgeGlow) leftEdge.onRelease();
-            if (rightEdgeGlow) rightEdge.onRelease();
-            if (topEdgeGlow) topEdge.onRelease();
-            if (bottomEdgeGlow) bottomEdge.onRelease();
-            hoverMoving = false;
-            if (!areEdgeEffectsFinished()) {
-                view.postInvalidateOnAnimation();
-            }
+            if (leftEdgeGlow) leftEdge.onRampDown();
+            if (rightEdgeGlow) rightEdge.onRampDown();
+            if (topEdgeGlow) topEdge.onRampDown();
+            if (bottomEdgeGlow) bottomEdge.onRampDown();
+        }
+        if (!areEdgeEffectsFinished()) {
+            view.postInvalidateOnAnimation();
         }
     }
     

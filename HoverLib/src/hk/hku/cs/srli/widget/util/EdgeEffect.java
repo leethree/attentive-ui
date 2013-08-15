@@ -25,8 +25,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import hk.hku.cs.srli.widget.R;
@@ -106,6 +106,8 @@ public class EdgeEffect {
     private static final int STATE_ABSORB = 2;
     private static final int STATE_RECEDE = 3;
     private static final int STATE_PULL_DECAY = 4;
+    private static final int STATE_HOVER = 5;
+    private static final int STATE_HOLD = 6;
 
     // How much dragging should effect the height of the edge image.
     // Number determined by user testing.
@@ -129,8 +131,6 @@ public class EdgeEffect {
     private final int mGlowHeight;
     private final int mGlowWidth;
     private final int mMaxEffectHeight;
-    
-    private boolean mDecay = true;
 
     /**
      * Construct a new EdgeEffect with a theme appropriate for the provided context.
@@ -150,7 +150,7 @@ public class EdgeEffect {
                 mGlowHeight * MAX_GLOW_HEIGHT) + 0.5f);
 
         mMinWidth = (int) (res.getDisplayMetrics().density * MIN_WIDTH + 0.5f);
-        mInterpolator = new DecelerateInterpolator();
+        mInterpolator = new AccelerateDecelerateInterpolator();
     }
 
     /**
@@ -184,10 +184,6 @@ public class EdgeEffect {
     public void setColor(int color) {
         mEdge.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         mGlow.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-    }
-    
-    public void setDecay(boolean decay) {
-        this.mDecay = decay;
     }
 
     /**
@@ -287,9 +283,6 @@ public class EdgeEffect {
 
         mStartTime = AnimationUtils.currentAnimationTimeMillis();
         mDuration = RECEDE_TIME;
-        
-        // start decaying
-        mDecay = true;
     }
 
     /**
@@ -335,6 +328,54 @@ public class EdgeEffect {
                 mGlowAlphaStart, Math.min(velocity * VELOCITY_GLOW_FACTOR * .00001f, MAX_ALPHA));
     }
 
+    public void onRampUp() {
+        mState = STATE_HOVER;
+        mStartTime = AnimationUtils.currentAnimationTimeMillis();
+        mDuration = PULL_DECAY_TIME;
+        
+        mEdgeAlphaStart = 0.f;
+        mEdgeScaleYStart = 0.f;
+        mGlowAlphaStart = 0.f;
+        mGlowScaleYStart = 0.f;
+        
+        mEdgeAlphaFinish = MAX_ALPHA;
+        mEdgeScaleYFinish = HELD_EDGE_SCALE_Y;
+        mGlowAlphaFinish = MAX_ALPHA;
+        mGlowScaleYFinish = MAX_GLOW_HEIGHT;
+    }
+    
+    public void onDrift(float distance) {
+        mState = STATE_HOVER;
+
+        mStartTime = AnimationUtils.currentAnimationTimeMillis();
+        mDuration = PULL_DECAY_TIME;
+
+        mEdgeAlphaStart = mEdgeAlpha;
+        mEdgeScaleYStart = mEdgeScaleY;
+        mGlowAlphaStart = mGlowAlpha;
+        mGlowScaleYStart = mGlowScaleY;
+        
+        mEdgeAlphaFinish = Math.max(0, Math.min(distance, MAX_ALPHA));
+        mEdgeScaleYFinish = Math.max(0, Math.min(distance * PULL_DISTANCE_EDGE_FACTOR, 1.f));
+        mGlowAlphaFinish = Math.min(MAX_ALPHA, Math.abs(distance) * PULL_DISTANCE_ALPHA_GLOW_FACTOR);
+        mGlowScaleYFinish = Math.min(MAX_GLOW_HEIGHT, Math.max(0, distance * PULL_DISTANCE_GLOW_FACTOR));
+    }
+    
+    public void onRampDown() {
+        mState = STATE_RECEDE;
+        mStartTime = AnimationUtils.currentAnimationTimeMillis();
+        mDuration = RECEDE_TIME;
+        
+        mEdgeAlphaStart = mEdgeAlpha;
+        mEdgeScaleYStart = mEdgeScaleY;
+        mGlowAlphaStart = mGlowAlpha;
+        mGlowScaleYStart = mGlowScaleY;
+
+        mEdgeAlphaFinish = 0.f;
+        mEdgeScaleYFinish = 0.f;
+        mGlowAlphaFinish = 0.f;
+        mGlowScaleYFinish = 0.f;
+    }
 
     /**
      * Draw into the provided canvas. Assumes that the canvas has been rotated
@@ -351,7 +392,7 @@ public class EdgeEffect {
     }
     
     public boolean draw(Canvas canvas, boolean drawGlow, boolean drawEdge) {
-        if (mDecay) update();
+        update();
 
         mGlow.setAlpha((int) (Math.max(0, Math.min(mGlowAlpha, 1)) * 255));
 
@@ -402,6 +443,9 @@ public class EdgeEffect {
     }
 
     private void update() {
+        // no need to update anything in this state. 
+        if (mState == STATE_HOLD) return;
+
         final long time = AnimationUtils.currentAnimationTimeMillis();
         final float t = Math.min((time - mStartTime) / mDuration, 1.f);
 
@@ -459,6 +503,9 @@ public class EdgeEffect {
                     break;
                 case STATE_RECEDE:
                     mState = STATE_IDLE;
+                    break;
+                case STATE_HOVER:
+                    mState = STATE_HOLD;
                     break;
             }
         }
