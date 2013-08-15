@@ -7,9 +7,8 @@ import android.view.View;
 
 import hk.hku.cs.srli.widget.R;
 import hk.hku.cs.srli.widget.util.HoverHandler.OnHoverMoveListener;
-import hk.hku.cs.srli.widget.util.HoverHandler.OnLongHoverListener;
 
-public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListener {
+public class EdgeEffectHelper implements OnHoverMoveListener {
     
     public static final int DEFAULT_COLOR = 0;
     public static final int SCROLL_COLOR = android.R.color.holo_blue_dark;
@@ -80,12 +79,6 @@ public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListene
         }
     }
     
-    @Override
-    public boolean onLongHover(View v, int x, int y) {
-        // TODO: remove this method
-        return true;
-    }
-    
     public void onHoverChanged(boolean hovered) {
         if (hovered) {
             if (leftEdgeGlow) leftEdge.onRampUp();
@@ -114,7 +107,7 @@ public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListene
             final int restoreCount = canvas.save();
             canvas.translate(view.getPaddingLeft(), 0);
             topEdge.setSize(innerWidth, outerHeight);
-            needsInvalidate |= topEdge.draw(canvas, true, false);
+            needsInvalidate |= topEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
         if (rightEdgeGlow && !rightEdge.isFinished()) {
@@ -122,7 +115,7 @@ public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListene
             canvas.rotate(90);
             canvas.translate(view.getPaddingTop(), -outerWidth);
             rightEdge.setSize(innerHeight, outerWidth);
-            needsInvalidate |= rightEdge.draw(canvas, true, false);
+            needsInvalidate |= rightEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
         if (bottomEdgeGlow && !bottomEdge.isFinished()) {
@@ -130,7 +123,7 @@ public class EdgeEffectHelper implements OnHoverMoveListener, OnLongHoverListene
             canvas.rotate(180);
             canvas.translate(-innerWidth - view.getPaddingLeft(), -outerHeight);
             bottomEdge.setSize(innerWidth, outerHeight);
-            needsInvalidate |= bottomEdge.draw(canvas, true, false);
+            needsInvalidate |= bottomEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
         if (leftEdgeGlow && !leftEdge.isFinished()) {

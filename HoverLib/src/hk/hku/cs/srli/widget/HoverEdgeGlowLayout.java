@@ -35,7 +35,6 @@ public class HoverEdgeGlowLayout extends FrameLayout {
         edge = new EdgeEffectHelper(this);
         
         hover.setOnHoverMoveListener(edge);
-        hover.setOnLongHoverListener(edge);
         edge.applyStyledAttributes(attrs, defStyle);
         
         setWillNotDraw(false);

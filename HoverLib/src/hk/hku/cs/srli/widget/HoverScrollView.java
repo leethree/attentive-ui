@@ -38,8 +38,6 @@ public class HoverScrollView extends ScrollView {
         edge = new EdgeEffectHelper(this);
         
         hover.setOnHoverMoveListener(edge);
-        hover.setOnLongHoverListener(edge);
-        
         state = ScrollState.NOT_SCROLLABLE;
         edge.setEdgeGlow(false, false, false, false);
         setWillNotDraw(false);

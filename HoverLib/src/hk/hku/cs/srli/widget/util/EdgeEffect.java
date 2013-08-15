@@ -76,6 +76,7 @@ public class EdgeEffect {
     private final Drawable mEdge;
     private final Drawable mGlow;
     private int mWidth;
+    @SuppressWarnings("unused")
     private int mHeight;
     private int mX;
     private int mY;
@@ -338,10 +339,10 @@ public class EdgeEffect {
         mGlowAlphaStart = 0.f;
         mGlowScaleYStart = 0.f;
         
-        mEdgeAlphaFinish = MAX_ALPHA;
+        mEdgeAlphaFinish = PULL_EDGE_BEGIN;
         mEdgeScaleYFinish = HELD_EDGE_SCALE_Y;
-        mGlowAlphaFinish = MAX_ALPHA;
-        mGlowScaleYFinish = MAX_GLOW_HEIGHT;
+        mGlowAlphaFinish = PULL_GLOW_BEGIN;
+        mGlowScaleYFinish = 1.f;
     }
     
     public void onDrift(float distance) {
