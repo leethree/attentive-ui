@@ -36,7 +36,8 @@ public class HoverHandler {
                 refreshInternalHoverState();
                 return true;
             case MotionEvent.ACTION_HOVER_MOVE:
-                if (viewEntered) {
+                // trigger onHover events only if it's already hovered.
+                if (viewEntered && view.isHovered()) {
                     hoverX = event.getRawX();
                     hoverY = event.getRawY();
                     if (onHoverMoveListener != null) {
@@ -116,7 +117,7 @@ public class HoverHandler {
         if (hovering != view.isHovered()) {
             // delay external hover change
             view.postDelayed(new CheckForHoverChange(hovering),
-                    ViewConfiguration.getTapTimeout() * 2);
+                    ViewConfiguration.getTapTimeout());
         }
     }
     

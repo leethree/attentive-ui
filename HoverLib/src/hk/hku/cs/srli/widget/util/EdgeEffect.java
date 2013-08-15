@@ -334,10 +334,10 @@ public class EdgeEffect {
         mStartTime = AnimationUtils.currentAnimationTimeMillis();
         mDuration = PULL_DECAY_TIME;
         
-        mEdgeAlphaStart = 0.f;
-        mEdgeScaleYStart = 0.f;
-        mGlowAlphaStart = 0.f;
-        mGlowScaleYStart = 0.f;
+        mEdgeAlphaStart = mEdgeAlpha;
+        mEdgeScaleYStart = mEdgeScaleY;
+        mGlowAlphaStart = mGlowAlpha;
+        mGlowScaleYStart = mGlowScaleY;
         
         mEdgeAlphaFinish = PULL_EDGE_BEGIN;
         mEdgeScaleYFinish = HELD_EDGE_SCALE_Y;
@@ -347,25 +347,25 @@ public class EdgeEffect {
     
     public void onDrift(float distance) {
         mState = STATE_HOVER;
-
-        mStartTime = AnimationUtils.currentAnimationTimeMillis();
-        mDuration = PULL_DECAY_TIME;
+        final long now = AnimationUtils.currentAnimationTimeMillis();
+        mDuration -= now - mStartTime; // use the remaining animation time
+        mDuration = Math.max(PULL_TIME, mDuration);
+        mStartTime = now;
 
         mEdgeAlphaStart = mEdgeAlpha;
         mEdgeScaleYStart = mEdgeScaleY;
         mGlowAlphaStart = mGlowAlpha;
         mGlowScaleYStart = mGlowScaleY;
         
-        mEdgeAlphaFinish = Math.max(0, Math.min(distance, MAX_ALPHA));
-        mEdgeScaleYFinish = Math.max(0, Math.min(distance * PULL_DISTANCE_EDGE_FACTOR, 1.f));
+        // only change the glow effect 
         mGlowAlphaFinish = Math.min(MAX_ALPHA, Math.abs(distance) * PULL_DISTANCE_ALPHA_GLOW_FACTOR);
         mGlowScaleYFinish = Math.min(MAX_GLOW_HEIGHT, Math.max(0, distance * PULL_DISTANCE_GLOW_FACTOR));
     }
     
     public void onRampDown() {
-        mState = STATE_RECEDE;
+        mState = STATE_PULL_DECAY;
         mStartTime = AnimationUtils.currentAnimationTimeMillis();
-        mDuration = RECEDE_TIME;
+        mDuration = PULL_DECAY_TIME;
         
         mEdgeAlphaStart = mEdgeAlpha;
         mEdgeScaleYStart = mEdgeScaleY;

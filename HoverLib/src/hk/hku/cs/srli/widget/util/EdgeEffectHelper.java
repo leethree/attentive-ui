@@ -66,7 +66,7 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
     public void onHoverMove(View v, int x, int y) {
         final float ratioX = (float) x / view.getWidth();
         final float ratioY = (float) y / view.getHeight();
-        final float factor = 0.8f;
+        final float factor = 0.5f;
         
         if (leftEdgeGlow) leftEdge.onDrift(ratioX * factor);
         if (rightEdgeGlow) rightEdge.onDrift((1 - ratioX) * factor);
@@ -131,7 +131,7 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
             canvas.rotate(270);
             canvas.translate(-innerHeight - view.getPaddingTop(), 0);
             leftEdge.setSize(innerHeight, outerWidth);
-            needsInvalidate |= leftEdge.draw(canvas, true, false);
+            needsInvalidate |= leftEdge.draw(canvas);
             canvas.restoreToCount(restoreCount);
         }
         if (needsInvalidate) {
