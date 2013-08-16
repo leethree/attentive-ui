@@ -2,7 +2,6 @@ package hk.hku.cs.srli.factfinder.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -42,10 +41,8 @@ public class PriceButton extends Button
     
     @Override
     public void setVisibility(int visibility) {
-        Log.v("setVisibility", "vis: " + visibility);
-        Log.v("setVisibility", "touched: " + touched);
-        // ignore if it's touched.
-        if (touched) return;
+        // ignore if it's touched or hovered.
+        if (touched || isHovered()) return;
         super.setVisibility(visibility);
     }
     
@@ -53,7 +50,7 @@ public class PriceButton extends Button
     public boolean onLongClick(View v) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
             Tooltip tp = TooltipManager.showAndHide(PriceButton.this, getContentDescription(),
-                    getWidth() / 2, getHeight() / 2, TooltipManager.LONG_DELAY);
+                    getWidth(), getHeight(), TooltipManager.LONG_DELAY);
             hover.attachTooltip(tp);
         }
         return true;
@@ -62,7 +59,10 @@ public class PriceButton extends Button
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
-        if (!hovered) {
+        if (hovered) {
+            setTextColor(getResources().getColor(android.R.color.primary_text_light));
+        } else {
+            setTextColor(getResources().getColor(android.R.color.primary_text_dark));
             hover.dettachTooltip();
             TooltipManager.hide(this);
         }
@@ -70,7 +70,7 @@ public class PriceButton extends Button
     @Override
     public boolean onLongHover(View v, int x, int y) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
-            Tooltip tp = TooltipManager.show(PriceButton.this, getContentDescription(), x, y);
+            Tooltip tp = TooltipManager.show(PriceButton.this, getContentDescription(), x + 15, y + 15);
             hover.attachTooltip(tp);
         }
         return true;

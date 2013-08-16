@@ -23,8 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/grid_gutter"
-            android:background="#80000000"
+            android:background="@color/darkbg"
             android:padding="@dimen/grid_gutter"
             android:text="TextView"
             android:textColor="@android:color/primary_text_dark" />
@@ -36,14 +35,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="@dimen/grid_gutter"
-            android:background="@drawable/hoveritem_background_holo_light"
+            android:background="@drawable/price_button"
             android:contentDescription="Quick add"
-            android:padding="@dimen/grid_gutter"
-            android:shadowColor="@android:color/background_light"
-            android:shadowRadius="15"
+            android:padding="16dp"
             android:text="$0.00"
-            android:textColor="@android:color/primary_text_light" />
+            android:textColor="@android:color/primary_text_dark" />
         
     </hk.hku.cs.srli.widget.HoverDiscloseLayout>
 

@@ -12,9 +12,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -100,10 +102,24 @@ public class SectionFragment extends Fragment {
             TextView text = (TextView) convertView.findViewById(R.id.item_text_view);
             text.setText(getItem(position).title);
             
-            TextView price = (TextView) convertView.findViewById(R.id.item_text_price);
+            Button price = (Button) convertView.findViewById(R.id.item_text_price);
             price.setText(DataSet.formatMoney(getItem(position).price));
+            price.setOnClickListener(new QuickAddClickListener(position));
             return convertView;
         }
-
+        
+        private class QuickAddClickListener implements View.OnClickListener {
+            private int position;
+            
+            public QuickAddClickListener(int position) {
+                this.position = position;
+            }
+            
+            @Override
+            public void onClick(View v) {
+                FFApp.getOrder(mContext).add(getItem(position));
+                Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
