@@ -1,17 +1,18 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_margin="20dp" >
 
     <TableRow
         android:id="@+id/tableRow1"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1" >
 
         <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/button11"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="Edit"
@@ -22,6 +23,7 @@
         <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/button12"
             android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:layout_weight="1"
             android:contentDescription="Upload"
             android:padding="20dp"
@@ -31,6 +33,7 @@
         <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/button13"
             android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:layout_weight="1"
             android:contentDescription="Search"
             android:padding="20dp"
@@ -40,12 +43,13 @@
 
     <TableRow
         android:id="@+id/tableRow2"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1" >
 
         <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/button21"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="Directions"
@@ -53,34 +57,45 @@
             android:scaleType="center"
             android:src="@android:drawable/ic_menu_directions" />
 
-        <hk.hku.cs.srli.widget.HoverImageButton
-            android:id="@+id/button22"
+        <hk.hku.cs.srli.widget.HoverDiscloseLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:contentDescription="Compass"
-            android:padding="20dp"
-            android:scaleType="center"
-            android:src="@android:drawable/ic_menu_compass" />
+            android:background="@drawable/hoveritem_background_holo_light" >
+
+            <hk.hku.cs.srli.widget.HoverImageButton
+                android:id="@+id/button22"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="Compass"
+                android:padding="20dp"
+                android:scaleType="center"
+                android:src="@android:drawable/ic_menu_compass" />
+
+        </hk.hku.cs.srli.widget.HoverDiscloseLayout>
 
         <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/button23"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="Save"
             android:padding="20dp"
             android:scaleType="center"
             android:src="@android:drawable/ic_menu_save" />
+
     </TableRow>
 
     <TableRow
         android:id="@+id/tableRow3"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1" >
 
         <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/button31"
             android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:layout_weight="1"
             android:contentDescription="Share"
             android:padding="20dp"
@@ -90,6 +105,7 @@
         <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/button32"
             android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:layout_weight="1"
             android:contentDescription="More"
             android:padding="20dp"
@@ -99,6 +115,7 @@
         <hk.hku.cs.srli.widget.HoverImageButton
             android:id="@+id/button33"
             android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:layout_weight="1"
             android:contentDescription="Send"
             android:padding="20dp"

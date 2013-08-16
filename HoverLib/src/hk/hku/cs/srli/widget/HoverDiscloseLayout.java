@@ -4,6 +4,7 @@ package hk.hku.cs.srli.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import hk.hku.cs.srli.widget.util.HoverHandler;
@@ -40,17 +41,41 @@ public class HoverDiscloseLayout extends RelativeLayout {
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
-        if (hovered) {
-            setAllChildrenVisibility(VISIBLE);
-        } else {
-            setAllChildrenVisibility(INVISIBLE);
-        }
+        updateChildrenVisibility();
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
         hover.onHoverEvent(event);
         // do not consume the event
+        return false;
+    }
+    
+    @Override
+    protected boolean dispatchHoverEvent(MotionEvent event) {
+        boolean ret = super.dispatchHoverEvent(event);
+        updateChildrenVisibility();
+        return ret;
+    }
+    
+    private void updateChildrenVisibility() {
+        if (isHovered() || hasActiveChild()) {
+            setAllChildrenVisibility(VISIBLE);
+        } else {
+            setAllChildrenVisibility(INVISIBLE);
+        }
+    }
+    
+    private boolean hasActiveChild() {
+        for(int i = 0; i < getChildCount(); ++i) {
+            boolean ret = false;
+            View child = getChildAt(i);
+            ret |= child.isHovered();
+            ret |= child.isPressed();
+            ret |= child.isSelected();
+            ret |= child.isFocused();
+            if (ret) return true;
+        }
         return false;
     }
 

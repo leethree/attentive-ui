@@ -36,10 +36,10 @@ public class HoverHandler {
                 refreshInternalHoverState();
                 return true;
             case MotionEvent.ACTION_HOVER_MOVE:
+                hoverX = event.getRawX();
+                hoverY = event.getRawY();
                 // trigger onHover events only if it's already hovered.
                 if (viewEntered && view.isHovered()) {
-                    hoverX = event.getRawX();
-                    hoverY = event.getRawY();
                     if (onHoverMoveListener != null) {
                         final int[] screenPos = new int[2];
                         getLocalCoordinate(screenPos);
