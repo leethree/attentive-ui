@@ -46,6 +46,10 @@ public class DetailActivity extends SherlockActivity implements DialogInterface.
         
         TextView text = (TextView) findViewById(R.id.content);
         text.setText(mFact.content);
+        
+        TextView price = (TextView) findViewById(R.id.textPrice);
+        price.setText(DataSet.formatMoney(mFact.price));
+        
         final ImageButton image = (ImageButton) findViewById(R.id.image_view);
 
         try {

@@ -4,11 +4,11 @@ package hk.hku.cs.srli.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import hk.hku.cs.srli.widget.util.HoverHandler;
 
-public class HoverDiscloseLayout extends FrameLayout {
+public class HoverDiscloseLayout extends RelativeLayout {
 
     private HoverHandler hover;
     
@@ -53,7 +53,7 @@ public class HoverDiscloseLayout extends FrameLayout {
         // do not consume the event
         return false;
     }
-    
+
     private void setAllChildrenVisibility(int visibility) {
         for(int i = 0; i < getChildCount(); ++i) {
             // TODO: maintain original state if child is already hidden. 

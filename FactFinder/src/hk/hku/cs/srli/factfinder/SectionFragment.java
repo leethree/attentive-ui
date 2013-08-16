@@ -86,8 +86,7 @@ public class SectionFragment extends Fragment {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
             }
             ImageView imageView = (ImageView) convertView.findViewById(R.id.item_image_view);
-            TextView textView = (TextView) convertView.findViewById(R.id.item_text_view);
-
+            
             // find image from assets
             try {
                 imageView.setImageDrawable(
@@ -97,7 +96,12 @@ public class SectionFragment extends Fragment {
                 // Image loading failed, use placeholder instead.
                 imageView.setImageResource(R.drawable.placeholder);
             }
-            textView.setText(getItem(position).title);
+            
+            TextView text = (TextView) convertView.findViewById(R.id.item_text_view);
+            text.setText(getItem(position).title);
+            
+            TextView price = (TextView) convertView.findViewById(R.id.item_text_price);
+            price.setText(DataSet.formatMoney(getItem(position).price));
             return convertView;
         }
 

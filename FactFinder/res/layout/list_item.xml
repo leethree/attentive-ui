@@ -22,12 +22,29 @@
             android:id="@+id/item_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/grid_gutter"
             android:background="#80000000"
             android:padding="@dimen/grid_gutter"
             android:text="TextView"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/primary_text_dark" />
+        
+        <hk.hku.cs.srli.factfinder.ui.PriceButton
+            android:id="@+id/item_text_price"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/grid_gutter"
+            android:background="@drawable/hoveritem_background_holo_light"
+            android:contentDescription="Quick add"
+            android:padding="@dimen/grid_gutter"
+            android:shadowColor="@android:color/background_light"
+            android:shadowRadius="15"
+            android:text="$0.00"
+            android:textColor="@android:color/primary_text_light" />
+        
     </hk.hku.cs.srli.widget.HoverDiscloseLayout>
 
 </hk.hku.cs.srli.widget.HoverFrame>
