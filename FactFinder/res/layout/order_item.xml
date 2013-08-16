@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<hk.hku.cs.srli.widget.HoverEdgeGlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<hk.hku.cs.srli.widget.HoverFrame xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -36,4 +36,4 @@
 	        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
 	</LinearLayout>
-</hk.hku.cs.srli.widget.HoverEdgeGlowLayout>
+</hk.hku.cs.srli.widget.HoverFrame>

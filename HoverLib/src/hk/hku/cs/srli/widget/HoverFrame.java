@@ -10,22 +10,22 @@ import android.widget.FrameLayout;
 import hk.hku.cs.srli.widget.util.EdgeEffectHelper;
 import hk.hku.cs.srli.widget.util.HoverHandler;
 
-public class HoverEdgeGlowLayout extends FrameLayout {
+public class HoverFrame extends FrameLayout {
 
     private HoverHandler hover;
     private EdgeEffectHelper edge;
     
-    public HoverEdgeGlowLayout(Context context) {
+    public HoverFrame(Context context) {
         super(context);
         init(null, 0);
     }
 
-    public HoverEdgeGlowLayout(Context context, AttributeSet attrs) {
+    public HoverFrame(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs, 0);
     }
 
-    public HoverEdgeGlowLayout(Context context, AttributeSet attrs, int defStyle) {
+    public HoverFrame(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs, defStyle);
     }
