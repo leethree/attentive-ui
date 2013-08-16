@@ -37,21 +37,22 @@ public class HoverGridView extends GridView implements OnHoverMoveListener {
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
-        if (!hovered) {
-            // clear selection
-            setSelection(INVALID_POSITION);
-        }
+//        if (!hovered) {
+//            // clear selection
+//            setSelection(INVALID_POSITION);
+//        }
     }
     
     @Override
     public void onHoverMove(View v, int x, int y) {
-        int position = pointToPosition(x, y);
-        if (isInTouchMode()) {
-            // exit touch mode
-            // TODO: find a way to get back to touch mode.
-            requestFocusFromTouch();
-        }
-        setSelection(position);
+        // TODO: remove this when things are working
+//        int position = pointToPosition(x, y);
+//        if (isInTouchMode()) {
+//            // exit touch mode
+//            // TODO: find a way to get back to touch mode.
+//            requestFocusFromTouch();
+//        }
+//        setSelection(position);
     }
     
     @Override

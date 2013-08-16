@@ -137,6 +137,7 @@ public class TooltipManager {
     
     private void doShow(Tooltip tooltip, WindowManager.LayoutParams params) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        // XXX: WindowManager.BadTokenException may be thrown here
         wm.addView(tooltip, params); // Show new tooltip first.
         doHide(this.tooltip); // Then hide existing tooltip if any.
         this.tooltip = tooltip;

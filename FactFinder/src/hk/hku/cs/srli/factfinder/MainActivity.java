@@ -40,6 +40,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three

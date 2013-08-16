@@ -17,6 +17,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:layout_marginLeft="200dp"
+	    android:overScrollMode="never"
 	    tools:context=".MainActivity" />
 
 </hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout>
