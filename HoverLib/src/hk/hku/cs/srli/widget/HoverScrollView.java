@@ -14,7 +14,7 @@ public class HoverScrollView extends ScrollView {
     private HoverHandler hover;
     private EdgeEffectHelper edge;
     
-    private enum ScrollState {TOP, MIDDLE, BOTTOM, NOT_SCROLLABLE}
+    public static enum ScrollState {TOP, MIDDLE, BOTTOM, NOT_SCROLLABLE}
     // to change this, use changeState(newState)
     private ScrollState state;
     
@@ -55,7 +55,7 @@ public class HoverScrollView extends ScrollView {
         // do not consume the event
         return super.onHoverEvent(event);
     }
-   
+
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
