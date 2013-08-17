@@ -41,17 +41,6 @@ public class PriceButton extends HoverButton {
     }
     
     @Override
-    public void onHoverChanged(boolean hovered) {
-        super.onHoverChanged(hovered);
-        if (hovered) {
-            // change color
-            setTextColor(getResources().getColor(android.R.color.primary_text_light));
-        } else {
-            setTextColor(getResources().getColor(android.R.color.primary_text_dark));
-        }
-    }
-    
-    @Override
     public boolean onTouchEvent(MotionEvent event) {
         final int action = event.getActionMasked();
         if (action == MotionEvent.ACTION_UP
