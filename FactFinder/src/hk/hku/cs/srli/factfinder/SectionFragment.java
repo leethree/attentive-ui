@@ -9,8 +9,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -45,25 +43,18 @@ public class SectionFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         GridView gridview = (GridView) getView().findViewById(R.id.grid_view);
-        gridview.setAdapter(new ImageAdapter(getActivity(), mSectionNumber));
-
-        gridview.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Intent i = new Intent(getActivity(), DetailActivity.class);
-                i.putExtra("id", (int) id).putExtra("section", mSectionNumber);
-                startActivity(i);
-            }
-        });
+        ImageAdapter adapter = new ImageAdapter(getActivity(), mSectionNumber);
+        gridview.setAdapter(adapter);
     }
     
     public static class ImageAdapter extends BaseAdapter {
         private Context mContext;
+        private int mSection;
         private SparseArray<DataItem> mFacts;
 
         public ImageAdapter(Context c, int section) {
             mContext = c;
+            mSection = section;
             mFacts = FFApp.getData(c).getCategoryAt(section).getItems();
         }
 
@@ -98,28 +89,44 @@ public class SectionFragment extends Fragment {
                 // Image loading failed, use placeholder instead.
                 imageView.setImageResource(R.drawable.placeholder);
             }
+            imageView.setOnClickListener(new ItemClickListener(position) {
+    
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext, DetailActivity.class);
+                    i.putExtra("id", (int) getItemId(mPosition)).putExtra("section", mSection);
+                    // launch detailed view
+                    mContext.startActivity(i);
+                }
+            });
             
             TextView text = (TextView) convertView.findViewById(R.id.item_text_view);
             text.setText(getItem(position).title);
             
             Button price = (Button) convertView.findViewById(R.id.item_text_price);
             price.setText(DataSet.formatMoney(getItem(position).price));
-            price.setOnClickListener(new QuickAddClickListener(position));
+            price.setOnClickListener(new ItemClickListener(position) {
+                
+                @Override
+                public void onClick(View v) {
+                    FFApp.getOrder(mContext).add(getItem(mPosition));
+                    Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             return convertView;
         }
         
-        private class QuickAddClickListener implements View.OnClickListener {
-            private int position;
+        // helper class for handling item clicks
+        private abstract class ItemClickListener implements View.OnClickListener {
+            protected int mPosition;
             
-            public QuickAddClickListener(int position) {
-                this.position = position;
+            public ItemClickListener(int position) {
+                this.mPosition = position;
             }
             
             @Override
-            public void onClick(View v) {
-                FFApp.getOrder(mContext).add(getItem(position));
-                Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
-            }
+            public abstract void onClick(View v);
         }
     }
 }

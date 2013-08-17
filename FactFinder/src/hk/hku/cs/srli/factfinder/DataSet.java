@@ -15,8 +15,8 @@ public class DataSet {
 
     public static class Category {
         private final int id;
-        private String name;
-        private SparseArray<DataItem> items;
+        private final String name;
+        private final SparseArray<DataItem> items;
         
         public Category(int id, String name) {
             this.id = id;

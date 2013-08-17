@@ -35,7 +35,7 @@ public class DetailActivity extends SherlockActivity
         Bundle b = getIntent().getExtras();
  
         // Selected data item id
-        int id = b.getInt("id", -1);
+        int id = b.getInt("id");
         int section = b.getInt("section");
         mFact = FFApp.getData(this).getItem(section, id);
         mDialog = FFDialog.newInstance(section, id);

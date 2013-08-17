@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<hk.hku.cs.srli.widget.HoverFrame xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground" >
+    android:layout_height="wrap_content" >
 
-    <ImageView
+    <hk.hku.cs.srli.widget.HoverImageButton
         android:id="@+id/item_image_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_column_width"
-        android:contentDescription="thumbnail"
+        android:background="?attr/selectableItemBackground"
         android:cropToPadding="true"
         android:padding="@dimen/grid_gutter"
         android:scaleType="centerCrop"
@@ -43,4 +42,4 @@
         
     </hk.hku.cs.srli.widget.HoverDiscloseLayout>
 
-</hk.hku.cs.srli.widget.HoverFrame>
+</FrameLayout>
