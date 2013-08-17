@@ -3,20 +3,13 @@ package hk.hku.cs.srli.factfinder.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.widget.Button;
 
-import hk.hku.cs.srli.widget.Tooltip;
-import hk.hku.cs.srli.widget.util.HoverHandler;
-import hk.hku.cs.srli.widget.util.TooltipManager;
-import hk.hku.cs.srli.widget.util.HoverHandler.OnLongHoverListener;
+import hk.hku.cs.srli.widget.HoverButton;
 
-public class PriceButton extends Button 
-        implements OnLongClickListener, OnLongHoverListener {
+public class PriceButton extends HoverButton {
 
-    private HoverHandler hover;
-    private boolean touched;
+    private boolean touched = false;
+    private int pendingVisibility = VISIBLE;
     
     public PriceButton(Context context) {
         super(context);
@@ -34,46 +27,28 @@ public class PriceButton extends Button
     }
 
     private void init() {
-        setOnLongClickListener(this);
-        hover = new HoverHandler(this);
-        hover.setOnLongHoverListener(this);
+        // nothing to do here
     }
     
     @Override
     public void setVisibility(int visibility) {
         // ignore if it's touched or hovered.
-        if (touched || isHovered()) return;
-        super.setVisibility(visibility);
-    }
-    
-    @Override
-    public boolean onLongClick(View v) {
-        if (getContentDescription() != null && getContentDescription().length() > 0) {
-            Tooltip tp = TooltipManager.showAndHide(PriceButton.this, getContentDescription(),
-                    getWidth() * 3/4, getHeight() * 3/4, TooltipManager.LONG_DELAY);
-            hover.attachTooltip(tp);
+        if (touched || isHovered()) {
+            pendingVisibility = visibility;
+        } else {
+            super.setVisibility(visibility);
         }
-        return true;
     }
     
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
         if (hovered) {
+            // change color
             setTextColor(getResources().getColor(android.R.color.primary_text_light));
         } else {
             setTextColor(getResources().getColor(android.R.color.primary_text_dark));
-            hover.dettachTooltip();
-            TooltipManager.hide(this);
         }
-    }
-    @Override
-    public boolean onLongHover(View v, int x, int y) {
-        if (getContentDescription() != null && getContentDescription().length() > 0) {
-            Tooltip tp = TooltipManager.show(PriceButton.this, getContentDescription(), x + 15, y + 15);
-            hover.attachTooltip(tp);
-        }
-        return true;
     }
     
     @Override
@@ -82,7 +57,7 @@ public class PriceButton extends Button
         if (action == MotionEvent.ACTION_UP
                 || action == MotionEvent.ACTION_CANCEL) {
             touched = false;
-            super.setVisibility(INVISIBLE);
+            setVisibility(pendingVisibility);
         } else {
             touched = true;
         }
@@ -91,7 +66,7 @@ public class PriceButton extends Button
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        hover.onHoverEvent(event);
+        super.onHoverEvent(event);
         // do not consume the event
         return false;
     }

@@ -21,13 +21,21 @@
             android:padding="10dp"
             android:text="Total: 0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <hk.hku.cs.srli.widget.HoverImageButton
-            android:id="@+id/buttonOrder"
-            android:layout_width="100dp"
+        
+        <View
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:src="@android:drawable/ic_menu_send"
-            android:contentDescription="Submit order"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:background="?android:attr/dividerVertical" />
+
+        <hk.hku.cs.srli.widget.HoverButton
+            android:id="@+id/buttonOrder"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:drawableRight="@android:drawable/ic_menu_send"
+            android:contentDescription="Tap to submit order"
             android:text="Submit order" />
 
     </LinearLayout>
@@ -68,7 +76,7 @@
 
     </LinearLayout>
 
-    <hk.hku.cs.srli.widget.HoverImageButton
+    <hk.hku.cs.srli.widget.HoverButton
         android:id="@+id/invisibleButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -76,8 +84,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/hoveritem_background_holo_light"
-        android:contentDescription="Tap to review your order"
-        android:src="@android:color/transparent" />
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="Tap to review your order" />
 
 </RelativeLayout>

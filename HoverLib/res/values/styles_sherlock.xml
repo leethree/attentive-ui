@@ -1,6 +1,7 @@
 <resources>
     
     <style name="HoverTheme.Sherlock.Light" parent="Theme.Sherlock.Light">
+        <item name="android:buttonStyle">@style/HoverButton</item>
         <item name="android:imageButtonStyle">@style/HoverImageButton</item>
         <item name="actionBarTabStyle">@style/HoverActionBarTabStyle</item>
         <item name="android:actionBarTabStyle">@style/HoverActionBarTabStyle</item>

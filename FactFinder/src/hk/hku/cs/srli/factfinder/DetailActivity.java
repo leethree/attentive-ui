@@ -20,7 +20,8 @@ import java.io.IOException;
 import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 import hk.hku.cs.srli.factfinder.ui.FFDialog;
 
-public class DetailActivity extends SherlockActivity implements DialogInterface.OnClickListener {
+public class DetailActivity extends SherlockActivity 
+        implements DialogInterface.OnClickListener, View.OnClickListener {
     
     private DataItem mFact;
     private FFDialog mDialog;
@@ -48,7 +49,8 @@ public class DetailActivity extends SherlockActivity implements DialogInterface.
         text.setText(mFact.content);
         
         TextView price = (TextView) findViewById(R.id.textPrice);
-        price.setText(DataSet.formatMoney(mFact.price));
+        price.setText("A la carte: " + DataSet.formatMoney(mFact.price));
+        price.setOnClickListener(this);
         
         final ImageButton image = (ImageButton) findViewById(R.id.image_view);
 
@@ -79,6 +81,15 @@ public class DetailActivity extends SherlockActivity implements DialogInterface.
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // enter low profile mode
+        getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,6 +117,12 @@ public class DetailActivity extends SherlockActivity implements DialogInterface.
     @Override
     public void onClick(DialogInterface dialog, int which) {
         addToOrder(mFact, mDialog.getNumber());
+        navigateBack();
+    }
+
+    @Override
+    public void onClick(View v) {
+        addToOrder(mFact, 1);
         navigateBack();
     }
     

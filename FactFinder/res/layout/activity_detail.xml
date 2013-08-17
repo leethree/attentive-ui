@@ -34,8 +34,9 @@
             android:id="@+id/textTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="Title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/primary_text_light" />
 
         <TextView
             android:id="@+id/content"
@@ -46,22 +47,25 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:text="@string/lorem_ipsum"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/secondary_text_light" />
         
         <View
 		    android:layout_width="match_parent"
 		    android:layout_height="1dp"
-		    android:background="@android:color/darker_gray"/>
+		    android:background="?android:attr/dividerVertical" />
 
-        <TextView
+        <hk.hku.cs.srli.widget.HoverButton
             android:id="@+id/textPrice"
-            android:layout_width="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/grid_gutter"
-            android:gravity="right"
-            android:text="Large Text"
-            android:textColor="@android:color/secondary_text_light"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_gravity="right"
+            android:contentDescription="Tap to add"
+            android:padding="@dimen/grid_gutter"
+            android:text="Price"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/tertiary_text_light" />
 
     </LinearLayout>
 

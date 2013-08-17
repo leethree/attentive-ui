@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +27,7 @@ public class OrderFragment extends Fragment {
     private boolean mCollapsed = true;
     private FFSlidingPaneLayout mSlidingPane;
     private ListView mListView;
-    private ImageButton mInvisibleButton;
+    private Button mInvisibleButton;
     private Order mOrder;
     private OrderAdapter mAdapter;
     
@@ -47,7 +47,7 @@ public class OrderFragment extends Fragment {
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(getView().findViewById(R.id.textEmpty));
         
-        mInvisibleButton = (ImageButton) getView().findViewById(R.id.invisibleButton);
+        mInvisibleButton = (Button) getView().findViewById(R.id.invisibleButton);
         mInvisibleButton.setOnClickListener(new View.OnClickListener() {
             
             @Override
@@ -110,7 +110,7 @@ public class OrderFragment extends Fragment {
             } 
         });
         
-        ImageButton submitButton = (ImageButton) getView().findViewById(R.id.buttonOrder);
+        Button submitButton = (Button) getView().findViewById(R.id.buttonOrder);
         submitButton.setOnClickListener(new View.OnClickListener() {
             
             @Override

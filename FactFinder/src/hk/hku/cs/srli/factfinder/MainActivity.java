@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -74,6 +75,15 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // enter low profile mode
+        getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
