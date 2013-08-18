@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
+import hk.hku.cs.srli.widget.HoverFrame;
+import hk.hku.cs.srli.widget.util.EdgeEffectHelper;
 
 import java.util.Locale;
 
@@ -33,6 +37,11 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    
+    private HoverFrame mWrapper;
+    private HoverFrame mRightFrame;
+    private SlidingPaneLayout mSlidingPane;
+    private OrderFragment mOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,12 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
+        mWrapper = (HoverFrame) findViewById(R.id.wrapper);
+        mWrapper.setEnabled(false);
+        mRightFrame = (HoverFrame) findViewById(R.id.right_pane);
+        mSlidingPane = (SlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
+        mOrder = (OrderFragment) getFragmentManager().findFragmentById(R.id.left_pane);
+        
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
@@ -59,6 +74,38 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             @Override
             public void onPageSelected(int position) {
                 actionBar.setSelectedNavigationItem(position);
+            }
+            
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (mSlidingPane.isOpen()) return;
+                if (positionOffset > 0) {
+                    // in middle of scrolling
+                    updateHoverEdgeColor(true, true);
+                } else updateHoverEdge();
+            }
+        });
+        
+        mSlidingPane.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
+            @Override
+            public void onPanelClosed(View panel) {
+                updateHoverEdge();
+                mWrapper.setEnabled(false);
+                // XXX workaround for setting multiple listener
+                mOrder.onPanelClosed(panel);
+            }
+            
+            @Override
+            public void onPanelOpened(View panel) {
+                mWrapper.setEnabled(true);
+                // user can only slide from right
+                updateHoverEdgeColor(false, true);
+                mOrder.onPanelOpened(panel);
+            }
+
+            @Override
+            public void onPanelSlide(View arg0, float arg1) {
+                mOrder.onPanelSlide(arg0, arg1);
             }
         });
 
@@ -104,6 +151,35 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+    
+    private void updateHoverEdge() {
+        int nPages = mSectionsPagerAdapter.getCount();
+        if (nPages <= 0) return;
+        // only one page
+        if (nPages == 1) {
+            updateHoverEdgeColor(false, false);
+        } else if (mViewPager.getCurrentItem() == 0) {
+            // leftmost page
+            updateHoverEdgeColor(false, true);
+        } else if (mViewPager.getCurrentItem() == nPages - 1) {
+            // rightmost page
+            updateHoverEdgeColor(true, false);
+        } else {
+            updateHoverEdgeColor(true, true);
+        }
+    }
+    
+    private void updateHoverEdgeColor(boolean leftScrollable, boolean rightScrollable) {
+        if (!leftScrollable && !rightScrollable) {
+            // not scrollable at all
+            mRightFrame.setEdgeGlow(false, false, false, false);
+        }
+        int leftColor = leftScrollable ? 
+                EdgeEffectHelper.SCROLL_COLOR : EdgeEffectHelper.OVERSCROLL_COLOR;
+        int rightColor = rightScrollable ? 
+                EdgeEffectHelper.SCROLL_COLOR : EdgeEffectHelper.OVERSCROLL_COLOR;
+        mRightFrame.setEdgeGlowColorRes(leftColor, 0, rightColor, 0);
     }
     
     @Override

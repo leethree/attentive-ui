@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     app:leftEdgeGlow="true"
     app:rightEdgeGlow="true"
-    app:leftEdgeColor="@android:color/holo_orange_dark"
-    app:rightEdgeColor="@android:color/holo_orange_dark" >
+    app:leftEdgeColor="@color/removable_edge"
+    app:rightEdgeColor="@color/removable_edge" >
     
 	<LinearLayout
 	    android:layout_width="match_parent"

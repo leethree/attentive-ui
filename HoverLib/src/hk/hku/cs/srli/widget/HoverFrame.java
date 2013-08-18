@@ -40,6 +40,14 @@ public class HoverFrame extends FrameLayout {
         setWillNotDraw(false);
     }
     
+    public void setEdgeGlow(boolean left, boolean top, boolean right, boolean bottom) {
+        edge.setEdgeGlow(left, top, right, bottom);
+    }
+    
+    public void setEdgeGlowColorRes(int left, int top, int right, int bottom) {
+        edge.setEdgeGlowColorRes(left, top, right, bottom);
+    }
+    
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
@@ -47,16 +55,16 @@ public class HoverFrame extends FrameLayout {
     }
     
     @Override
-    public boolean onHoverEvent(MotionEvent event) {
+    public boolean onInterceptHoverEvent(MotionEvent event) {
         hover.onHoverEvent(event);
-        // do not consume the event
-        return super.onHoverEvent(event);
+        return super.onInterceptHoverEvent(event);
     }
    
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        edge.draw(canvas);
+        if (isEnabled())
+            edge.draw(canvas);
     }
 
 }

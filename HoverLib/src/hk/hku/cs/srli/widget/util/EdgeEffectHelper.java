@@ -11,8 +11,8 @@ import hk.hku.cs.srli.widget.util.HoverHandler.OnHoverMoveListener;
 public class EdgeEffectHelper implements OnHoverMoveListener {
     
     public static final int DEFAULT_COLOR = 0;
-    public static final int SCROLL_COLOR = android.R.color.holo_blue_dark;
-    public static final int OVERSCROLL_COLOR = R.color.overscroll_gray;
+    public static final int SCROLL_COLOR = R.color.scrollable_edge;
+    public static final int OVERSCROLL_COLOR = R.color.overscroll_edge;
     
     private View view;
     

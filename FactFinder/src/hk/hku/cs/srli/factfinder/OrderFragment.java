@@ -22,7 +22,7 @@ import java.util.List;
 import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 import hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout;
 
-public class OrderFragment extends Fragment {
+public class OrderFragment extends Fragment implements SlidingPaneLayout.PanelSlideListener{
 
     private boolean mCollapsed = true;
     private FFSlidingPaneLayout mSlidingPane;
@@ -57,29 +57,8 @@ public class OrderFragment extends Fragment {
         });
         
         mSlidingPane = (FFSlidingPaneLayout) getActivity().findViewById(R.id.slidingPaneLayout);
-        mSlidingPane.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
-            
-            @Override
-            public void onPanelSlide(View arg0, float arg1) {
-                mCollapsed = true;
-                mInvisibleButton.setVisibility(View.VISIBLE);
-                mSlidingPane.setTouchOnChildren(true);
-            }
-            
-            @Override
-            public void onPanelOpened(View arg0) {
-                mCollapsed = false;
-                mInvisibleButton.setVisibility(View.INVISIBLE);
-                mSlidingPane.setTouchOnChildren(false);
-            }
-            
-            @Override
-            public void onPanelClosed(View arg0) {
-                mCollapsed = true;
-                mInvisibleButton.setVisibility(View.VISIBLE);
-                mSlidingPane.setTouchOnChildren(true);
-            }
-        });
+        // call this from parent activity instead
+        // mSlidingPane.setPanelSlideListener(this);
         
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
@@ -121,6 +100,25 @@ public class OrderFragment extends Fragment {
         });
         
         refreshOrder();
+    }
+    
+    @Override
+    public void onPanelSlide(View arg0, float arg1) {
+        onPanelClosed(arg0);
+    }
+    
+    @Override
+    public void onPanelOpened(View arg0) {
+        mCollapsed = false;
+        mInvisibleButton.setVisibility(View.INVISIBLE);
+        mSlidingPane.setTouchOnChildren(false);
+    }
+    
+    @Override
+    public void onPanelClosed(View arg0) {
+        mCollapsed = true;
+        mInvisibleButton.setVisibility(View.VISIBLE);
+        mSlidingPane.setTouchOnChildren(true);
     }
 
     private void refreshOrder() {
