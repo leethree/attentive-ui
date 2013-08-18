@@ -89,12 +89,12 @@ public class SectionFragment extends Fragment {
                 // Image loading failed, use placeholder instead.
                 imageView.setImageResource(R.drawable.placeholder);
             }
-            imageView.setOnClickListener(new ItemClickListener(position) {
+            imageView.setOnClickListener(new ItemClickListenerAdapter(position) {
     
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v, int position) {
                     Intent i = new Intent(mContext, DetailActivity.class);
-                    i.putExtra("id", (int) getItemId(mPosition)).putExtra("section", mSection);
+                    i.putExtra("id", (int) getItemId(position)).putExtra("section", mSection);
                     // launch detailed view
                     mContext.startActivity(i);
                 }
@@ -105,11 +105,11 @@ public class SectionFragment extends Fragment {
             
             Button price = (Button) convertView.findViewById(R.id.item_text_price);
             price.setText(DataSet.formatMoney(getItem(position).price));
-            price.setOnClickListener(new ItemClickListener(position) {
+            price.setOnClickListener(new ItemClickListenerAdapter(position) {
                 
                 @Override
-                public void onClick(View v) {
-                    FFApp.getOrder(mContext).add(getItem(mPosition));
+                public void onClick(View v, int position) {
+                    FFApp.getOrder(mContext).add(getItem(position));
                     Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -117,16 +117,20 @@ public class SectionFragment extends Fragment {
             return convertView;
         }
         
-        // helper class for handling item clicks
-        private abstract class ItemClickListener implements View.OnClickListener {
-            protected int mPosition;
+        // adapter for handling item clicks
+        private abstract class ItemClickListenerAdapter implements View.OnClickListener {
+            private int mPosition;
             
-            public ItemClickListener(int position) {
+            public ItemClickListenerAdapter(int position) {
                 this.mPosition = position;
             }
             
+            public abstract void onClick(View v, int position);
+            
             @Override
-            public abstract void onClick(View v);
+            public final void onClick(View v) {
+                onClick(v, mPosition);
+            }
         }
     }
 }

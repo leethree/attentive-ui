@@ -12,7 +12,7 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
     
     public static final int DEFAULT_COLOR = 0;
     public static final int SCROLL_COLOR = android.R.color.holo_blue_dark;
-    public static final int OVERSCROLL_COLOR = android.R.color.darker_gray;
+    public static final int OVERSCROLL_COLOR = R.color.overscroll_gray;
     
     private View view;
     
