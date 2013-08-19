@@ -35,8 +35,8 @@
             android:layout_width="200dp"
             android:layout_height="match_parent"
             android:drawableRight="@android:drawable/ic_menu_send"
-            android:contentDescription="Tap to submit order"
-            android:text="Submit order" />
+            android:contentDescription="Tap to confirm order"
+            android:text="Confirm order" />
 
     </LinearLayout>
     
@@ -56,14 +56,11 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
 
-        <ListView
+        <hk.hku.cs.srli.widget.HoverListView
             android:id="@+id/orderListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:listitem="@android:layout/simple_list_item_2" >
-
-        </ListView>
+            tools:listitem="@layout/order_item" />
 
         <TextView
             android:id="@+id/textEmpty"
