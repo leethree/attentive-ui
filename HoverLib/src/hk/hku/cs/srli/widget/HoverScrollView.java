@@ -78,7 +78,12 @@ public class HoverScrollView extends ScrollView {
     }
     
     private void updateScrollState() {
-        // find the last child
+        if (getChildCount() <= 0) {
+            changeState(ScrollState.NOT_SCROLLABLE);
+            return;
+        }
+        
+        // find the last child (should be the only child)
         float childHeight = getChildAt(getChildCount() - 1).getMeasuredHeight();
         if (getScrollY() <= 0) {
             if(childHeight <=  getHeight())
@@ -96,17 +101,19 @@ public class HoverScrollView extends ScrollView {
     private void changeState(ScrollState newState) {
         if (newState == state) return;
         state = newState;
-        if (state == ScrollState.NOT_SCROLLABLE) {
-            // disable edge effects
-            edge.setEdgeGlow(false, false, false, false);
-        } else {
-            // enable top and bottom edge effects
-            edge.setEdgeGlow(false, true, false, true);
-            int topColor = state == ScrollState.TOP ? 
-                    EdgeEffectHelper.OVERSCROLL_COLOR : EdgeEffectHelper.SCROLL_COLOR;
-            int bottomColor = state == ScrollState.BOTTOM ? 
-                    EdgeEffectHelper.OVERSCROLL_COLOR : EdgeEffectHelper.SCROLL_COLOR;
-            edge.setEdgeGlowColorRes(0, topColor, 0, bottomColor);
+        switch(state) {
+            case NOT_SCROLLABLE:
+                edge.setVerticalScrollable(false, false);
+                return;
+            case TOP:
+                edge.setVerticalScrollable(false, true);
+                return;
+            case BOTTOM:
+                edge.setVerticalScrollable(true, false);
+                return;
+            case MIDDLE:
+                edge.setVerticalScrollable(true, true);
+                return;
         }
     }
 }

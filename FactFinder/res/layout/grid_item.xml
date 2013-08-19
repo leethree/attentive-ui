@@ -7,7 +7,7 @@
         android:id="@+id/item_image_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_column_width"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:cropToPadding="true"
         android:padding="@dimen/grid_gutter"
         android:scaleType="centerCrop"

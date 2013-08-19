@@ -152,15 +152,50 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
     }
     
     public void setEdgeGlowColorRes(int left, int top, int right, int bottom) {
-        if (left != 0) leftEdgeColor = view.getResources().getColor(left);
+        if (left != 0) leftEdgeColor = getColor(left);
         else leftEdgeColor = 0;
-        if (right != 0) rightEdgeColor = view.getResources().getColor(right);
+        if (right != 0) rightEdgeColor = getColor(right);
         else rightEdgeColor = 0;
-        if (top != 0) topEdgeColor = view.getResources().getColor(top);
+        if (top != 0) topEdgeColor = getColor(top);
         else topEdgeColor = 0;
-        if (bottom != 0) bottomEdgeColor = view.getResources().getColor(bottom);
+        if (bottom != 0) bottomEdgeColor = getColor(bottom);
         else bottomEdgeColor = 0;
         updateColors();
+    }
+    
+    public void setHorizontalScrollable(boolean leftScrollable, boolean rightScrollable) {
+        if (!leftScrollable && !rightScrollable) {
+            // not scrollable at all
+            leftEdgeGlow = false;
+            rightEdgeGlow = false;
+            leftEdge.finish();
+            rightEdge.finish();
+        } else {
+            leftEdgeGlow = true;
+            rightEdgeGlow = true;
+            leftEdgeColor = getColor(leftScrollable ? 
+                    EdgeEffectHelper.SCROLL_COLOR : EdgeEffectHelper.OVERSCROLL_COLOR);
+            rightEdgeColor = getColor(rightScrollable ? 
+                    EdgeEffectHelper.SCROLL_COLOR : EdgeEffectHelper.OVERSCROLL_COLOR);
+            updateColors();
+        }
+    }
+    
+    public void setVerticalScrollable(boolean topScrollable, boolean bottomScrollable) {
+        if (!topScrollable && !bottomScrollable) {
+            topEdgeGlow = false;
+            bottomEdgeGlow = false;
+            topEdge.finish();
+            bottomEdge.finish();
+        } else {
+            topEdgeGlow = true;
+            bottomEdgeGlow = true;
+            topEdgeColor = getColor(topScrollable ? 
+                    EdgeEffectHelper.SCROLL_COLOR : EdgeEffectHelper.OVERSCROLL_COLOR);
+            bottomEdgeColor = getColor(bottomScrollable ? 
+                    EdgeEffectHelper.SCROLL_COLOR : EdgeEffectHelper.OVERSCROLL_COLOR);
+            updateColors();
+        }
     }
 
     private boolean areEdgeEffectsFinished() {
@@ -177,5 +212,9 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
         else topEdge.clearColor();
         if (bottomEdgeColor != 0) bottomEdge.setColor(bottomEdgeColor);
         else bottomEdge.clearColor();
+    }
+    
+    private int getColor(int res) {
+        return view.getResources().getColor(res);
     }
 }

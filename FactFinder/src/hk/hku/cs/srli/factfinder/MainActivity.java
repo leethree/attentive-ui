@@ -18,7 +18,6 @@ import com.actionbarsherlock.view.MenuItem;
 
 import hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout;
 import hk.hku.cs.srli.widget.HoverFrame;
-import hk.hku.cs.srli.widget.util.EdgeEffectHelper;
 
 import java.util.Locale;
 
@@ -82,7 +81,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
                 if (mSlidingPane.isOpen()) return;
                 if (positionOffset > 0) {
                     // in middle of scrolling
-                    updateHoverEdgeColor(true, true);
+                    updateHoverEdge(true, true);
                 } else updateHoverEdge();
             }
         });
@@ -107,7 +106,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             public void onPanelOpened(View panel) {
                 mWrapper.setEnabled(true);
                 // user can only slide from right
-                updateHoverEdgeColor(false, true);
+                updateHoverEdge(false, true);
                 mSlidingPane.setTouchOnChildren(false);
                 mOrder.setCollapsed(false);
             }
@@ -162,28 +161,20 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         if (nPages <= 0) return;
         // only one page
         if (nPages == 1) {
-            updateHoverEdgeColor(false, false);
+            updateHoverEdge(false, false);
         } else if (mViewPager.getCurrentItem() == 0) {
             // leftmost page
-            updateHoverEdgeColor(false, true);
+            updateHoverEdge(false, true);
         } else if (mViewPager.getCurrentItem() == nPages - 1) {
             // rightmost page
-            updateHoverEdgeColor(true, false);
+            updateHoverEdge(true, false);
         } else {
-            updateHoverEdgeColor(true, true);
+            updateHoverEdge(true, true);
         }
     }
     
-    private void updateHoverEdgeColor(boolean leftScrollable, boolean rightScrollable) {
-        if (!leftScrollable && !rightScrollable) {
-            // not scrollable at all
-            mRightFrame.setEdgeGlow(false, false, false, false);
-        }
-        int leftColor = leftScrollable ? 
-                EdgeEffectHelper.SCROLL_COLOR : EdgeEffectHelper.OVERSCROLL_COLOR;
-        int rightColor = rightScrollable ? 
-                EdgeEffectHelper.SCROLL_COLOR : EdgeEffectHelper.OVERSCROLL_COLOR;
-        mRightFrame.setEdgeGlowColorRes(leftColor, 0, rightColor, 0);
+    private void updateHoverEdge(boolean leftScrollable, boolean rightScrollable) {
+        mRightFrame.setHorizontalScrollable(leftScrollable, rightScrollable);
     }
     
     @Override

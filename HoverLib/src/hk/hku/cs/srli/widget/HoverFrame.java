@@ -40,12 +40,12 @@ public class HoverFrame extends FrameLayout {
         setWillNotDraw(false);
     }
     
-    public void setEdgeGlow(boolean left, boolean top, boolean right, boolean bottom) {
-        edge.setEdgeGlow(left, top, right, bottom);
+    public void setHorizontalScrollable(boolean leftScrollable, boolean rightScrollable) {
+        edge.setHorizontalScrollable(leftScrollable, rightScrollable);
     }
     
-    public void setEdgeGlowColorRes(int left, int top, int right, int bottom) {
-        edge.setEdgeGlowColorRes(left, top, right, bottom);
+    public void setVerticalScrollable(boolean topScrollable, boolean bottomScrollable) {
+        edge.setVerticalScrollable(topScrollable, bottomScrollable);
     }
     
     @Override
