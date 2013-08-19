@@ -59,6 +59,12 @@ public class HoverFrame extends FrameLayout {
         hover.onHoverEvent(event);
         return super.onInterceptHoverEvent(event);
     }
+    
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        // already handled above
+        return false;
+    }
    
     @Override
     public void draw(Canvas canvas) {

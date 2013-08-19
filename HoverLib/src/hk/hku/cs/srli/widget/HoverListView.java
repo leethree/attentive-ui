@@ -51,7 +51,6 @@ public class HoverListView extends ListView {
         edge.onHoverChanged(hovered);
     }
     
-    
     @Override
     public boolean onInterceptHoverEvent(MotionEvent event) {
         // get all hover events from here 
@@ -59,7 +58,13 @@ public class HoverListView extends ListView {
         // don't interference with children
         return false;
     }
-
+    
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        // already handled above
+        return false;
+    }
+    
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);

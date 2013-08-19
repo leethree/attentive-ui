@@ -58,6 +58,12 @@ public class HoverGridView extends GridView {
         // don't interference with children
         return false;
     }
+    
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        // already handled above
+        return false;
+    }
 
     @Override
     public void draw(Canvas canvas) {

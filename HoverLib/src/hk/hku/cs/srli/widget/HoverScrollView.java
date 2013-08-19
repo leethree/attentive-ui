@@ -50,10 +50,17 @@ public class HoverScrollView extends ScrollView {
     }
     
     @Override
-    public boolean onHoverEvent(MotionEvent event) {
+    public boolean onInterceptHoverEvent(MotionEvent event) {
+        // get all hover events from here 
         hover.onHoverEvent(event);
-        // do not consume the event
-        return super.onHoverEvent(event);
+        // don't interference with children
+        return false;
+    }
+    
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        // already handled above
+        return false;
     }
 
     @Override

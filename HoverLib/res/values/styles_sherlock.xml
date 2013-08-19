@@ -3,9 +3,12 @@
     <style name="HoverTheme.Sherlock.Light" parent="Theme.Sherlock.Light">
         <item name="android:buttonStyle">@style/HoverButton</item>
         <item name="android:imageButtonStyle">@style/HoverImageButton</item>
+        
         <item name="actionBarTabStyle">@style/HoverActionBarTabStyle</item>
         <item name="android:actionBarTabStyle">@style/HoverActionBarTabStyle</item>
+        
         <item name="android:overScrollMode">never</item>
+        <item name="hoverEnabled">true</item>
         
         <!-- all selectable items -->
         <item name="selectableItemBackground">@drawable/hoveritem_background_holo_light</item>

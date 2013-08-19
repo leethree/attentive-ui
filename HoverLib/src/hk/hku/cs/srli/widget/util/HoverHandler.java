@@ -1,9 +1,12 @@
 package hk.hku.cs.srli.widget.util;
 
+import android.content.Context;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import hk.hku.cs.srli.widget.R;
 import hk.hku.cs.srli.widget.Tooltip;
 
 public class HoverHandler {
@@ -25,11 +28,26 @@ public class HoverHandler {
     private boolean hasPerformedLongHover = false;
     private CheckForLongHover pendingCheckForLongHover = new CheckForLongHover();
     
+    private boolean enabled;
+    
     public HoverHandler(View view) {
         this.view = view;
+        enabled = isHoverEnabled(view.getContext());
+    }
+    
+    public static boolean isHoverEnabled(Context context) {
+        TypedValue a = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.hoverEnabled, a, true);
+        if (a.type == TypedValue.TYPE_INT_BOOLEAN) {
+            return a.data != 0;
+        } else {
+            return false;
+        }
     }
     
     public boolean onHoverEvent(MotionEvent event) {
+        // do nothing if disabled
+        if (!enabled) return false;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
                 viewEntered = true;
@@ -66,6 +84,7 @@ public class HoverHandler {
     }
     
     public boolean onTooltipHoverEvent(MotionEvent event) {
+        if (!enabled) return false;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
                 tooltipEntered = true;
