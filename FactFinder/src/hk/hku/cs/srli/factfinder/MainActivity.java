@@ -54,7 +54,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
         // a cosmetic hack to adjust ActionBar tab position  
         View view = findViewById(R.id.abs__action_bar_title);
-        view.setPaddingRelative(0, 0, 57, 0);
+        view.setPaddingRelative(0, 0, 55, 0);
 
         mWrapper = (HoverFrame) findViewById(R.id.wrapper);
         mWrapper.setEnabled(false);

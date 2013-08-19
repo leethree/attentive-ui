@@ -116,10 +116,17 @@ public class OrderFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
+            // name
             TextView text1 = (TextView) view.findViewById(R.id.textViewLeft);
             text1.setText(getItem(position).name);
+            
+            // price
             TextView text2 = (TextView) view.findViewById(R.id.textViewRight);
             text2.setText(DataSet.formatMoney(getItem(position).price));
+            
+            // category name
+            TextView text3 = (TextView) view.findViewById(R.id.textViewSmall);
+            text3.setText(FFApp.getData(getContext()).getCategoryFromItem(getItem(position)).getName());
             return view;
         }
     }

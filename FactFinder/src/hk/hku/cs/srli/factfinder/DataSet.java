@@ -77,6 +77,10 @@ public class DataSet {
         return mCatMap.valueAt(index);
     }
     
+    public Category getCategoryFromItem(DataItem item) {
+        return mCatMap.get(item.category);
+    }
+    
     public DataItem getItem(int index, int id) {
         return getCategoryAt(index).items.get(id);
     }
