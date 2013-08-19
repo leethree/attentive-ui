@@ -341,8 +341,8 @@ public class EdgeEffect {
         
         mEdgeAlphaFinish = PULL_EDGE_BEGIN;
         mEdgeScaleYFinish = HELD_EDGE_SCALE_Y;
-        mGlowAlphaFinish = PULL_GLOW_BEGIN;
-        mGlowScaleYFinish = 1.f;
+        mGlowAlphaFinish = 0.6f;
+        mGlowScaleYFinish = 2.f;
     }
     
     public void onDrift(float distance) {
