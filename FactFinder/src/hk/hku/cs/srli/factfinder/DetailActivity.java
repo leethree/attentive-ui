@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -46,11 +47,17 @@ public class DetailActivity extends SherlockActivity
         title.setText(mFact.title);
         
         TextView text = (TextView) findViewById(R.id.content);
-        text.setText(mFact.content);
+        // replace line breaks
+        String content = mFact.content
+                .replace("\n\n", "<br><br>").replace("\n", "<br><br>");
+        text.setText(Html.fromHtml(content));
         
         TextView price = (TextView) findViewById(R.id.textPrice);
         price.setText("A la carte: " + DataSet.formatMoney(mFact.price));
         price.setOnClickListener(this);
+        
+        TextView status = (TextView) findViewById(R.id.textStatus);
+        status.setText("" + mFact.nlikes + " people liked this.");
         
         final ImageButton image = (ImageButton) findViewById(R.id.image_view);
 
