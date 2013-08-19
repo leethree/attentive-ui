@@ -188,7 +188,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
                     .setTitle(R.string.dialog_info_title).create();
             dialog.show();
             return true;
-        } else if (item.getItemId() == R.id.action_view_order) {
+        } else if (item.getItemId() == R.id.action_setting) {
             // XXX
             return true;
         }
