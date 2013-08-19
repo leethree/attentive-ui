@@ -285,8 +285,9 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 
                 if (mSwiping) {
                     mDownView.setTranslationX(deltaX);
-                    mDownView.setAlpha(Math.max(0f, Math.min(1f,
-                            1f - 2f * Math.abs(deltaX) / mViewWidth)));
+                    // Don't fade.
+//                    mDownView.setAlpha(Math.max(0f, Math.min(1f,
+//                            1f - 2f * Math.abs(deltaX) / mViewWidth)));
                     return true;
                 }
                 break;
@@ -316,10 +317,11 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
         // all dismissed list item animations have completed. This triggers layout on each animation
         // frame; in the future we may want to do something smarter and more performant.
 
-        final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
+        // XXX: hack here to prevent animating.
+        //final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
         final int originalHeight = dismissView.getHeight();
 
-        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(mAnimationTime);
+        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(0);//mAnimationTime);
 
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -351,13 +353,13 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
             }
         });
 
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                lp.height = (Integer) valueAnimator.getAnimatedValue();
-                dismissView.setLayoutParams(lp);
-            }
-        });
+//        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                lp.height = (Integer) valueAnimator.getAnimatedValue();
+//                dismissView.setLayoutParams(lp);
+//            }
+//        });
 
         mPendingDismisses.add(new PendingDismissData(dismissPosition, dismissView));
         animator.start();

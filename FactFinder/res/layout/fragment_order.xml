@@ -60,6 +60,9 @@
             android:id="@+id/orderListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/holo_orange_light"
+            android:divider="#ddd"
+            android:dividerHeight="2dp"
             tools:listitem="@layout/order_item" />
 
         <TextView
