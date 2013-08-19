@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">FactFinder</string>
+    <string name="app_name">FoodFinder</string>
     <string name="action_open">Open Wikipedia page</string>
     <string name="action_open_short">Open</string>
     <string name="action_share">Share to social networks</string>
     <string name="action_share_short">Share</string>
     <string name="action_info">Info</string>
-    <string name="dialog_info_message">This application uses material from the Wikipedia articles and images, which are released under the Creative Commons Attribution-Share-Alike License 3.0.</string>
+    <string name="dialog_info_message">This application uses material from the Wikipedia, Starbucks, and The Cheesecake Factory. All brand names, product names, description, images, or trademarks belong to their respective holders.</string>
     <string name="dialog_info_title">Info</string>
     <string name="hint_fullscreen">Tap to fullscreen</string>
     <string name="hint_fullscreen_exit">Tap to exit fullscreen</string>

@@ -36,6 +36,8 @@ public class DemoListActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_list);
+        
+        getActionBar().setSubtitle("Powered by Monkey");
 
         if (findViewById(R.id.single_demo_container) != null) {
             // The detail container view will be present only in the
