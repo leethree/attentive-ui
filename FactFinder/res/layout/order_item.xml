@@ -25,19 +25,20 @@
 		    android:orientation="vertical" >
 
 			<TextView
+			    android:id="@+id/textViewSmall"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="category"
+			    android:textColor="@android:color/tertiary_text_light"
+			    android:textStyle="normal"
+			    android:textAppearance="?android:attr/listSeparatorTextViewStyle" />
+			
+			<TextView
 			    android:id="@+id/textViewLeft"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
 			    android:text="Item name"
 			    android:textAppearance="?android:attr/textAppearanceListItem" />
-
-			<TextView
-			    android:id="@+id/textViewSmall"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:text="Item category"
-			    android:textColor="@android:color/tertiary_text_light"
-			    android:textAppearance="?android:attr/textAppearanceSearchResultSubtitle" />
 
 		</LinearLayout>
 	

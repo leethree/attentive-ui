@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.apps.dashclock.ui.SwipeDismissListViewTouchListener;
+import com.example.android.swipedismiss.SwipeDismissListViewTouchListener;
 
 import java.util.List;
 

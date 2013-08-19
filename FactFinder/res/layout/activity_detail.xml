@@ -57,17 +57,31 @@
 		    android:layout_height="1dp"
 		    android:background="?android:attr/dividerVertical" />
 
-        <hk.hku.cs.srli.widget.HoverButton
-            android:id="@+id/textPrice"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:contentDescription="Tap to add"
-            android:padding="@dimen/grid_gutter"
-            android:text="Price"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/tertiary_text_light" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            
+            <TextView
+                android:id="@+id/textStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Like"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/tertiary_text_light" />
+
+            <hk.hku.cs.srli.widget.HoverButton
+                android:id="@+id/textPrice"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Tap to add"
+                android:padding="@dimen/grid_gutter"
+                android:text="Price"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/tertiary_text_light" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

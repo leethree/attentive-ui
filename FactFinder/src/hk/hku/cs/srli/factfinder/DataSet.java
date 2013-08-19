@@ -10,6 +10,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Random;
 
 public class DataSet {
 
@@ -46,6 +47,7 @@ public class DataSet {
         public String name; // short name
         public String content;
         public int price; // in cents
+        public int nlikes;
     }
     
     public static String formatMoney(int price) {
@@ -54,9 +56,11 @@ public class DataSet {
     
     private static final DecimalFormat sDf = new DecimalFormat("#0.00");
     private final SparseArray<Category> mCatMap;
+    private final Random mRandom; 
         
     public DataSet(Context context, int dataSource) {
         mCatMap = new SparseArray<Category>();
+        mRandom = new Random(dataSource);
 
         XmlPullParser parser = context.getResources().getXml(dataSource);
         
@@ -103,6 +107,8 @@ public class DataSet {
              } else if(eventType == XmlPullParser.END_TAG) {
                  tag = parser.getName();
                  if (tag.equals("item")) {
+                     // assign a random number
+                     item.nlikes = mRandom.nextInt(80);
                      // add item to category.
                      mCatMap.get(item.category).items.append(item.id, item);
                      item = null;
