@@ -16,6 +16,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
+import hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout;
 import hk.hku.cs.srli.widget.HoverFrame;
 import hk.hku.cs.srli.widget.util.EdgeEffectHelper;
 
@@ -40,7 +41,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     
     private HoverFrame mWrapper;
     private HoverFrame mRightFrame;
-    private SlidingPaneLayout mSlidingPane;
+    private FFSlidingPaneLayout mSlidingPane;
     private OrderFragment mOrder;
 
     @Override
@@ -56,7 +57,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         mWrapper = (HoverFrame) findViewById(R.id.wrapper);
         mWrapper.setEnabled(false);
         mRightFrame = (HoverFrame) findViewById(R.id.right_pane);
-        mSlidingPane = (SlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
+        mSlidingPane = (FFSlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
         mOrder = (OrderFragment) getFragmentManager().findFragmentById(R.id.left_pane);
         
         // Create the adapter that will return a fragment for each of the three
@@ -86,13 +87,20 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             }
         });
         
-        mSlidingPane.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
+        mOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSlidingPane.openPane();
+            }
+        });
+        
+        mSlidingPane.setPanelSlideListener(new SlidingPaneLayout.SimplePanelSlideListener() {
             @Override
             public void onPanelClosed(View panel) {
-                updateHoverEdge();
                 mWrapper.setEnabled(false);
-                // XXX workaround for setting multiple listener
-                mOrder.onPanelClosed(panel);
+                updateHoverEdge();
+                mSlidingPane.setTouchOnChildren(true);
+                mOrder.setCollapsed(true);
             }
             
             @Override
@@ -100,12 +108,8 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
                 mWrapper.setEnabled(true);
                 // user can only slide from right
                 updateHoverEdgeColor(false, true);
-                mOrder.onPanelOpened(panel);
-            }
-
-            @Override
-            public void onPanelSlide(View arg0, float arg1) {
-                mOrder.onPanelSlide(arg0, arg1);
+                mSlidingPane.setTouchOnChildren(false);
+                mOrder.setCollapsed(false);
             }
         });
 
