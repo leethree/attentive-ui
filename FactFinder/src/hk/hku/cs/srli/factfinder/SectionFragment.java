@@ -82,9 +82,12 @@ public class SectionFragment extends Fragment {
             
             // find image from assets
             try {
-                imageView.setImageDrawable(
-                        Drawable.createFromResourceStream(mContext.getResources(), null, 
-                                mContext.getAssets().open(getItem(position).thumb), null));
+                String thumb = getItem(position).thumb;
+                if (thumb != null && thumb.length() > 0) {
+                    imageView.setImageDrawable(
+                            Drawable.createFromResourceStream(mContext.getResources(), null, 
+                                    mContext.getAssets().open(thumb), null));
+                } else imageView.setImageResource(R.drawable.placeholder);
             } catch (IOException e) {
                 // Image loading failed, use placeholder instead.
                 imageView.setImageResource(R.drawable.placeholder);

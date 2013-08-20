@@ -70,10 +70,12 @@ public class DetailActivity extends SherlockActivity
         final ImageButton image = (ImageButton) findViewById(R.id.image_view);
 
         try {
-            // Load image from assets
-            image.setImageDrawable(
-                    Drawable.createFromResourceStream(getResources(), null, 
-                            getAssets().open(mFact.thumb), null));
+            if (mFact.thumb != null && mFact.thumb.length() > 0) {
+                // Load image from assets
+                image.setImageDrawable(
+                        Drawable.createFromResourceStream(getResources(), null, 
+                                getAssets().open(mFact.thumb), null));
+            } else image.setImageResource(R.drawable.placeholder);
         } catch (IOException e) {
             // Image loading failed, use placeholder instead.
             image.setImageResource(R.drawable.placeholder);
