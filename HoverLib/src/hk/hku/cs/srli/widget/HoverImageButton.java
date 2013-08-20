@@ -44,7 +44,7 @@ public class HoverImageButton extends ImageButton
     public boolean onLongClick(View v) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
             Tooltip tp = TooltipManager.showAndHide(this, getContentDescription(),
-                    getWidth() * 3/4, getHeight() * 3/4, TooltipManager.LONG_DELAY);
+                    getWidth() * 3/4, getHeight() * 3/4, TooltipManager.SHORT_DELAY);
             hover.attachTooltip(tp);
         }
         return false;

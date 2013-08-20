@@ -30,18 +30,22 @@ public class HoverDiscloseLayout extends RelativeLayout {
 
     private void init() {
         hover = new HoverHandler(this);
+        if (!HoverHandler.isHoverEnabled(getContext())) {
+            // disable itself
+            setEnabled(false);
+        }
     }
     
     @Override
     protected void onFinishInflate() {
-        setAllChildrenVisibility(INVISIBLE);
+        if (isEnabled()) setAllChildrenVisibility(INVISIBLE);
         super.onFinishInflate();
     }
 
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
-        updateChildrenVisibility();
+        if (isEnabled()) updateChildrenVisibility();
     }
     
     @Override
@@ -54,7 +58,7 @@ public class HoverDiscloseLayout extends RelativeLayout {
     @Override
     protected boolean dispatchHoverEvent(MotionEvent event) {
         boolean ret = super.dispatchHoverEvent(event);
-        updateChildrenVisibility();
+        if (isEnabled()) updateChildrenVisibility();
         return ret;
     }
     

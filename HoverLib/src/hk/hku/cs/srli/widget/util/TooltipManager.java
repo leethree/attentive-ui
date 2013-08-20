@@ -115,11 +115,13 @@ public class TooltipManager {
     }
     
     private void hideTooltipLater(long delay) {
-        final Tooltip tooltip = this.tooltip;
+        final Tooltip tt = tooltip;
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                instance.doHide(tooltip);
+                instance.doHide(tt);
+                if (tt == tooltip)
+                    tooltip = null;
             }
         }, delay);
     }
@@ -162,8 +164,7 @@ public class TooltipManager {
     
     private void doHide(Tooltip tooltip) {
         if (tooltip != null &&
-                tooltip.getParent() != null && // Make sure it's attached before removing.
-                isValid(context)) { 
+                tooltip.getParent() != null){ // Make sure it's attached before removing.
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             wm.removeView(tooltip);
         }
