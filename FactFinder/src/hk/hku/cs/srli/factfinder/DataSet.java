@@ -45,6 +45,7 @@ public class DataSet {
         public String thumb;
         public String title; // full name
         public String name; // short name
+        public String type;
         public String content;
         public int price; // in cents
         public int nlikes;
@@ -142,6 +143,8 @@ public class DataSet {
                          item.thumb = text;
                      } else if (tag.equals("price")) {
                          item.price = (int) (Double.parseDouble(text) * 100);
+                     } else if (tag.equals("type")) {
+                         item.type = text;
                      }
                  }
              }

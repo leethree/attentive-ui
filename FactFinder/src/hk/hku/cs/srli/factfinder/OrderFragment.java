@@ -104,7 +104,11 @@ public class OrderFragment extends Fragment {
 
     private void refreshOrder() {
         TextView sum = (TextView) getView().findViewById(R.id.textOrderSum);
-        sum.setText("Total: " + DataSet.formatMoney(mOrder.getSum()));
+        if (mOrder.getSum() > 0) {
+            sum.setText("Total: " + DataSet.formatMoney(mOrder.getSum()));
+        } else {
+            sum.setText("");
+        }
     }
 
     public static class OrderAdapter extends ArrayAdapter<DataItem> {

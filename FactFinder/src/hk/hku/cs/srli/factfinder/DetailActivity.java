@@ -53,7 +53,10 @@ public class DetailActivity extends SherlockActivity
         text.setText(Html.fromHtml(content));
         
         TextView price = (TextView) findViewById(R.id.textPrice);
-        price.setText("A la carte: " + DataSet.formatMoney(mFact.price));
+        if (mFact.type != null && mFact.type.length() > 0)
+            price.setText(mFact.type + ": " + DataSet.formatMoney(mFact.price));
+        else
+            price.setText("A la carte: " + DataSet.formatMoney(mFact.price));
         price.setOnClickListener(this);
         
         TextView status = (TextView) findViewById(R.id.textStatus);
