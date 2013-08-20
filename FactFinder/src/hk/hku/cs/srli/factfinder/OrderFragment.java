@@ -1,6 +1,7 @@
 
 package hk.hku.cs.srli.factfinder;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -82,6 +83,8 @@ public class OrderFragment extends Fragment {
             public void onClick(View v) {
                 mOrder.submit();
                 Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
             }
         });
         

@@ -19,6 +19,10 @@ public class FFApp extends Application {
         mOrder = new Order(this);
     }
     
+    public void changeDataSet(int dataSource) {
+        this.mData = new DataSet(this, dataSource);
+    }
+    
     // Utility method to get a instance.
     public static FFApp getApp(Context context) {
         return (FFApp) context.getApplicationContext();
