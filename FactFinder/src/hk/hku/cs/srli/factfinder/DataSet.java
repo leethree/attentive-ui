@@ -51,7 +51,10 @@ public class DataSet {
     }
     
     public static String formatMoney(int price) {
-        return "$" + sDf.format(price * 0.01);
+        if (price != 0)
+            return "$" + sDf.format(price * 0.01);
+        else
+            return "free";
     }
     
     private static final DecimalFormat sDf = new DecimalFormat("#0.00");

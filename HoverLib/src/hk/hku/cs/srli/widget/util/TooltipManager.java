@@ -1,5 +1,6 @@
 package hk.hku.cs.srli.widget.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -32,8 +33,8 @@ public class TooltipManager {
     private static TooltipManager getInstance(Context context) {
         if (instance == null) {
             instance = new TooltipManager(context);
-        } else {
-            instance.context = context;
+        } else if (instance.context != context) {
+            instance.resetContext(context);
         }
         return instance;
     }
@@ -82,7 +83,14 @@ public class TooltipManager {
             hide(view);
         }
     }
-     
+    
+    private void resetContext(Context context) {
+        // context changed
+        hideTooltipNow();
+        handler.removeCallbacksAndMessages(null);
+        this.context = context;
+    }
+    
     private Tooltip showTooltipNow(View view, CharSequence text, int xoffset, int yoffset) {
         final Tooltip tooltip = makeTooltip(text);
         doShow(tooltip, makeParams(view, xoffset, yoffset));
@@ -116,13 +124,22 @@ public class TooltipManager {
         }, delay);
     }
     
+    private static boolean isValid(Context context) {
+        if (context != null && context instanceof Activity) {
+            Activity act = (Activity) context;
+            return !act.isFinishing();
+        } else {
+            return false;
+        }
+    }
+    
     private Tooltip makeTooltip(CharSequence text) {
         Tooltip tooltip = (Tooltip) LayoutInflater.from(context).inflate(R.layout.tooltip, null);
         tooltip.setText(text);
         return tooltip;
     }
     
-    private WindowManager.LayoutParams makeParams(View view, int xoffset, int yoffset) {
+    private static WindowManager.LayoutParams makeParams(View view, int xoffset, int yoffset) {
         final int[] screenPos = new int[2];
         final Rect displayFrame = new Rect();
         view.getLocationOnScreen(screenPos);
@@ -136,29 +153,19 @@ public class TooltipManager {
     }
     
     private void doShow(Tooltip tooltip, WindowManager.LayoutParams params) {
+        if (!isValid(context)) return; // skip if context if not valid
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        // XXX: WindowManager.BadTokenException may be thrown here
         wm.addView(tooltip, params); // Show new tooltip first.
         doHide(this.tooltip); // Then hide existing tooltip if any.
         this.tooltip = tooltip;
     }
     
     private void doHide(Tooltip tooltip) {
-        if (tooltip != null) {
-            // TODO: remove this when HoverHandler correctly handles tooltip events.
-            if (tooltip.isHovered()) { // The tooltip is currently in focus.
-                final Tooltip tooltipToHide = tooltip;
-                // Try to hide it later.
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        instance.doHide(tooltipToHide);
-                    }
-                }, 1000);
-            } else if (tooltip.getParent() != null) { // Make sure it's attached before removing.
-                WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-                wm.removeView(tooltip);
-            }
+        if (tooltip != null &&
+                tooltip.getParent() != null && // Make sure it's attached before removing.
+                isValid(context)) { 
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            wm.removeView(tooltip);
         }
     }
 }

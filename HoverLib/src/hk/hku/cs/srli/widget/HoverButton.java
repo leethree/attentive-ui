@@ -52,6 +52,13 @@ public class HoverButton extends Button
     }
     
     @Override
+    protected void onDetachedFromWindow() {
+        // prevent the tooltip from leaking
+        TooltipManager.hide(this);
+        super.onDetachedFromWindow();
+    }
+    
+    @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
         if (!hovered) {

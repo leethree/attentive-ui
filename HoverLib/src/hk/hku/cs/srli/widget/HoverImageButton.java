@@ -39,6 +39,7 @@ public class HoverImageButton extends ImageButton
         hover = new HoverHandler(this);
         hover.setOnLongHoverListener(this);
     }
+    
     @Override
     public boolean onLongClick(View v) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
@@ -48,6 +49,13 @@ public class HoverImageButton extends ImageButton
         }
         return false;
     }
+    
+    @Override
+    protected void onDetachedFromWindow() {
+        TooltipManager.hide(this);
+        super.onDetachedFromWindow();
+    }
+    
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
@@ -56,6 +64,7 @@ public class HoverImageButton extends ImageButton
             TooltipManager.hide(this);
         }
     }
+    
     @Override
     public boolean onLongHover(View v, int x, int y) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
@@ -64,6 +73,7 @@ public class HoverImageButton extends ImageButton
         }
         return true;
     }
+    
     @Override
     public boolean onHoverEvent(MotionEvent event) {
         return hover.onHoverEvent(event);
