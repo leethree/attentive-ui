@@ -2,12 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="100dp"
+    android:paddingRight="100dp"
     tools:context=".DetailActivity" >
 
     <hk.hku.cs.srli.widget.HoverImageButton
         android:id="@+id/image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="300dp"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -16,39 +19,81 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/hint_fullscreen"
         android:scaleType="centerInside"
-        android:src="@android:drawable/picture_frame" />
+        android:src="@drawable/placeholder" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/image_view"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/grid_gutter"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_toRightOf="@id/image_view"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" >
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/primary_text_light" />
+        
+        <hk.hku.cs.srli.widget.HoverScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin" >
 
-            <TextView
-                android:id="@+id/content"
+	        <TextView
+	            android:id="@+id/content"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="@string/lorem_ipsum"
+	            android:textAppearance="?android:attr/textAppearanceMedium"
+	            android:textColor="@android:color/secondary_text_light" />
+        </hk.hku.cs.srli.widget.HoverScrollView>
+        
+        <View
+		    android:layout_width="match_parent"
+		    android:layout_height="1dp"
+		    android:background="?android:attr/dividerVertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="@string/lorem_ipsum"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </ScrollView>
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_good"
+				android:contentDescription="like" />
+            
+            <TextView
+                android:id="@+id/textStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Like"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/tertiary_text_light" />
+
+            <hk.hku.cs.srli.widget.HoverButton
+                android:id="@+id/textPrice"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Tap to add"
+                android:padding="@dimen/grid_gutter"
+                android:text="Price"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/tertiary_text_light" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

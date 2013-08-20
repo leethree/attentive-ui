@@ -20,13 +20,25 @@
             android:layout_weight="1"
             android:padding="10dp"
             android:text="Total: 0"
+            android:textColor="@android:color/secondary_text_light"
             android:textAppearance="?android:attr/textAppearanceLarge" />
+        
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:background="?android:attr/dividerVertical" />
 
-        <Button
+        <hk.hku.cs.srli.widget.HoverButton
             android:id="@+id/buttonOrder"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:text="Submit order" />
+            android:paddingLeft="20dp"
+            android:drawableLeft="@drawable/ic_accept"
+            android:contentDescription="Tap to confirm order"
+            android:text="Confirm order" />
 
     </LinearLayout>
     
@@ -46,14 +58,14 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
 
-        <ListView
+        <hk.hku.cs.srli.widget.HoverListView
             android:id="@+id/orderListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:listitem="@android:layout/simple_list_item_2" >
-
-        </ListView>
+            android:background="@android:color/holo_orange_light"
+            android:divider="#ddd"
+            android:dividerHeight="2dp"
+            tools:listitem="@layout/order_item" />
 
         <TextView
             android:id="@+id/textEmpty"
@@ -62,19 +74,20 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="There is no item."
+            android:textColor="@android:color/tertiary_text_light"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
 
-    <Button
+    <hk.hku.cs.srli.widget.HoverButton
         android:id="@+id/invisibleButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent"
-        android:text="" />
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="Tap to review your order" />
 
 </RelativeLayout>

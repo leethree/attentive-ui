@@ -10,13 +10,14 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Random;
 
 public class DataSet {
 
     public static class Category {
         private final int id;
-        private String name;
-        private SparseArray<DataItem> items;
+        private final String name;
+        private final SparseArray<DataItem> items;
         
         public Category(int id, String name) {
             this.id = id;
@@ -44,19 +45,26 @@ public class DataSet {
         public String thumb;
         public String title; // full name
         public String name; // short name
+        public String type;
         public String content;
         public int price; // in cents
+        public int nlikes;
     }
     
     public static String formatMoney(int price) {
-        return "$" + sDf.format(price * 0.01);
+        if (price != 0)
+            return "$" + sDf.format(price * 0.01);
+        else
+            return "free";
     }
     
     private static final DecimalFormat sDf = new DecimalFormat("#0.00");
     private final SparseArray<Category> mCatMap;
+    private final Random mRandom; 
         
     public DataSet(Context context, int dataSource) {
         mCatMap = new SparseArray<Category>();
+        mRandom = new Random(dataSource);
 
         XmlPullParser parser = context.getResources().getXml(dataSource);
         
@@ -75,6 +83,10 @@ public class DataSet {
     
     public Category getCategoryAt(int index) {
         return mCatMap.valueAt(index);
+    }
+    
+    public Category getCategoryFromItem(DataItem item) {
+        return mCatMap.get(item.category);
     }
     
     public DataItem getItem(int index, int id) {
@@ -99,6 +111,8 @@ public class DataSet {
              } else if(eventType == XmlPullParser.END_TAG) {
                  tag = parser.getName();
                  if (tag.equals("item")) {
+                     // assign a random number
+                     item.nlikes = mRandom.nextInt(80);
                      // add item to category.
                      mCatMap.get(item.category).items.append(item.id, item);
                      item = null;
@@ -129,6 +143,8 @@ public class DataSet {
                          item.thumb = text;
                      } else if (tag.equals("price")) {
                          item.price = (int) (Double.parseDouble(text) * 100);
+                     } else if (tag.equals("type")) {
+                         item.type = text;
                      }
                  }
              }

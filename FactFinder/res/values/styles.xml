@@ -4,5 +4,10 @@
     <style name="AppTheme" parent="HoverTheme.Sherlock.Light">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="AppTheme.NoHover" parent="Theme.Sherlock.Light">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:imageButtonStyle">@android:style/Widget.Holo.Light.ImageButton</item>
+    </style>
 
 </resources>

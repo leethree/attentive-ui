@@ -28,6 +28,7 @@ public abstract class DemoFragmentBase extends Fragment {
     protected DemoContent.DemoItem demoItem;
 
     public DemoFragmentBase() {
+        super();
     }
 
     @Override

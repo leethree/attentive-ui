@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<hk.hku.cs.srli.widget.HoverFrame xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/background_light"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:orientation="horizontal"
-    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart" >
+    android:layout_height="wrap_content"
+    app:leftEdgeGlow="true"
+    app:rightEdgeGlow="true"
+    app:leftEdgeColor="@color/removable_edge"
+    app:rightEdgeColor="@color/removable_edge" >
+    
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@android:color/background_light"
+	    android:minHeight="?android:attr/listPreferredItemHeight"
+	    android:orientation="horizontal"
+	    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+	    android:paddingStart="?android:attr/listPreferredItemPaddingStart" >
 
-    <TextView
-        android:id="@+id/textViewLeft"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:text="Item name"
-        android:textAppearance="?android:attr/textAppearanceListItem" />
+		<LinearLayout
+		    android:layout_width="0dp"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:gravity="center_vertical"
+		    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textViewRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="Item price"
-        android:textColor="@android:color/secondary_text_light"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+			<TextView
+			    android:id="@+id/textViewSmall"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="category"
+			    android:textColor="@android:color/tertiary_text_light"
+			    android:textStyle="normal"
+			    android:textAppearance="?android:attr/listSeparatorTextViewStyle" />
+			
+			<TextView
+			    android:id="@+id/textViewLeft"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="Item name"
+			    android:textAppearance="?android:attr/textAppearanceListItem" />
 
-</LinearLayout>
+		</LinearLayout>
+	
+	    <TextView
+	        android:id="@+id/textViewRight"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_vertical"
+	        android:text="Item price"
+	        android:textColor="@android:color/secondary_text_light"
+	        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+	</LinearLayout>
+</hk.hku.cs.srli.widget.HoverFrame>

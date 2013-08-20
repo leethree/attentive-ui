@@ -33,7 +33,14 @@ public class HoverTextView extends TextView implements OnLongHoverListener {
         hover = new HoverHandler(this);
         hover.setOnLongHoverListener(this);
     }
-
+    
+    @Override
+    protected void onDetachedFromWindow() {
+        // prevent the tooltip from leaking
+        TooltipManager.hide(this);
+        super.onDetachedFromWindow();
+    }
+    
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);

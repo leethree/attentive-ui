@@ -15,7 +15,6 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="0dp" >
-    </hk.hku.cs.srli.widget.HoverGridView>
+        android:verticalSpacing="0dp" />
 
 </RelativeLayout>

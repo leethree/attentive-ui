@@ -9,12 +9,12 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -43,25 +43,18 @@ public class SectionFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         GridView gridview = (GridView) getView().findViewById(R.id.grid_view);
-        gridview.setAdapter(new ImageAdapter(getActivity(), mSectionNumber));
-
-        gridview.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Intent i = new Intent(getActivity(), DetailActivity.class);
-                i.putExtra("id", (int) id).putExtra("section", mSectionNumber);
-                startActivity(i);
-            }
-        });
+        ImageAdapter adapter = new ImageAdapter(getActivity(), mSectionNumber);
+        gridview.setAdapter(adapter);
     }
     
     public static class ImageAdapter extends BaseAdapter {
         private Context mContext;
+        private int mSection;
         private SparseArray<DataItem> mFacts;
 
         public ImageAdapter(Context c, int section) {
             mContext = c;
+            mSection = section;
             mFacts = FFApp.getData(c).getCategoryAt(section).getItems();
         }
 
@@ -83,23 +76,64 @@ public class SectionFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {  // if it's not recycled, inflate it.
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_item, parent, false);
             }
             ImageView imageView = (ImageView) convertView.findViewById(R.id.item_image_view);
-            TextView textView = (TextView) convertView.findViewById(R.id.item_text_view);
-
+            
             // find image from assets
             try {
-                imageView.setImageDrawable(
-                        Drawable.createFromResourceStream(mContext.getResources(), null, 
-                                mContext.getAssets().open(getItem(position).thumb), null));
+                String thumb = getItem(position).thumb;
+                if (thumb != null && thumb.length() > 0) {
+                    imageView.setImageDrawable(
+                            Drawable.createFromResourceStream(mContext.getResources(), null, 
+                                    mContext.getAssets().open(thumb), null));
+                } else imageView.setImageResource(R.drawable.placeholder);
             } catch (IOException e) {
                 // Image loading failed, use placeholder instead.
                 imageView.setImageResource(R.drawable.placeholder);
             }
-            textView.setText(getItem(position).title);
+            imageView.setOnClickListener(new ItemClickListenerAdapter(position) {
+    
+                @Override
+                public void onClick(View v, int position) {
+                    Intent i = new Intent(mContext, DetailActivity.class);
+                    i.putExtra("id", (int) getItemId(position)).putExtra("section", mSection);
+                    // launch detailed view
+                    mContext.startActivity(i);
+                }
+            });
+            
+            TextView text = (TextView) convertView.findViewById(R.id.item_text_view);
+            text.setText(getItem(position).title);
+            
+            Button price = (Button) convertView.findViewById(R.id.item_text_price);
+            price.setText(DataSet.formatMoney(getItem(position).price));
+            price.setOnClickListener(new ItemClickListenerAdapter(position) {
+                
+                @Override
+                public void onClick(View v, int position) {
+                    FFApp.getOrder(mContext).add(getItem(position));
+                    Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             return convertView;
         }
-
+        
+        // adapter for handling item clicks
+        private abstract class ItemClickListenerAdapter implements View.OnClickListener {
+            private int mPosition;
+            
+            public ItemClickListenerAdapter(int position) {
+                this.mPosition = position;
+            }
+            
+            public abstract void onClick(View v, int position);
+            
+            @Override
+            public final void onClick(View v) {
+                onClick(v, mPosition);
+            }
+        }
     }
 }

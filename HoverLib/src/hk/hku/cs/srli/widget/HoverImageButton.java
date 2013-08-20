@@ -39,13 +39,23 @@ public class HoverImageButton extends ImageButton
         hover = new HoverHandler(this);
         hover.setOnLongHoverListener(this);
     }
+    
     @Override
     public boolean onLongClick(View v) {
-        Tooltip tp = TooltipManager.showAndHide(HoverImageButton.this, getContentDescription(),
-                getWidth() / 2, getHeight() / 2, TooltipManager.LONG_DELAY);
-        hover.attachTooltip(tp);
-        return true;
+        if (getContentDescription() != null && getContentDescription().length() > 0) {
+            Tooltip tp = TooltipManager.showAndHide(this, getContentDescription(),
+                    getWidth() * 3/4, getHeight() * 3/4, TooltipManager.SHORT_DELAY);
+            hover.attachTooltip(tp);
+        }
+        return false;
     }
+    
+    @Override
+    protected void onDetachedFromWindow() {
+        TooltipManager.hide(this);
+        super.onDetachedFromWindow();
+    }
+    
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
@@ -54,12 +64,16 @@ public class HoverImageButton extends ImageButton
             TooltipManager.hide(this);
         }
     }
+    
     @Override
     public boolean onLongHover(View v, int x, int y) {
-        Tooltip tp = TooltipManager.show(HoverImageButton.this, getContentDescription(), x, y);
-        hover.attachTooltip(tp);
+        if (getContentDescription() != null && getContentDescription().length() > 0) {
+            Tooltip tp = TooltipManager.show(this, getContentDescription(), x + 15, y + 15);
+            hover.attachTooltip(tp);
+        }
         return true;
     }
+    
     @Override
     public boolean onHoverEvent(MotionEvent event) {
         return hover.onHoverEvent(event);
