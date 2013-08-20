@@ -47,10 +47,15 @@ public class DetailActivity extends SherlockActivity
         title.setText(mFact.title);
         
         TextView text = (TextView) findViewById(R.id.content);
-        // replace line breaks
-        String content = mFact.content
-                .replace("\n\n", "<br><br>").replace("\n", "<br><br>");
-        text.setText(Html.fromHtml(content));
+        if (mFact.content != null && mFact.content.length() > 0) {
+            // replace line breaks
+            String content = mFact.content
+                    .replace("\n\n", "<br><br>").replace("\n", "<br><br>");
+            text.setText(Html.fromHtml(content));
+        } else {
+            text.setText("");
+            text.setVisibility(View.GONE);
+        }
         
         TextView price = (TextView) findViewById(R.id.textPrice);
         if (mFact.type != null && mFact.type.length() > 0)

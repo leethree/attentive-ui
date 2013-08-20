@@ -2,15 +2,15 @@
 <menu>
     <category-name>
         <id>0</id>
-        <name>Cheesecakes</name>
+        <name>Cheesecake</name>
     </category-name>
     <category-name>
         <id>1</id>
         <name>Speciality</name>
     </category-name>
-        <category-name>
+    <category-name>
         <id>2</id>
-        <name>Drinks</name>
+        <name>Drink</name>
     </category-name>
     <item>
 	    <id>0</id>

@@ -6,7 +6,7 @@
     <hk.hku.cs.srli.widget.HoverImageButton
         android:id="@+id/item_image_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_column_width"
+        android:layout_height="235dp"
         android:background="?android:attr/selectableItemBackground"
         android:cropToPadding="true"
         android:padding="@dimen/grid_gutter"

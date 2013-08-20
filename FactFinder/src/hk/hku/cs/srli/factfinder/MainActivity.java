@@ -52,10 +52,6 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // a cosmetic hack to adjust ActionBar tab position  
-        View view = findViewById(R.id.abs__action_bar_title);
-        view.setPaddingRelative(0, 0, 55, 0);
-
         mWrapper = (HoverFrame) findViewById(R.id.wrapper);
         mWrapper.setEnabled(false);
         mRightFrame = (HoverFrame) findViewById(R.id.right_pane);
@@ -66,6 +62,12 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         // primary sections of the app.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
+        if (mSectionsPagerAdapter.getCount() < 5) {
+            // a cosmetic hack to adjust ActionBar tab position  
+            View view = findViewById(R.id.abs__action_bar_title);
+            view.setPaddingRelative(0, 0, 55, 0);
+        }
+        
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);

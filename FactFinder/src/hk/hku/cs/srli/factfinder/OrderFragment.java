@@ -109,6 +109,9 @@ public class OrderFragment extends Fragment {
         } else {
             sum.setText("");
         }
+        
+        Button submitButton = (Button) getView().findViewById(R.id.buttonOrder);
+        submitButton.setEnabled(mAdapter.getCount() > 0);
     }
 
     public static class OrderAdapter extends ArrayAdapter<DataItem> {
