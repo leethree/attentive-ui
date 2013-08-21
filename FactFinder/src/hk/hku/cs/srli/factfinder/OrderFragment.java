@@ -57,6 +57,8 @@ public class OrderFragment extends Fragment {
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
+                                    FFApp.Log("Main UI", "Swipe to dismiss order item at: " + position);
+                                    FFApp.Log("Order", "Remove order item: " + mAdapter.getItem(position));
                                     mAdapter.remove(mAdapter.getItem(position));
                                 }
                                 mAdapter.notifyDataSetChanged();
@@ -75,7 +77,7 @@ public class OrderFragment extends Fragment {
             @Override
             public void onChanged() {
                 refreshOrder();
-            } 
+            }
         });
         
         Button submitButton = (Button) getView().findViewById(R.id.buttonOrder);
@@ -83,6 +85,7 @@ public class OrderFragment extends Fragment {
             
             @Override
             public void onClick(View v) {
+                FFApp.Log("Main UI", "Click order submit button.");
                 new AlertDialog.Builder(getActivity())
                     .setTitle("Confirm order")
                     .setMessage("You have ordered " + mAdapter.getCount() + " items. " + 
@@ -90,16 +93,24 @@ public class OrderFragment extends Fragment {
                     .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            FFApp.Log("Main UI", "Confirm order submission.");
                             mOrder.submit();
                             Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
                             // return to test driver
                             getActivity().setResult(Activity.RESULT_OK);
                             getActivity().finish();
+                            FFApp.Log("Nav", "Exit main screen.");
                         }
                     }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            FFApp.Log("Main UI", "Cancel order submission.");
                             dialog.dismiss();
+                        }
+                    }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            FFApp.Log("Main UI", "Dismiss order submission dialog.");
                         }
                     }).show();
             }

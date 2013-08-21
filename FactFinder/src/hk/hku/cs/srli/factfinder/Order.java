@@ -30,6 +30,7 @@ public class Order {
     public void add(DataItem item) {
         mItems.add(item);
         notifyAdapter();
+        FFApp.Log("Order", "Add order item: " + item.name);
     }
     
     public int getSum() {
@@ -51,6 +52,8 @@ public class Order {
     }
     
     public void submit() {
+        FFApp.Log("Order", "Submit order: " + mItems);
+        FFApp.Log("Order", "Order total: " + DataSet.formatMoney(getSum()));
         clear();
     }
     

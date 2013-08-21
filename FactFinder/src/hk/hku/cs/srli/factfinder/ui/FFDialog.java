@@ -51,9 +51,15 @@ public class FFDialog extends DialogFragment {
         
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(mFact.name).setView(view)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        FFApp.Log("Detail UI", "Cancel 'add multiple' dialog.");
                         FFDialog.this.dismiss();
+                    }
+                }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        FFApp.Log("Detail UI", "Dismiss 'add multiple' dialog.");
                     }
                 });
         if (mListener != null)

@@ -28,6 +28,13 @@ public class TestActivity extends Activity
         TESTS.add(R.xml.hotpot);
     }
     
+    private static final int[][] PERMUTE_SQ = {{0, 1, 0, 1},
+                                               {1, 0, 1, 0},
+                                               {0, 1, 1, 0},
+                                               {1, 0, 0, 1},
+                                               {0, 0, 1, 1},
+                                               {1, 1, 0, 0}};
+    
     private static int sParticipant = 1;
     private static int sTrial = 1;
     
@@ -87,7 +94,7 @@ public class TestActivity extends Activity
 
     @Override
     public void onClick(View v) {
-        FFApp.Log("Test", "Trial started: P" + sParticipant + " T" + sTrial +
+        FFApp.Log("Test", "Trial starting: P" + sParticipant + " T" + sTrial +
                 " with config: "+ status.getText());
         Intent i = new Intent(this, MainActivity.class);
         // clear activity stack
@@ -109,13 +116,13 @@ public class TestActivity extends Activity
         long duration = System.currentTimeMillis() - timer;
         // If the test completed and the request matches
         if (requestCode == REQ_TEST) {
-            FFApp.Log("Test", "trial duration: " + duration * 0.001 + " s.");
+            FFApp.Log("Test", "Trial duration: " + duration * 0.001 + " s.");
             if (resultCode == Activity.RESULT_OK) {
-                sTrial++;  // next trial
-                FFApp.Log("Test", "trial ended OK.");
+                sTrial = sTrial % (TESTS.size() * 2) + 1;  // next trial
+                FFApp.Log("Test", "Trial ended OK.");
             } else {
                 // trial not ended successfully
-                FFApp.Log("Test", "trial cancelled.");
+                FFApp.Log("Test", "Trial cancelled.");
             }
         }
         
@@ -123,7 +130,8 @@ public class TestActivity extends Activity
     
     private void prepareTest() {
         int data = ((sTrial - 1) / 2) % (TESTS.size());
-        boolean hover = sTrial % 2 == 0 ^ sParticipant % 2 == 0;
+        boolean hover = sTrial % 2 != 0 ^ 
+                PERMUTE_SQ[(sParticipant - 1) % PERMUTE_SQ.length][(sTrial - 1) / 2] == 0;
         FFApp.getApp(this).changeDataSet(TESTS.get(data));
         FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
         

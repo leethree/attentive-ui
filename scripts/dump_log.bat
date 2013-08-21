@@ -1,3 +1,4 @@
+@echo off
 echo ====== start of log dump ======
 date /T
 time /T

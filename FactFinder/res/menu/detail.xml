@@ -12,7 +12,7 @@
         android:icon="@drawable/ic_add_to_queue"
         android:orderInCategory="200"
         android:showAsAction="ifRoom"
-        android:title="Customize and add"
+        android:title="Add multiple"
         android:titleCondensed="Customize" />
 
 </menu>

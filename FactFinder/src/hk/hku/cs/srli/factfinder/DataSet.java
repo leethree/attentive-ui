@@ -49,6 +49,14 @@ public class DataSet {
         public String content;
         public int price; // in cents
         public int nlikes;
+        
+        @Override
+        public String toString() {
+            if (name != null && name.length() > 0)
+                return name;
+            else
+                return title;
+        }
     }
     
     public static String formatMoney(int price) {
