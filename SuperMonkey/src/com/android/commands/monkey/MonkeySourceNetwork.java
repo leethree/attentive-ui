@@ -738,7 +738,8 @@ public class MonkeySourceNetwork implements MonkeyEventSource {
      * @param commandLine the full command line given.
      */
     private void translateCommand(String commandLine) {
-        Log.d(TAG, "translateCommand: " + commandLine);
+        // don't flood log cat.
+        // Log.d(TAG, "translateCommand: " + commandLine);
         List<String> parts = commandLineSplit(commandLine);
         if (parts.size() > 0) {
             MonkeyCommand command = COMMAND_MAP.get(parts.get(0));

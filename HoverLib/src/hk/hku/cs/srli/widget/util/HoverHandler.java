@@ -160,7 +160,7 @@ public class HoverHandler {
             hasPerformedLongHover = false;
 
             view.postDelayed(pendingCheckForLongHover,
-                    ViewConfiguration.getLongPressTimeout() * 2);
+                    ViewConfiguration.getLongPressTimeout());
         }
     }
     
