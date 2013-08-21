@@ -30,6 +30,8 @@ public class DetailActivity extends SherlockActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int theme = FFApp.getApp(this).getFFTheme();
+        if (theme != 0) setTheme(theme);
         setContentView(R.layout.activity_detail);
         
         // get intent data

@@ -46,6 +46,8 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int theme = FFApp.getApp(this).getFFTheme();
+        if (theme != 0) setTheme(theme);
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.

@@ -7,6 +7,7 @@ public class FFApp extends Application {
 
     private DataSet mData;
     private Order mOrder;
+    private int mTheme = R.style.AppTheme;
     
     public FFApp() {
     }
@@ -17,10 +18,19 @@ public class FFApp extends Application {
         // initialize dataset
         mData = new DataSet(this, R.xml.empty);
         mOrder = new Order(this);
+        mTheme = getApplicationInfo().theme;
     }
     
     public void changeDataSet(int dataSource) {
         this.mData = new DataSet(this, dataSource);
+    }
+    
+    public int getFFTheme() {
+        return mTheme;
+    }
+    
+    public void setFFTheme(int resid) {
+        mTheme = resid;
     }
     
     // Utility method to get a instance.

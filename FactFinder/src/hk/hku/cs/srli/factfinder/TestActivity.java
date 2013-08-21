@@ -4,58 +4,106 @@ package hk.hku.cs.srli.factfinder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestActivity extends Activity {
+public class TestActivity extends Activity
+        implements View.OnClickListener, NumberPicker.OnValueChangeListener {
 
     private static final int REQ_TEST = 25534;
-    private static int sStep = 0;
-    private static final List<Integer> tests = new ArrayList<Integer>(4);
+    private static final int APP_THEME = R.style.AppTheme;
+    private static final int APP_THEME_NO_HOVER = R.style.AppTheme_NoHover;
+    private static final List<Integer> TESTS = new ArrayList<Integer>(4);
     
     static {
-        tests.add(R.xml.burger);
-        tests.add(R.xml.cheesecake);
-        tests.add(R.xml.coffee);
-        tests.add(R.xml.hotpot);
+        TESTS.add(R.xml.burger);
+        TESTS.add(R.xml.cheesecake);
+        TESTS.add(R.xml.coffee);
+        TESTS.add(R.xml.hotpot);
     }
+    
+    private static int sParticipant = 1;
+    private static int sTrial = 1;
+    
+    private NumberPicker npp;
+    private NumberPicker npt;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         
+        npp = (NumberPicker) findViewById(R.id.number_picker_p);
+        npp.setMinValue(1);
+        npp.setMaxValue(20);
+        npp.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        npp.setOnValueChangedListener(this);
+        
+        npt = (NumberPicker) findViewById(R.id.number_picker_t);
+        npt.setMinValue(1);
+        npt.setMaxValue(TESTS.size() * 2);
+        npt.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        npt.setOnValueChangedListener(this);
+        
         Button start = (Button) findViewById(R.id.start_button);
-        start.setOnClickListener(new View.OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                prepareTest();
-                startTest();
-            }
-        });
-        setStatus("new test");
+        start.setOnClickListener(this);
+        
+        // restore data
+        SharedPreferences settings = getSharedPreferences("FF_Test", 0);
+        sParticipant = settings.getInt("nparticipant", sParticipant);
+        sTrial = settings.getInt("ntrial", sTrial);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        npp.setValue(sParticipant);
+        npt.setValue(sTrial);
+        prepareTest();
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        
+        // save data
+        SharedPreferences settings = getSharedPreferences("FF_Test", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("nparticipant", sParticipant);
+        editor.putInt("ntrial", sTrial);
+        editor.commit();
     }
 
-    public void startTest() {
+    @Override
+    public void onClick(View v) {
         Intent i = new Intent(this, MainActivity.class);
         // clear activity stack
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        // launch settings
+        // start test
         startActivityForResult(i, REQ_TEST);
+        
+    }
+
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+        sParticipant = npp.getValue();
+        sTrial = npt.getValue();
+        prepareTest();
     }
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // If the test completed and the request matches
         if (resultCode == Activity.RESULT_OK && requestCode == REQ_TEST) {
-            sStep++;  // next trial
+            sTrial++;  // next trial
         }
-        setStatus("t" + sStep);
+        
     }
     
     private void setStatus(String msg) {
@@ -64,6 +112,11 @@ public class TestActivity extends Activity {
     }
     
     private void prepareTest() {
-        FFApp.getApp(this).changeDataSet(tests.get(sStep % tests.size()));
+        int data = ((sTrial - 1) / 2) % (TESTS.size());
+        boolean hover = sTrial % 2 == 0 ^ sParticipant % 2 == 0;
+        FFApp.getApp(this).changeDataSet(TESTS.get(data));
+        FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
+        
+        setStatus("d" + data + " h" + (hover ? 1 : 0));
     }
 }
