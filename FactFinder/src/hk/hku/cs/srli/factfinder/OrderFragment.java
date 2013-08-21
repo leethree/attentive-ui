@@ -83,6 +83,7 @@ public class OrderFragment extends Fragment {
             public void onClick(View v) {
                 mOrder.submit();
                 Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
+                // return to test driver
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }

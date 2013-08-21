@@ -2,9 +2,9 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.app.Activity;
 import android.content.Intent;
 
@@ -38,24 +38,29 @@ public class TestActivity extends Activity {
                 startTest();
             }
         });
+        setStatus("new test");
     }
 
     public void startTest() {
         Intent i = new Intent(this, MainActivity.class);
         // clear activity stack
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         // launch settings
         startActivityForResult(i, REQ_TEST);
     }
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v("onActivityResult", "req: " + requestCode);
-        Log.v("onActivityResult", "result: " + resultCode);
         // If the test completed and the request matches
         if (resultCode == Activity.RESULT_OK && requestCode == REQ_TEST) {
-            sStep++;
+            sStep++;  // next trial
         }
+        setStatus("t" + sStep);
+    }
+    
+    private void setStatus(String msg) {
+        TextView status = (TextView) findViewById(R.id.text_status);
+        status.setText(msg);
     }
     
     private void prepareTest() {
