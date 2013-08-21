@@ -22,7 +22,8 @@ public class FFApp extends Application {
     }
     
     public void changeDataSet(int dataSource) {
-        this.mData = new DataSet(this, dataSource);
+        mOrder.reset();
+        mData = new DataSet(this, dataSource);
     }
     
     public int getFFTheme() {

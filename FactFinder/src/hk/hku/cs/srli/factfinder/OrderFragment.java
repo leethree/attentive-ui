@@ -2,8 +2,10 @@
 package hk.hku.cs.srli.factfinder;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -81,18 +83,32 @@ public class OrderFragment extends Fragment {
             
             @Override
             public void onClick(View v) {
-                mOrder.submit();
-                Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
-                // return to test driver
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
+                new AlertDialog.Builder(getActivity())
+                    .setTitle("Confirm order")
+                    .setMessage("You have ordered " + mAdapter.getCount() + " items. " + 
+                            "Total: " + DataSet.formatMoney(mOrder.getSum()) + ".")
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mOrder.submit();
+                            Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
+                            // return to test driver
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                        }
+                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
             }
         });
         
         refreshOrder();
     }
-    
-    public void setOnClickListener(View.OnClickListener listener) {
+       
+    public void setOnExpandClickListener(View.OnClickListener listener) {
         mInvisibleButton.setOnClickListener(listener);
     }
     

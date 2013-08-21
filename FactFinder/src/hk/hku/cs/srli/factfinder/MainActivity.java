@@ -93,7 +93,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             }
         });
         
-        mOrder.setOnClickListener(new View.OnClickListener() {
+        mOrder.setOnExpandClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSlidingPane.openPane();
@@ -193,6 +193,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             dialog.show();
             return true;
         } else if (item.getItemId() == R.id.action_cancel) {
+            FFApp.getOrder(this).clear();
             setResult(RESULT_CANCELED);
             finish();
             return true;
