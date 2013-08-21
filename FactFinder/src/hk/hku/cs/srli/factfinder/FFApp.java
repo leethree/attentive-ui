@@ -2,6 +2,7 @@ package hk.hku.cs.srli.factfinder;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 public class FFApp extends Application {
 
@@ -45,5 +46,9 @@ public class FFApp extends Application {
     
     public static Order getOrder(Context context) {
         return getApp(context).mOrder;
+    }
+    
+    public static void Log(String tag, String msg) {
+        Log.i("FFApp.Log", "[" + tag + "] " + msg);
     }
 }

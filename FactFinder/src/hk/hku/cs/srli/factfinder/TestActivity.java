@@ -31,8 +31,11 @@ public class TestActivity extends Activity
     private static int sParticipant = 1;
     private static int sTrial = 1;
     
+    private static long timer;
+    
     private NumberPicker npp;
     private NumberPicker npt;
+    private TextView status;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,8 @@ public class TestActivity extends Activity
         
         Button start = (Button) findViewById(R.id.start_button);
         start.setOnClickListener(this);
+        
+        status = (TextView) findViewById(R.id.text_status);
         
         // restore data
         SharedPreferences settings = getSharedPreferences("FF_Test", 0);
@@ -82,12 +87,14 @@ public class TestActivity extends Activity
 
     @Override
     public void onClick(View v) {
+        FFApp.Log("Test", "Trial started: P" + sParticipant + " T" + sTrial +
+                " with config: "+ status.getText());
         Intent i = new Intent(this, MainActivity.class);
         // clear activity stack
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         // start test
         startActivityForResult(i, REQ_TEST);
-        
+        timer = System.currentTimeMillis();
     }
 
     @Override
@@ -99,16 +106,19 @@ public class TestActivity extends Activity
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        long duration = System.currentTimeMillis() - timer;
         // If the test completed and the request matches
-        if (resultCode == Activity.RESULT_OK && requestCode == REQ_TEST) {
-            sTrial++;  // next trial
+        if (requestCode == REQ_TEST) {
+            FFApp.Log("Test", "trial duration: " + duration * 0.001 + " s.");
+            if (resultCode == Activity.RESULT_OK) {
+                sTrial++;  // next trial
+                FFApp.Log("Test", "trial ended OK.");
+            } else {
+                // trial not ended successfully
+                FFApp.Log("Test", "trial cancelled.");
+            }
         }
         
-    }
-    
-    private void setStatus(String msg) {
-        TextView status = (TextView) findViewById(R.id.text_status);
-        status.setText(msg);
     }
     
     private void prepareTest() {
@@ -117,6 +127,6 @@ public class TestActivity extends Activity
         FFApp.getApp(this).changeDataSet(TESTS.get(data));
         FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
         
-        setStatus("d" + data + " h" + (hover ? 1 : 0));
+        status.setText("d" + data + " h" + (hover ? 1 : 0));
     }
 }

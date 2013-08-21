@@ -44,8 +44,8 @@
 	    <id>3</id>
 	    <category>0</category>
 	    <thumb>hamburger.jpg</thumb>
-	    <title>Hamberger</title>
-        <name>Hamberger</name>
+	    <title>Hamburger</title>
+        <name>Hamburger</name>
         <type>À la carte</type>
         <price>2.1</price>
 	    <content>Your standard burger, with sponge-dough bun, 2-ounce patty, lettuce, tomatoes, with or without onions, pickles, and spread.</content>
