@@ -40,7 +40,7 @@ public class DetailActivity extends SherlockActivity
         // Selected data item id
         int id = b.getInt("id");
         int section = b.getInt("section");
-        FFApp.Log("Detail UI", "Open detail of section " + section + " id " + id);
+        FFApp.log("Detail UI", "Open detail of section " + section + " id " + id);
         
         mFact = FFApp.getData(this).getItem(section, id);
         mDialog = FFDialog.newInstance(section, id);
@@ -90,11 +90,11 @@ public class DetailActivity extends SherlockActivity
             public void onClick(View v) {
                 ActionBar ab = getSupportActionBar();
                 if (ab.isShowing()) {
-                    FFApp.Log("Detail UI", "Click image to fullscreen.");
+                    FFApp.log("Detail UI", "Click image to fullscreen.");
                     ab.hide();
                     image.setContentDescription(getString(R.string.hint_fullscreen_exit));
                 } else {
-                    FFApp.Log("Detail UI", "Click image to exit fullscreen.");
+                    FFApp.log("Detail UI", "Click image to exit fullscreen.");
                     ab.show();
                     image.setContentDescription(getString(R.string.hint_fullscreen));
                 }
@@ -108,7 +108,7 @@ public class DetailActivity extends SherlockActivity
     @Override
     protected void onResume() {
         super.onResume();
-        FFApp.Log("Detail", "Resume.");
+        FFApp.log("Detail", "Resume.");
         // enter low profile mode
         getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
@@ -116,7 +116,7 @@ public class DetailActivity extends SherlockActivity
     
     @Override
     protected void onPause() {
-        FFApp.Log("Detail", "Pause.");
+        FFApp.log("Detail", "Pause.");
         super.onPause();
     }
 
@@ -131,16 +131,16 @@ public class DetailActivity extends SherlockActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_with_edit:
-                FFApp.Log("Detail UI", "Click 'add multiple' menu item.");
+                FFApp.log("Detail UI", "Click 'add multiple' menu item.");
                 mDialog.show(getFragmentManager(), "dialog");
                 return true;
             case R.id.action_add:
-                FFApp.Log("Detail UI", "Click 'add' menu item.");
+                FFApp.log("Detail UI", "Click 'add' menu item.");
                 addToOrder(mFact, 1);
                 navigateBack();
                 return true;
             case android.R.id.home:
-                FFApp.Log("Detail UI", "Click ActionBar 'home' button.");
+                FFApp.log("Detail UI", "Click ActionBar 'home' button.");
                 navigateBack();
                 return true;
         }
@@ -149,20 +149,20 @@ public class DetailActivity extends SherlockActivity
     
     @Override
     public void onBackPressed() {
-        FFApp.Log("Nav", "Click system 'back' button.");
+        FFApp.log("Nav", "Click system 'back' button.");
         super.onBackPressed();
     }
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        FFApp.Log("Detail UI", "Click OK to add multiple item: X" + mDialog.getNumber());
+        FFApp.log("Detail UI", "Click OK to add multiple item: X" + mDialog.getNumber());
         addToOrder(mFact, mDialog.getNumber());
         navigateBack();
     }
 
     @Override
     public void onClick(View v) {
-        FFApp.Log("Detail UI", "Click price button to add.");
+        FFApp.log("Detail UI", "Click price button to add.");
         addToOrder(mFact, 1);
         navigateBack();
     }
@@ -176,7 +176,7 @@ public class DetailActivity extends SherlockActivity
     }
 
     private void navigateBack() {
-        FFApp.Log("Nav", "Go back to main screen.");
+        FFApp.log("Nav", "Go back to main screen.");
         Intent upIntent = getParentActivityIntent();
         // return to the exisiting parent activity instead of creating a new one.
         upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

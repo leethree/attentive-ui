@@ -94,7 +94,7 @@ public class TestActivity extends Activity
 
     @Override
     public void onClick(View v) {
-        FFApp.Log("Test", "Trial starting: P" + sParticipant + " T" + sTrial +
+        FFApp.log("Test", "Trial starting: P" + sParticipant + " T" + sTrial +
                 " with config: "+ status.getText());
         Intent i = new Intent(this, MainActivity.class);
         // clear activity stack
@@ -116,13 +116,13 @@ public class TestActivity extends Activity
         long duration = System.currentTimeMillis() - timer;
         // If the test completed and the request matches
         if (requestCode == REQ_TEST) {
-            FFApp.Log("Test", "Trial duration: " + duration * 0.001 + " s.");
+            FFApp.log("Test", "Trial duration: " + duration * 0.001 + " s.");
             if (resultCode == Activity.RESULT_OK) {
                 sTrial = sTrial % (TESTS.size() * 2) + 1;  // next trial
-                FFApp.Log("Test", "Trial ended OK.");
+                FFApp.log("Test", "Trial ended OK.");
             } else {
                 // trial not ended successfully
-                FFApp.Log("Test", "Trial cancelled.");
+                FFApp.log("Test", "Trial cancelled.");
             }
         }
         

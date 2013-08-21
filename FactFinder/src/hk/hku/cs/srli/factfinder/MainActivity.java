@@ -81,7 +81,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             @Override
             public void onPageSelected(int position) {
                 actionBar.setSelectedNavigationItem(position);
-                FFApp.Log("Main UI", "Select page at: " + position);
+                FFApp.log("Main UI", "Select page at: " + position);
             }
             
             @Override
@@ -97,7 +97,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         mOrder.setOnExpandClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FFApp.Log("Main UI", "Click left panel.");
+                FFApp.log("Main UI", "Click left panel.");
                 mSlidingPane.openPane();
             }
         });
@@ -105,7 +105,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         mSlidingPane.setPanelSlideListener(new SlidingPaneLayout.SimplePanelSlideListener() {
             @Override
             public void onPanelClosed(View panel) {
-                FFApp.Log("Main UI", "Close left panel.");
+                FFApp.log("Main UI", "Close left panel.");
                 mWrapper.setEnabled(false);
                 updateHoverEdge();
                 mSlidingPane.setTouchOnChildren(true);
@@ -114,7 +114,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             
             @Override
             public void onPanelOpened(View panel) {
-                FFApp.Log("Main UI", "Open left panel.");
+                FFApp.log("Main UI", "Open left panel.");
                 mWrapper.setEnabled(true);
                 // user can only slide from right
                 updateHoverEdge(false, true);
@@ -139,7 +139,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     @Override
     protected void onResume() {
         super.onResume();
-        FFApp.Log("Main", "Resume.");
+        FFApp.log("Main", "Resume.");
         // enter low profile mode
         getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
@@ -147,7 +147,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     
     @Override
     protected void onPause() {
-        FFApp.Log("Main", "Pause.");
+        FFApp.log("Main", "Pause.");
         super.onPause();
     }
     
@@ -163,7 +163,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
-        FFApp.Log("Main UI", "Click ActionBar tab at: " + tab.getPosition());
+        FFApp.log("Main UI", "Click ActionBar tab at: " + tab.getPosition());
     }
 
     @Override
@@ -172,7 +172,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        FFApp.Log("Main UI", "Reselect ActionBar tab at: " + tab.getPosition());
+        FFApp.log("Main UI", "Reselect ActionBar tab at: " + tab.getPosition());
     }
     
     private void updateHoverEdge() {
@@ -199,18 +199,18 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_info) {
-            FFApp.Log("Main UI", "Click 'info' menu item.");
+            FFApp.log("Main UI", "Click 'info' menu item.");
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setMessage(R.string.dialog_info_message)
                     .setTitle(R.string.dialog_info_title).create();
             dialog.show();
             return true;
         } else if (item.getItemId() == R.id.action_cancel) {
-            FFApp.Log("Main UI", "Click 'cancel' menu item.");
+            FFApp.log("Main UI", "Click 'cancel' menu item.");
             FFApp.getOrder(this).clear();
             setResult(RESULT_CANCELED);
             finish();
-            FFApp.Log("Nav", "Exit main screen.");
+            FFApp.log("Nav", "Exit main screen.");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -218,7 +218,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     
     @Override
     public void onBackPressed() {
-        FFApp.Log("Nav", "Click system 'back' button.");
+        FFApp.log("Nav", "Click system 'back' button.");
         super.onBackPressed();
     }
 
