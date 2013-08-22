@@ -56,16 +56,17 @@ public class FFDialog extends DialogFragment {
                         FFApp.log("Detail UI", "Cancel 'add multiple' dialog.");
                         FFDialog.this.dismiss();
                     }
-                }).setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        FFApp.log("Detail UI", "Dismiss 'add multiple' dialog.");
-                    }
                 });
         if (mListener != null)
             builder.setPositiveButton("OK", mListener);
 
         return builder.create();
+    }
+    
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        FFApp.log("Detail UI", "Dismiss 'add multiple' dialog.");
+        super.onDismiss(dialog);
     }
     
 }

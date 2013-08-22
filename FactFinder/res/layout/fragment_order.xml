@@ -37,7 +37,7 @@
             android:layout_height="match_parent"
             android:paddingLeft="20dp"
             android:drawableLeft="@drawable/ic_accept"
-            android:contentDescription="Tap to confirm order"
+            android:contentDescription="Tap to review your order"
             android:text="Confirm order" />
 
     </LinearLayout>
@@ -88,6 +88,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="Tap to review your order" />
+        android:contentDescription="Tap to see your order" />
 
 </RelativeLayout>

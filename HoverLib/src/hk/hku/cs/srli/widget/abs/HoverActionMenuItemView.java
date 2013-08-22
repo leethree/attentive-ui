@@ -51,11 +51,17 @@ public class HoverActionMenuItemView extends ActionMenuItemView
     }
     
     @Override
+    protected void onDetachedFromWindow() {
+        TooltipManager.hide(this);
+        super.onDetachedFromWindow();
+    }
+    
+    @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
         if (!hovered) {
             // clear tooltip
-            TooltipManager.hide(this);
+            TooltipManager.hide(this, 1000);
             hover.dettachTooltip();
         }
     }
@@ -67,7 +73,7 @@ public class HoverActionMenuItemView extends ActionMenuItemView
 
     @Override
     public boolean onLongHover(View v, int x, int y) {
-        hover.attachTooltip(TooltipManager.show(this, getContentDescription(), x, y));
+        hover.attachTooltip(TooltipManager.show(this, getContentDescription(), x + 15, y + 15));
         return true;
     }
 }

@@ -87,7 +87,7 @@
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="Tap to add"
+                android:contentDescription="Add to order"
                 android:padding="@dimen/grid_gutter"
                 android:text="Price"
                 android:textAppearance="?android:attr/textAppearanceMedium"

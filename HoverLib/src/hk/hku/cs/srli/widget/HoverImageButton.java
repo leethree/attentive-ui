@@ -61,7 +61,7 @@ public class HoverImageButton extends ImageButton
         super.onHoverChanged(hovered);
         if (!hovered) {
             hover.dettachTooltip();
-            TooltipManager.hide(this);
+            TooltipManager.hide(this, 1000);
         }
     }
     

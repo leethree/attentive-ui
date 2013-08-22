@@ -40,6 +40,10 @@ public class HoverButton extends Button
         hover.setOnLongHoverListener(this);
     }
     
+    public HoverHandler getHoverHandler() {
+        return hover;
+    }
+    
     @Override
     public boolean onLongClick(View v) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
@@ -63,7 +67,7 @@ public class HoverButton extends Button
         super.onHoverChanged(hovered);
         if (!hovered) {
             hover.dettachTooltip();
-            TooltipManager.hide(this);
+            TooltipManager.hide(this, 1000);
         }
     }
     

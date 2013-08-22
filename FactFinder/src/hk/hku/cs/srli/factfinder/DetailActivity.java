@@ -172,7 +172,7 @@ public class DetailActivity extends SherlockActivity
             FFApp.getOrder(DetailActivity.this).add(mFact);
             --number;
         }
-        Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
     }
 
     private void navigateBack() {

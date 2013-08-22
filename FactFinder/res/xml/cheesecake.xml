@@ -135,7 +135,8 @@
 	    <category>2</category>
 	    <thumb>menu_creamy_drinks.jpg</thumb>
 	    <title>Caribbean Cooler</title>
-        <name>Caribbean Cooler (Drink)</name>
+        <name>Caribbean Cooler</name>
+        <type>Glass</type>
         <price>6.25</price>
 	    <content>Mount Gay and Malibu Rums, Island Juices and Coconut all Swirled with Strawberries.</content>
     </item>
@@ -144,7 +145,8 @@
         <category>2</category>
         <thumb>mojito.jpg</thumb>
         <title>Mojito*</title>
-        <name>Mojito (Drink)</name>
+        <name>Mojito</name>
+        <type>Glass</type>
         <price>6.5</price>
         <content>Our Classic, with Cruzan Citrus Rum On the Rocks – A Cuban Favorite!
 *This Cocktail can be Prepared Skinny-Style with 150 Calories or Less</content>
@@ -154,7 +156,8 @@
         <category>2</category>
         <thumb>cosmo.jpg</thumb>
         <title>Cosmopolitan*</title>
-        <name>Cosmopolitan (Drink)</name>
+        <name>Cosmopolitan</name>
+        <type>Glass</type>
         <price>5.95</price>
         <content>Skyy Citrus and Cointreau with a Splash of Cranberry Juice.
 *This Cocktail can be Prepared Skinny-Style with 150 Calories or Less</content>
@@ -164,7 +167,8 @@
         <category>2</category>
         <thumb>CCF-Asian-Pear-Martini--lo-.jpg</thumb>
         <title>Asian Pear Martini</title>
-        <name>Asian Pear Martini (Drink)</name>
+        <name>Asian Pear Martini</name>
+        <type>Glass</type>
         <price>6.5</price>
         <content>Absolut Vanilla Vodka, Pear, Sake and Passion Fruit.</content>
     </item>

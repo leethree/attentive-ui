@@ -108,7 +108,7 @@ public class SectionFragment extends Fragment {
             TextView text = (TextView) convertView.findViewById(R.id.item_text_view);
             text.setText(getItem(position).title);
             
-            Button price = (Button) convertView.findViewById(R.id.item_text_price);
+            Button price = (Button) convertView.findViewById(R.id.item_button_price);
             price.setText(DataSet.formatMoney(getItem(position).price));
             price.setOnClickListener(new ItemClickListenerAdapter(position) {
                 
@@ -116,7 +116,7 @@ public class SectionFragment extends Fragment {
                 public void onClick(View v, int position) {
                     FFApp.log("Main UI", "Click quick add button: section " + mSection + " position " + position);
                     FFApp.getOrder(mContext).add(getItem(position));
-                    Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
                 }
             });
 

@@ -49,12 +49,12 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     
     public void shrinkPoint() {
         Log.v("CalibrationView", "shrinkPoint");
-        startAnimation(animatedResize(5), 1250);
+        startAnimation(animatedResize(5), 1000);
     }
     
     public void expandPoint() {
         Log.v("CalibrationView", "expandPoint");
-        startAnimation(animatedResize(dot.DEFAULT_R), 750);
+        startAnimation(animatedResize(dot.DEFAULT_R), 1000);
     }
     
     public void hidePoint() {

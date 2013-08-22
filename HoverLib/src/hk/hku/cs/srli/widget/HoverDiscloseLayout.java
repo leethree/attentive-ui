@@ -29,7 +29,7 @@ public class HoverDiscloseLayout extends RelativeLayout {
     }
 
     private void init() {
-        hover = new HoverHandler(this);
+        hover = new HoverHandler(this, HoverHandler.HOVER_TIMEOUT * 3);
         if (!HoverHandler.isHoverEnabled(getContext())) {
             // disable itself
             setEnabled(false);

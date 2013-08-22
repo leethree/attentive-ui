@@ -95,11 +95,18 @@ public class OrderFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             FFApp.log("Main UI", "Confirm order submission.");
                             mOrder.submit();
-                            Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
                             // return to test driver
                             getActivity().setResult(Activity.RESULT_OK);
                             getActivity().finish();
                             FFApp.log("Nav", "Exit main screen.");
+                        }
+                    }).setNeutralButton("Clear", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FFApp.log("Main UI", "Reset order.");
+                            mOrder.clear();
+                            dialog.dismiss();
                         }
                     }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override

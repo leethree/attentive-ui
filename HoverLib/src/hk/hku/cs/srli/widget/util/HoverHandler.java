@@ -4,13 +4,15 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 
 import hk.hku.cs.srli.widget.R;
 import hk.hku.cs.srli.widget.Tooltip;
 
 public class HoverHandler {
 
+    public static final int HOVER_TIMEOUT = 300;
+    public static final int LONGHOVER_TIMEOUT = 800;
+    
     private View view;
     private OnLongHoverListener onLongHoverListener;
     private OnHoverMoveListener onHoverMoveListener;
@@ -29,10 +31,17 @@ public class HoverHandler {
     private CheckForLongHover pendingCheckForLongHover = new CheckForLongHover();
     
     private boolean enabled;
+    private int timeout;
     
     public HoverHandler(View view) {
         this.view = view;
         enabled = isHoverEnabled(view.getContext());
+        timeout = HOVER_TIMEOUT;
+    }
+    
+    public HoverHandler(View view, int timeout) {
+        this(view);
+        this.timeout = timeout;
     }
     
     public static boolean isHoverEnabled(Context context) {
@@ -98,6 +107,10 @@ public class HoverHandler {
         return false;
     }
     
+    public void setHoverTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+    
     public void setOnLongHoverListener(OnLongHoverListener onLongHoverListener) {
         this.onLongHoverListener = onLongHoverListener;
     }
@@ -135,8 +148,7 @@ public class HoverHandler {
     private void checkForExternalHoverChange(boolean hovering) {
         if (hovering != view.isHovered()) {
             // delay external hover change
-            view.postDelayed(new CheckForHoverChange(hovering),
-                    ViewConfiguration.getTapTimeout());
+            view.postDelayed(new CheckForHoverChange(hovering), timeout);
         }
     }
     
@@ -159,15 +171,15 @@ public class HoverHandler {
         if (onLongHoverListener != null) {
             hasPerformedLongHover = false;
 
-            view.postDelayed(pendingCheckForLongHover,
-                    ViewConfiguration.getLongPressTimeout());
+            view.postDelayed(pendingCheckForLongHover, LONGHOVER_TIMEOUT);
         }
     }
     
     private class CheckForLongHover implements Runnable {
 
         public void run() {
-            if (view.isHovered() && !hasPerformedLongHover
+            if (viewEntered && view.isHovered()
+                    && !hasPerformedLongHover
                     && onLongHoverListener != null) {
                 final int[] screenPos = new int[2];
                 getLocalCoordinate(screenPos);
