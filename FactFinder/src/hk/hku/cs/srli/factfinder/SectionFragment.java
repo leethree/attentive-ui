@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -116,7 +115,6 @@ public class SectionFragment extends Fragment {
                 public void onClick(View v, int position) {
                     FFApp.log("Main UI", "Click quick add button: section " + mSection + " position " + position);
                     FFApp.getOrder(mContext).add(getItem(position));
-                    //Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
                 }
             });
 

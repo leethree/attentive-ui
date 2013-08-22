@@ -15,12 +15,25 @@
 	    android:layout_height="match_parent"
 	    tools:context=".MainActivity" >
 	      
-	    <fragment
-	        android:name="hk.hku.cs.srli.factfinder.OrderFragment"
-	        android:id="@+id/left_pane"
-	        android:layout_width="400dp"
+		<FrameLayout
+		    android:layout_width="400dp"
 	        android:layout_height="match_parent"
-	        android:layout_gravity="left" />
+	        android:layout_gravity="left" >	    
+	    
+		    <fragment
+		        android:name="hk.hku.cs.srli.factfinder.OrderFragment"
+		        android:id="@+id/left_pane"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent" />
+	    
+		    <hk.hku.cs.srli.widget.HoverButton
+		        android:id="@+id/invisibleButton"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:background="?android:attr/selectableItemBackground"
+		        android:contentDescription="Tap to see your order" />
+		    
+		</FrameLayout>
 	
 	    <hk.hku.cs.srli.widget.HoverFrame
 	        android:id="@+id/right_pane"

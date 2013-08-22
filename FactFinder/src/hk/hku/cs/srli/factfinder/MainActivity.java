@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
+import android.widget.Button;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -39,9 +40,9 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     ViewPager mViewPager;
     
     private HoverFrame mWrapper;
+    private Button mInvisibleButton;
     private HoverFrame mRightFrame;
     private FFSlidingPaneLayout mSlidingPane;
-    private OrderFragment mOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +57,9 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
         mWrapper = (HoverFrame) findViewById(R.id.wrapper);
         mWrapper.setEnabled(false);
+        mInvisibleButton = (Button) findViewById(R.id.invisibleButton);
         mRightFrame = (HoverFrame) findViewById(R.id.right_pane);
         mSlidingPane = (FFSlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
-        mOrder = (OrderFragment) getFragmentManager().findFragmentById(R.id.left_pane);
         
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.
@@ -94,11 +95,12 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             }
         });
         
-        mOrder.setOnExpandClickListener(new View.OnClickListener() {
+        mInvisibleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FFApp.log("Main UI", "Click left panel.");
                 mSlidingPane.openPane();
+                mInvisibleButton.setVisibility(View.GONE);
             }
         });
         
@@ -109,7 +111,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
                 mWrapper.setEnabled(false);
                 updateHoverEdge();
                 mSlidingPane.setTouchOnChildren(true);
-                mOrder.setCollapsed(true);
+                mInvisibleButton.setVisibility(View.VISIBLE);
             }
             
             @Override
@@ -119,7 +121,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
                 // user can only slide from right
                 updateHoverEdge(false, true);
                 mSlidingPane.setTouchOnChildren(false);
-                mOrder.setCollapsed(false);
+                mInvisibleButton.setVisibility(View.GONE);
             }
         });
 

@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.swipedismiss.SwipeDismissListViewTouchListener;
 
@@ -25,9 +24,7 @@ import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 
 public class OrderFragment extends Fragment {
 
-    private boolean mCollapsed = true;
     private ListView mListView;
-    private Button mInvisibleButton;
     private Order mOrder;
     private OrderAdapter mAdapter;
     
@@ -35,7 +32,6 @@ public class OrderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
         mListView = (ListView) rootView.findViewById(R.id.orderListView);
-        mInvisibleButton = (Button) rootView.findViewById(R.id.invisibleButton);
         return rootView;
     }
     
@@ -66,7 +62,7 @@ public class OrderFragment extends Fragment {
                             
                             @Override
                             public boolean canDismiss(int position) {
-                                return !mCollapsed;
+                                return true;
                             }
                         });
         mListView.setOnTouchListener(touchListener);
@@ -95,7 +91,6 @@ public class OrderFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             FFApp.log("Main UI", "Confirm order submission.");
                             mOrder.submit();
-                            //Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
                             // return to test driver
                             getActivity().setResult(Activity.RESULT_OK);
                             getActivity().finish();
@@ -124,20 +119,6 @@ public class OrderFragment extends Fragment {
         });
         
         refreshOrder();
-    }
-       
-    public void setOnExpandClickListener(View.OnClickListener listener) {
-        mInvisibleButton.setOnClickListener(listener);
-    }
-    
-    public void setCollapsed(boolean collapsed) {
-        if (collapsed) {
-            mCollapsed = true;
-            mInvisibleButton.setVisibility(View.VISIBLE);
-        } else {
-            mCollapsed = false;
-            mInvisibleButton.setVisibility(View.INVISIBLE);
-        }
     }
 
     private void refreshOrder() {

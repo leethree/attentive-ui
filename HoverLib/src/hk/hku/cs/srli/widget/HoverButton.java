@@ -48,7 +48,7 @@ public class HoverButton extends Button
     public boolean onLongClick(View v) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
             Tooltip tp = TooltipManager.showAndHide(this, getContentDescription(),
-                    getWidth() * 3/4, getHeight() * 3/4, TooltipManager.LONG_DELAY);
+                    getWidth() * 1/2 + 15, getHeight() * 1/2 + 15, TooltipManager.LONG_DELAY);
             hover.attachTooltip(tp);
         }
         // do not prevent default action

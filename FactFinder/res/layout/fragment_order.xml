@@ -79,15 +79,4 @@
 
     </LinearLayout>
 
-    <hk.hku.cs.srli.widget.HoverButton
-        android:id="@+id/invisibleButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="Tap to see your order" />
-
 </RelativeLayout>

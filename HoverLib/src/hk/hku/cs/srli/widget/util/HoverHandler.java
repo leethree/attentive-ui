@@ -178,11 +178,12 @@ public class HoverHandler {
     private class CheckForLongHover implements Runnable {
 
         public void run() {
-            if (viewEntered && view.isHovered()
+            if (view.isHovered()
                     && !hasPerformedLongHover
                     && onLongHoverListener != null) {
                 final int[] screenPos = new int[2];
                 getLocalCoordinate(screenPos);
+                
                 // fire long hover event
                 hasPerformedLongHover = 
                         onLongHoverListener.onLongHover(view, screenPos[0], screenPos[1]);
@@ -192,7 +193,8 @@ public class HoverHandler {
     
     private void getLocalCoordinate(int[] position) {
         view.getLocationOnScreen(position);
-        position[0] = (int) hoverX - position[0];
-        position[1] = (int) hoverY - position[1];
+        // bound by view rect
+        position[0] = Math.max(0, Math.min(view.getWidth(), (int) hoverX - position[0]));
+        position[1] = Math.max(0, Math.min(view.getHeight(), (int) hoverY - position[1]));
     }
 }

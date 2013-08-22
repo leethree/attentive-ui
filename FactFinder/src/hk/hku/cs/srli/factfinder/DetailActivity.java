@@ -9,7 +9,6 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -172,7 +171,6 @@ public class DetailActivity extends SherlockActivity
             FFApp.getOrder(DetailActivity.this).add(mFact);
             --number;
         }
-        //Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
     }
 
     private void navigateBack() {
