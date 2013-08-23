@@ -77,11 +77,13 @@ public class SectionFragment extends Fragment {
             if (convertView == null) {  // if it's not recycled, inflate it.
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_item, parent, false);
             }
+            DataItem item = getItem(position);
+            
             ImageView imageView = (ImageView) convertView.findViewById(R.id.item_image_view);
             
             // find image from assets
             try {
-                String thumb = getItem(position).thumb;
+                String thumb = item.thumb;
                 if (thumb != null && thumb.length() > 0) {
                     imageView.setImageDrawable(
                             Drawable.createFromResourceStream(mContext.getResources(), null, 
@@ -105,10 +107,15 @@ public class SectionFragment extends Fragment {
             });
             
             TextView text = (TextView) convertView.findViewById(R.id.item_text_view);
-            text.setText(getItem(position).title);
+            text.setText(item.title);
             
             Button price = (Button) convertView.findViewById(R.id.item_button_price);
-            price.setText(DataSet.formatMoney(getItem(position).price));
+            
+            if (item.type != null && item.type.length() > 0)
+                price.setText(item.type + ": " + DataSet.formatMoney(item.price));
+            else
+                price.setText(DataSet.formatMoney(item.price));
+            
             price.setOnClickListener(new ItemClickListenerAdapter(position) {
                 
                 @Override
