@@ -39,8 +39,8 @@ public class SwipeFragment extends DemoFragmentBase {
 
                     @Override
                     public void onDismiss(View view, Object token) {
-                        Toast.makeText(getActivity(),
-                                "Removed and reset", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(),
+                        //        "Removed and reset", Toast.LENGTH_SHORT).show();
                     }
                 }));
         return rootView;

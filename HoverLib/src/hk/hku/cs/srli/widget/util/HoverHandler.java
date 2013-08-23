@@ -24,8 +24,8 @@ public class HoverHandler {
     private boolean viewEntered = false;
     private boolean tooltipEnabled = false;
     private boolean tooltipEntered = false;
-    private float hoverX;
-    private float hoverY;
+    private float hoverX = 0;
+    private float hoverY = 0;
     
     private boolean hasPerformedLongHover = false;
     private CheckForLongHover pendingCheckForLongHover = new CheckForLongHover();
@@ -182,19 +182,22 @@ public class HoverHandler {
                     && !hasPerformedLongHover
                     && onLongHoverListener != null) {
                 final int[] screenPos = new int[2];
-                getLocalCoordinate(screenPos);
-                
-                // fire long hover event
-                hasPerformedLongHover = 
-                        onLongHoverListener.onLongHover(view, screenPos[0], screenPos[1]);
+                if (getLocalCoordinate(screenPos)) {
+                    // fire long hover event
+                    hasPerformedLongHover = 
+                            onLongHoverListener.onLongHover(view, screenPos[0], screenPos[1]);
+                }
             }
         }
     }
     
-    private void getLocalCoordinate(int[] position) {
-        view.getLocationOnScreen(position);
-        // bound by view rect
-        position[0] = Math.max(0, Math.min(view.getWidth(), (int) hoverX - position[0]));
-        position[1] = Math.max(0, Math.min(view.getHeight(), (int) hoverY - position[1]));
+    private boolean getLocalCoordinate(int[] position) {
+        if (hoverX > 0 && hoverY > 0) {
+            view.getLocationOnScreen(position);
+            // bound by view rect
+            position[0] = Math.max(0, Math.min(view.getWidth(), (int) hoverX - position[0]));
+            position[1] = Math.max(0, Math.min(view.getHeight(), (int) hoverY - position[1]));
+            return true;
+        } else return false;
     }
 }
