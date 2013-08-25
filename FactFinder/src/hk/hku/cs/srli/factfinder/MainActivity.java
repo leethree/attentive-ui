@@ -60,6 +60,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         mInvisibleButton = (Button) findViewById(R.id.invisibleButton);
         mRightFrame = (HoverFrame) findViewById(R.id.right_pane);
         mSlidingPane = (FFSlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
+        mSlidingPane.setTouchOnChildren(true);
         
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.

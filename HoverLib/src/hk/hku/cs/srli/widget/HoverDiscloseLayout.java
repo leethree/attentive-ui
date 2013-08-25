@@ -13,6 +13,7 @@ import hk.hku.cs.srli.widget.util.HoverHandler;
 public class HoverDiscloseLayout extends RelativeLayout {
 
     private HoverHandler hover;
+    private boolean dimmed;
     
     public HoverDiscloseLayout(Context context) {
         super(context);
@@ -30,12 +31,13 @@ public class HoverDiscloseLayout extends RelativeLayout {
     }
 
     private void init() {
-        hover = new HoverHandler(this, HoverHandler.HOVER_TIMEOUT * 3);
+        hover = new HoverHandler(this, HoverHandler.HOVER_TIMEOUT * 2);
         if (!HoverHandler.isHoverEnabled(getContext())) {
             // disable itself
             setEnabled(false);
         }
         setBackgroundResource(R.drawable.transition_dim);
+        dimmed = false;
     }
     
     @Override
@@ -49,9 +51,13 @@ public class HoverDiscloseLayout extends RelativeLayout {
         TransitionDrawable transition = (TransitionDrawable) getBackground();
         // animate background transition
         if (hovered) {
-            transition.resetTransition();
+            if (dimmed) {
+                transition.reverseTransition(250);
+                dimmed = false;
+            }
         } else {
             transition.startTransition(500);
+            dimmed = true;
         }
         super.onHoverChanged(hovered);
         if (isEnabled()) updateChildrenVisibility();
