@@ -30,7 +30,7 @@ public class Order {
     public void add(DataItem item) {
         mItems.add(item);
         notifyAdapter();
-        FFApp.log("Order", "Add order item: " + item.name);
+        FFApp.log("Order", "Add order item: " + item);
     }
     
     public int getSum() {

@@ -82,8 +82,8 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
                 FFApp.log("Main UI", "Select page at: " + position);
+                actionBar.setSelectedNavigationItem(position);
             }
             
             @Override
