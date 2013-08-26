@@ -43,6 +43,8 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     private Button mInvisibleButton;
     private HoverFrame mRightFrame;
     private FFSlidingPaneLayout mSlidingPane;
+    
+    private boolean mPageSwitching = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +84,12 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                FFApp.log("Main UI", "Select page at: " + position);
-                actionBar.setSelectedNavigationItem(position);
+                if (!mPageSwitching) {
+                    FFApp.log("Main UI", "Scroll to page at: " + position);
+                    mPageSwitching = true;
+                    actionBar.setSelectedNavigationItem(position);
+                    mPageSwitching = false;
+                }
             }
             
             @Override
@@ -163,10 +169,14 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-        FFApp.log("Main UI", "Click ActionBar tab at: " + tab.getPosition());
+        if (!mPageSwitching) {
+            mPageSwitching = true;
+            FFApp.log("Main UI", "Click ActionBar tab at: " + tab.getPosition());
+            // When the given tab is selected, switch to the corresponding page in
+            // the ViewPager.
+            mViewPager.setCurrentItem(tab.getPosition());
+            mPageSwitching = false;
+        }
     }
 
     @Override
