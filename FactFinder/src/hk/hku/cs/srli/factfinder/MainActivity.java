@@ -85,7 +85,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             @Override
             public void onPageSelected(int position) {
                 if (!mPageSwitching) {
-                    FFApp.log("Main UI", "Scroll to page at: " + position);
+                    FFApp.logImportant("Main UI", "Scroll to page at: " + position);
                     mPageSwitching = true;
                     actionBar.setSelectedNavigationItem(position);
                     mPageSwitching = false;

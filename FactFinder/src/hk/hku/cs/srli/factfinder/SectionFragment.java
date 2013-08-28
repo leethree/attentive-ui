@@ -120,7 +120,7 @@ public class SectionFragment extends Fragment {
                 
                 @Override
                 public void onClick(View v, int position) {
-                    FFApp.log("Main UI", "Click quick add button: section " + mSection + " position " + position);
+                    FFApp.logImportant("Main UI", "Click quick add button: section " + mSection + " position " + position);
                     FFApp.getOrder(mContext).add(getItem(position));
                 }
             });

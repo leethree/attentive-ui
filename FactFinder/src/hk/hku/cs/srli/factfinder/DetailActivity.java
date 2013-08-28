@@ -130,7 +130,7 @@ public class DetailActivity extends SherlockActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_with_edit:
-                FFApp.log("Detail UI", "Click 'add multiple' menu item.");
+                FFApp.logImportant("Detail UI", "Click 'add multiple' menu item.");
                 mDialog.show(getFragmentManager(), "dialog");
                 return true;
             case R.id.action_add:
@@ -139,7 +139,7 @@ public class DetailActivity extends SherlockActivity
                 navigateBack();
                 return true;
             case android.R.id.home:
-                FFApp.log("Detail UI", "Click ActionBar 'home' button.");
+                FFApp.logImportant("Detail UI", "Click ActionBar 'home' button.");
                 navigateBack();
                 return true;
         }
@@ -148,7 +148,7 @@ public class DetailActivity extends SherlockActivity
     
     @Override
     public void onBackPressed() {
-        FFApp.log("Nav", "Click system 'back' button.");
+        FFApp.logImportant("Nav", "Click system 'back' button.");
         super.onBackPressed();
     }
 
@@ -161,7 +161,7 @@ public class DetailActivity extends SherlockActivity
 
     @Override
     public void onClick(View v) {
-        FFApp.log("Detail UI", "Click price button to add.");
+        FFApp.logImportant("Detail UI", "Click price button to add.");
         addToOrder(mFact, 1);
         navigateBack();
     }

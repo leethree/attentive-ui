@@ -129,6 +129,7 @@ public class TestActivity extends Activity
             boolean hover = (sParticipant - 1) % 2 == 0;
             FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
             status.setText("practice h" + (hover ? 1 : 0));
+            FFApp.sLogPrefix = "P" + sParticipant + " Practice";
         } else {
             // test sessions
             int data = (sTrial - 1) % TESTS.size();
@@ -136,6 +137,7 @@ public class TestActivity extends Activity
             FFApp.getApp(this).changeDataSet(TESTS.get(data));
             FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
             status.setText("d" + data + " h" + (hover ? 1 : 0));
+            FFApp.sLogPrefix = "P" + sParticipant + " T" + sTrial;
         }
     }
 }

@@ -52,7 +52,7 @@ public class Order {
     }
     
     public void submit() {
-        FFApp.log("Order", "Submit order: " + mItems);
+        FFApp.logImportant("Order", "Submit order: " + mItems);
         FFApp.log("Order", "Order total: " + DataSet.formatMoney(getSum()));
         clear();
     }
