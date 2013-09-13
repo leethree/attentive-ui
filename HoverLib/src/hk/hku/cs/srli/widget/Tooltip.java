@@ -94,8 +94,13 @@ public class Tooltip extends FrameLayout {
     }
     
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return false;
+    }
+    
+    @Override
     public boolean onHoverEvent(MotionEvent event) {
-        if (hover != null) {
+        if (hover != null && hover.get() != null) {
             hover.get().onTooltipHoverEvent(event);
             return true; // Stop event from propaganda.
         } else {

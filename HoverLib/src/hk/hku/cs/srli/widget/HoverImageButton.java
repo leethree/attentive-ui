@@ -68,7 +68,8 @@ public class HoverImageButton extends ImageButton
     @Override
     public boolean onLongHover(View v, int x, int y) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
-            Tooltip tp = TooltipManager.show(this, getContentDescription(), x + 15, y + 15);
+            Tooltip tp = TooltipManager.show(this, getContentDescription(), 
+                    x + HoverButton.TOOLTIP_OFFSET, y + HoverButton.TOOLTIP_OFFSET);
             hover.attachTooltip(tp);
         }
         return true;

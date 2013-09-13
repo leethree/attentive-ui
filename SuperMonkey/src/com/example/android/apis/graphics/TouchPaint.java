@@ -247,6 +247,7 @@ public class TouchPaint extends Activity {
             super(c);
             setFocusable(true);
             setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+            setBackgroundColor(BACKGROUND_COLOR);
 
             mPaint = new Paint();
             mPaint.setColor(BACKGROUND_COLOR);

@@ -46,7 +46,6 @@
 	    <thumb>hamburger.jpg</thumb>
 	    <title>Hamburger</title>
         <name>Hamburger</name>
-        <type>À la carte</type>
         <price>2.1</price>
 	    <content>Your standard burger, with sponge-dough bun, 2-ounce patty, lettuce, tomatoes, with or without onions, pickles, and spread.</content>
     </item>

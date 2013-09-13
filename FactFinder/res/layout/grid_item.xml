@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        android:padding="6dp" >
+        android:layout_margin="6dp" >
         
         <hk.hku.cs.srli.factfinder.ui.PriceButton
             android:id="@+id/item_button_price"

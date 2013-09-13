@@ -20,6 +20,7 @@ public class TestActivity extends Activity
     private static final int APP_THEME = R.style.AppTheme;
     private static final int APP_THEME_NO_HOVER = R.style.AppTheme_NoHover;
     private static final List<Integer> TESTS = new ArrayList<Integer>(4);
+    private static final int PRACTICE = R.xml.duck; // practice data set
     
     static {
         TESTS.add(R.xml.burger);
@@ -28,15 +29,8 @@ public class TestActivity extends Activity
         TESTS.add(R.xml.hotpot);
     }
     
-    private static final int[][] PERMUTE_SQ = {{0, 1, 0, 1},
-                                               {1, 0, 1, 0},
-                                               {0, 1, 1, 0},
-                                               {1, 0, 0, 1},
-                                               {0, 0, 1, 1},
-                                               {1, 1, 0, 0}};
-    
     private static int sParticipant = 1;
-    private static int sTrial = 1;
+    private static int sTrial = 0;
     
     private static long timer;
     
@@ -56,7 +50,7 @@ public class TestActivity extends Activity
         npp.setOnValueChangedListener(this);
         
         npt = (NumberPicker) findViewById(R.id.number_picker_t);
-        npt.setMinValue(1);
+        npt.setMinValue(0);
         npt.setMaxValue(TESTS.size() * 2);
         npt.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         npt.setOnValueChangedListener(this);
@@ -129,12 +123,21 @@ public class TestActivity extends Activity
     }
     
     private void prepareTest() {
-        int data = ((sTrial - 1) / 2) % (TESTS.size());
-        boolean hover = sTrial % 2 != 0 ^ 
-                PERMUTE_SQ[(sParticipant - 1) % PERMUTE_SQ.length][(sTrial - 1) / 2] == 0;
-        FFApp.getApp(this).changeDataSet(TESTS.get(data));
-        FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
-        
-        status.setText("d" + data + " h" + (hover ? 1 : 0));
+        if (sTrial <= 0) {
+            // practice session
+            FFApp.getApp(this).changeDataSet(PRACTICE);
+            boolean hover = (sParticipant - 1) % 2 == 0;
+            FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
+            status.setText("practice h" + (hover ? 1 : 0));
+            FFApp.sLogPrefix = "P" + sParticipant + " Practice";
+        } else {
+            // test sessions
+            int data = (sTrial - 1) % TESTS.size();
+            boolean hover = (sParticipant - 1) % 4 > 1 ^ ((sTrial - 1) / TESTS.size()) % 2 == 0;
+            FFApp.getApp(this).changeDataSet(TESTS.get(data));
+            FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
+            status.setText("d" + data + " h" + (hover ? 1 : 0));
+            FFApp.sLogPrefix = "P" + sParticipant + " T" + sTrial;
+        }
     }
 }

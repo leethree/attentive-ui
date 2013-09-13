@@ -41,6 +41,8 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     private HoverFrame mWrapper;
     private HoverFrame mRightFrame;
     private FFSlidingPaneLayout mSlidingPane;
+    
+    private boolean mPageSwitching = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,8 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         //mInvisibleButton = (Button) findViewById(R.id.invisibleButton);
         mRightFrame = (HoverFrame) findViewById(R.id.right_pane);
         mSlidingPane = (FFSlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
-        mSlidingPane.closePane();
+        mSlidingPane.openPane();
+        //mSlidingPane.setTouchOnChildren(true);
         
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.
@@ -80,8 +83,12 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-                FFApp.log("Main UI", "Select page at: " + position);
+                if (!mPageSwitching) {
+                    FFApp.logImportant("Main UI", "Scroll to page at: " + position);
+                    mPageSwitching = true;
+                    actionBar.setSelectedNavigationItem(position);
+                    mPageSwitching = false;
+                }
             }
             
             @Override
@@ -148,10 +155,14 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-        FFApp.log("Main UI", "Click ActionBar tab at: " + tab.getPosition());
+        if (!mPageSwitching) {
+            mPageSwitching = true;
+            FFApp.log("Main UI", "Click ActionBar tab at: " + tab.getPosition());
+            // When the given tab is selected, switch to the corresponding page in
+            // the ViewPager.
+            mViewPager.setCurrentItem(tab.getPosition());
+            mPageSwitching = false;
+        }
     }
 
     @Override

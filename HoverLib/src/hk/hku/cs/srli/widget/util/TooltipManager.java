@@ -148,7 +148,7 @@ public class TooltipManager {
         view.getWindowVisibleDisplayFrame(displayFrame);
         
         WindowManager.LayoutParams params = Tooltip.getDefaultLayoutParams();
-        params.gravity = Gravity.TOP|Gravity.LEFT;
+        params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = xoffset + screenPos[0] - displayFrame.left;
         params.y = yoffset + screenPos[1] - displayFrame.top;
         return params;

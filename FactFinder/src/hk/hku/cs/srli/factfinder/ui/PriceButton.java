@@ -28,7 +28,7 @@ public class PriceButton extends HoverButton {
     }
 
     private void init() {
-        super.getHoverHandler().setHoverTimeout(HoverHandler.HOVER_TIMEOUT * 2);
+        //super.getHoverHandler().setHoverTimeout(HoverHandler.HOVER_TIMEOUT);
     }
     
     @Override

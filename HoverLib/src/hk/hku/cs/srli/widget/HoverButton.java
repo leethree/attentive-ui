@@ -17,6 +17,8 @@ import hk.hku.cs.srli.widget.util.HoverHandler.OnLongHoverListener;
 public class HoverButton extends Button
         implements OnLongClickListener, OnLongHoverListener {
     
+    public static final int TOOLTIP_OFFSET = 15;
+    
     private HoverHandler hover;
     
     public HoverButton(Context context) {
@@ -48,7 +50,9 @@ public class HoverButton extends Button
     public boolean onLongClick(View v) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
             Tooltip tp = TooltipManager.showAndHide(this, getContentDescription(),
-                    getWidth() * 1/2 + 15, getHeight() * 1/2 + 15, TooltipManager.LONG_DELAY);
+                    getWidth() * 1/2 + TOOLTIP_OFFSET, 
+                    getHeight() * 1/2 + TOOLTIP_OFFSET, 
+                    TooltipManager.LONG_DELAY);
             hover.attachTooltip(tp);
         }
         // do not prevent default action
@@ -74,7 +78,8 @@ public class HoverButton extends Button
     @Override
     public boolean onLongHover(View v, int x, int y) {
         if (getContentDescription() != null && getContentDescription().length() > 0) {
-            Tooltip tp = TooltipManager.show(this, getContentDescription(), x + 15, y + 15);
+            Tooltip tp = TooltipManager.show(this, getContentDescription(), 
+                    x + TOOLTIP_OFFSET, y + TOOLTIP_OFFSET);
             hover.attachTooltip(tp);
         }
         return true;

@@ -48,7 +48,13 @@ public class FFApp extends Application {
         return getApp(context).mOrder;
     }
     
+    public static String sLogPrefix = "";
+    
     public static void log(String tag, String msg) {
-        Log.i("FFApp.Log", "[" + tag + "] " + msg);
+        Log.i("FFApp.Log", sLogPrefix + " [" + tag + "] " + msg);
+    }
+    
+    public static void logImportant(String tag, String msg) {
+        Log.w("FFApp.Log", sLogPrefix + " [" + tag + "] " + msg);
     }
 }

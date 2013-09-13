@@ -53,7 +53,7 @@ public class OrderFragment extends Fragment {
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    FFApp.log("Main UI", "Swipe to dismiss order item at: " + position);
+                                    FFApp.logImportant("Main UI", "Swipe to dismiss order item at: " + position);
                                     FFApp.log("Order", "Remove order item: " + mAdapter.getItem(position));
                                     mAdapter.remove(mAdapter.getItem(position));
                                 }

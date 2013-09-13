@@ -1,4 +1,4 @@
-# Script to start "hovermonkey" on the device, which has a very rudimentary
+# Script to start "supermonkey" on the device, which has a very rudimentary
 # shell.
 # Fix permissions before running the script:
 # chmod 755 supermonkey.sh

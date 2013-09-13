@@ -73,7 +73,7 @@ public class HoverActionMenuItemView extends ActionMenuItemView
 
     @Override
     public boolean onLongHover(View v, int x, int y) {
-        hover.attachTooltip(TooltipManager.show(this, getContentDescription(), x + 15, y + 15));
+        hover.attachTooltip(TooltipManager.show(this, getContentDescription(), x, getHeight()));
         return true;
     }
 }
