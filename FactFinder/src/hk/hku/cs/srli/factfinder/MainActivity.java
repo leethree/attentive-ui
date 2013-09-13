@@ -4,6 +4,7 @@ package hk.hku.cs.srli.factfinder;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -204,11 +205,14 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
                     .setTitle(R.string.dialog_info_title).create();
             dialog.show();
             return true;
-        } else if (item.getItemId() == R.id.action_cancel) {
+        } else if (item.getItemId() == R.id.action_config) {
             FFApp.log("Main UI", "Click 'cancel' menu item.");
             FFApp.getOrder(this).clear();
-            setResult(RESULT_CANCELED);
-            finish();
+            Intent i = new Intent(this, TestActivity.class);
+            // new task
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            // start test
+            startActivity(i);
             FFApp.log("Nav", "Exit main screen.");
             return true;
         }

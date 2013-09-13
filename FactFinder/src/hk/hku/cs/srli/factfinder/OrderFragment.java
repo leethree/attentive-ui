@@ -1,7 +1,6 @@
 
 package hk.hku.cs.srli.factfinder;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -15,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.swipedismiss.SwipeDismissListViewTouchListener;
 
@@ -91,10 +91,8 @@ public class OrderFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             FFApp.log("Main UI", "Confirm order submission.");
                             mOrder.submit();
-                            // return to test driver
-                            getActivity().setResult(Activity.RESULT_OK);
-                            getActivity().finish();
-                            FFApp.log("Nav", "Exit main screen.");
+                            // inform the user by toast
+                            Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
                         }
                     }).setNeutralButton("Clear", new DialogInterface.OnClickListener() {
                         @Override

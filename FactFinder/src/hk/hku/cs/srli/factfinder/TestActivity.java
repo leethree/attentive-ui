@@ -19,11 +19,9 @@ import java.util.List;
 public class TestActivity extends Activity
         implements View.OnClickListener, NumberPicker.OnValueChangeListener, OnCheckedChangeListener {
 
-    private static final int REQ_TEST = 25534;
     private static final int APP_THEME = R.style.AppTheme;
     private static final int APP_THEME_NO_HOVER = R.style.AppTheme_NoHover;
-    private static final List<Integer> TESTS = new ArrayList<Integer>(4);
-    //private static final int PRACTICE = R.xml.duck; // practice data set
+    private static final List<Integer> TESTS = new ArrayList<Integer>(5);
     
     static {
         TESTS.add(R.xml.duck);
@@ -33,12 +31,8 @@ public class TestActivity extends Activity
         TESTS.add(R.xml.hotpot);
     }
     
-    //private static int sParticipant = 1;
-    //private static int sTrial = 0;
     private static int sDataset = 0;
-    private static int sHover = 0;
-    
-    private static long timer;
+    private static boolean sHover = false;
     
     private NumberPicker npd;
     private Switch sh;
@@ -66,14 +60,14 @@ public class TestActivity extends Activity
         // restore data
         SharedPreferences settings = getSharedPreferences("FF_Test", 0);
         sDataset = settings.getInt("ndataset", sDataset);
-        sHover = settings.getInt("nhover", sHover);
+        sHover = settings.getBoolean("bhover", sHover);
     }
     
     @Override
     protected void onResume() {
         super.onResume();
         npd.setValue(sDataset);
-        sh.setChecked(sHover != 0);
+        sh.setChecked(sHover);
         prepareTest();
     }
     
@@ -85,7 +79,7 @@ public class TestActivity extends Activity
         SharedPreferences settings = getSharedPreferences("FF_Test", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("ndataset", sDataset);
-        editor.putInt("nhover", sHover);
+        editor.putBoolean("bhover", sHover);
         editor.commit();
     }
 
@@ -95,10 +89,9 @@ public class TestActivity extends Activity
                 " with config: "+ status.getText());
         Intent i = new Intent(this, MainActivity.class);
         // clear activity stack
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         // start test
-        startActivityForResult(i, REQ_TEST);
-        timer = System.currentTimeMillis();
+        startActivity(i);
     }
 
     @Override
@@ -109,31 +102,14 @@ public class TestActivity extends Activity
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        sHover = sh.isChecked() ? 1 : 0;
+        sHover = sh.isChecked();
         prepareTest();
-    }
-    
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        long duration = System.currentTimeMillis() - timer;
-        // If the test completed and the request matches
-        if (requestCode == REQ_TEST) {
-            FFApp.log("Test", "Trial duration: " + duration * 0.001 + " s.");
-            if (resultCode == Activity.RESULT_OK) {
-                sHover = 1 - sHover;  // next trial
-                FFApp.log("Test", "Trial ended OK.");
-            } else {
-                // trial not ended successfully
-                FFApp.log("Test", "Trial cancelled.");
-            }
-        }
-        
     }
     
     private void prepareTest() {
         // test sessions
         int data = sDataset;
-        boolean hover = sHover != 0;
+        boolean hover = sHover;
         FFApp.getApp(this).changeDataSet(TESTS.get(data));
         FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
         status.setText("d" + data + " h" + (hover ? 1 : 0));

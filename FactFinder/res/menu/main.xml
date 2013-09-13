@@ -7,11 +7,11 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_info" />
     <item
-        android:id="@+id/action_cancel"
-        android:icon="@drawable/ic_cancel"
+        android:id="@+id/action_config"
+        android:icon="@drawable/ic_settings"
         android:orderInCategory="200"
         android:showAsAction="ifRoom"
-        android:titleCondensed="Cancel" 
-        android:title="Cancel this test" />
+        android:titleCondensed="Config" 
+        android:title="Configurations" />
 
 </menu>
