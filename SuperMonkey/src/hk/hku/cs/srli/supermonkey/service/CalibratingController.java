@@ -26,6 +26,8 @@ public class CalibratingController extends ServiceControllerBase {
     
     public void abortCalibration() {
         send("calib_abort");
+        // XXX: workaround
+        callback.handleStopped();
     }
     
     @Override

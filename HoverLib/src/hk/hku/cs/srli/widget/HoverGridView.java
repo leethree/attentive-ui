@@ -1,61 +1,128 @@
 package hk.hku.cs.srli.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.GridView;
 
+import hk.hku.cs.srli.widget.HoverScrollView.ScrollState;
+import hk.hku.cs.srli.widget.util.EdgeEffectHelper;
 import hk.hku.cs.srli.widget.util.HoverHandler;
-import hk.hku.cs.srli.widget.util.HoverHandler.OnHoverMoveListener;
 
-public class HoverGridView extends GridView implements OnHoverMoveListener {
+public class HoverGridView extends GridView {
     
     private HoverHandler hover;
+    private EdgeEffectHelper edge;
+    
+    // to change this, use changeState(newState)
+    private ScrollState state;
     
     public HoverGridView(Context context) {
         super(context);
-        init();
+        init(null, 0);
     }
 
     public HoverGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs, 0);
     }
 
     public HoverGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(attrs, defStyle);
     }
 
-    private void init() {
+    private void init(AttributeSet attrs, int defStyle) {
         hover = new HoverHandler(this);
-        hover.setOnHoverMoveListener(this);
+        edge = new EdgeEffectHelper(this);
+
+        hover.setOnHoverMoveListener(edge);
+        state = ScrollState.NOT_SCROLLABLE;
+        edge.setEdgeGlow(false, false, false, false);
+        setWillNotDraw(false);
     }
 
     
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
-        if (!hovered) {
-            // clear selection
-            setSelection(INVALID_POSITION);
-        }
+        edge.onHoverChanged(hovered);
     }
     
+    
     @Override
-    public void onHoverMove(View v, int x, int y) {
-        int position = pointToPosition(x, y);
-        if (isInTouchMode()) {
-            // exit touch mode
-            // TODO: find a way to get back to touch mode.
-            requestFocusFromTouch();
-        }
-        setSelection(position);
+    public boolean onInterceptHoverEvent(MotionEvent event) {
+        // get all hover events from here 
+        hover.onHoverEvent(event);
+        // don't interference with children
+        return false;
     }
     
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event);
+        // already handled above
+        return false;
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        edge.draw(canvas);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        updateScrollState();
+    }
+    
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        updateScrollState();
+    }
+    
+    private void updateScrollState() {
+        if (getChildCount() <= 0) {
+            changeState(ScrollState.NOT_SCROLLABLE);
+            return;
+        }
+        
+        float top = getChildAt(0).getTop();
+        float bottom = getChildAt(getChildCount() - 1).getBottom();
+
+        boolean reachedTop = getFirstVisiblePosition() == 0 && top >= 0;
+        boolean reachedBottom = 
+                getLastVisiblePosition() == getAdapter().getCount() - 1 &&
+                        bottom <=  getHeight();
+        
+        if (reachedTop && reachedBottom)
+            changeState(ScrollState.NOT_SCROLLABLE);
+        else if (reachedTop && !reachedBottom)
+            changeState(ScrollState.TOP);
+        else if (!reachedTop && reachedBottom)
+            changeState(ScrollState.BOTTOM);
+        else
+            changeState(ScrollState.MIDDLE);
+    }
+    
+    private void changeState(ScrollState newState) {
+        if (newState == state) return;
+        state = newState;
+        switch(state) {
+            case NOT_SCROLLABLE:
+                edge.setVerticalScrollable(false, false);
+                return;
+            case TOP:
+                edge.setVerticalScrollable(false, true);
+                return;
+            case BOTTOM:
+                edge.setVerticalScrollable(true, false);
+                return;
+            case MIDDLE:
+                edge.setVerticalScrollable(true, true);
+                return;
+        }
     }
 }

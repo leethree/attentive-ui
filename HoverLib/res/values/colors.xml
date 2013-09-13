@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="removable_edge">@android:color/holo_orange_dark</color>
+    <color name="scrollable_edge">@android:color/holo_blue_dark</color>
+    <color name="overscroll_edge">#808080</color>
+    <color name="dim_overlay">#44cccccc</color>
+</resources>

@@ -36,6 +36,8 @@ public class DemoListActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_list);
+        
+        getActionBar().setSubtitle("Powered by Monkey");
 
         if (findViewById(R.id.single_demo_container) != null) {
             // The detail container view will be present only in the
@@ -66,10 +68,13 @@ public class DemoListActivity extends Activity
             Bundle arguments = new Bundle();
             arguments.putString(DemoFragmentBase.ARG_ITEM_ID, id);
             DemoFragmentBase fragment = DemoContent.ITEM_MAP.get(id).fragment;
-            fragment.setArguments(arguments);
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.single_demo_container, fragment)
-                    .commit();
+            if (!fragment.isAdded()) {
+                // do this only if the fragment is not added
+                fragment.setArguments(arguments);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.single_demo_container, fragment)
+                        .commit();
+            }
 
         } else {
             // In single-pane mode, simply start the detail activity

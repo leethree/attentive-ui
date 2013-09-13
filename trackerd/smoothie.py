@@ -30,6 +30,7 @@ class MovingWindow(object):
         return sum(self._window) / float(len(self._window))
 
 
+# Finite impulse response filter
 class FirFilter(MovingWindow):
 
     def __init__(self, filters, normalization=None):
@@ -66,6 +67,7 @@ class Differentiator(object):
         return ret
 
 
+# Base class of fixation detectors
 class FixationDetector(object):
 
     def __init__(self, initial=True):
@@ -194,7 +196,6 @@ class DispersionDetector(FixationDetector):
                 saccade = True
 
         self._set_saccade(saccade)
-        # print x, y, saccade
 
 
 def get_data():
@@ -225,6 +226,7 @@ def printout(x):
     print x
 
 
+# used for testing
 def main():
     from trackerd import FeedProcessor
     processor = FeedProcessor(1000, 1000)

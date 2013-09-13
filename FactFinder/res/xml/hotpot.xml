@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <category-name>
+        <id>0</id>
+        <name>Soup Base</name>
+    </category-name>
+    <category-name>
+        <id>1</id>
+        <name>Speciality</name>
+    </category-name>
+    <category-name>
+        <id>2</id>
+        <name>Meat</name>
+    </category-name>
+    <category-name>
+        <id>3</id>
+        <name>Mushroom</name>
+    </category-name>
+    <category-name>
+        <id>4</id>
+        <name>Vegetable</name>
+    </category-name>
+    <category-name>
+        <id>5</id>
+        <name>Tofu</name>
+    </category-name>
+    <item>
+	    <id>0</id>
+	    <category>0</category>
+	    <thumb>20121206010216520.jpg</thumb>
+	    <title>Tomato soup hot pot</title>
+        <name>Tomato soup</name>
+        <type>Soup base</type>
+        <price>6.0</price>
+        <content>Serve out the tomato soup for customer after boiling. This soup works up an appetite, with great sour taste.
+Tomato ketchup and fresh tomato, with seasonings, are fried by vegetable oil. So this red soup tasts sour and sweet, with instense flavor.</content>
+    </item>
+    <item>
+	    <id>1</id>
+	    <category>0</category>
+	    <thumb>20121206010303369.jpg</thumb>
+	    <title>Seafood hot pot</title>
+        <name>Seafood soup</name>
+        <type>Soup base</type>
+        <price>7.5</price>
+	    <content>Seafood ingredients with great flavor, such as whiteflower raspberry and mussel,are chosen and then mixed together.
+Delicious soup and intense flavor seafood.</content>
+    </item>
+    <item>
+	    <id>2</id>
+	    <category>0</category>
+	    <thumb>20121206010322548.jpg</thumb>
+	    <title>Chicken soup hot pot</title>
+        <name>Chicken soup</name>
+        <type>Soup base</type>
+        <price>6.5</price>
+	    <content>Nutritious ingredients such as balck chicken,wolfberry,Chinese date are chosen and then mixed together.
+With intense flavor, the soup and the chicken tastes fresh and delicous.</content>
+    </item>
+    <item>
+	    <id>3</id>
+	    <category>0</category>
+	    <thumb>20121206122358465.jpg</thumb>
+	    <title>Mushroom soup hot pot</title>
+        <name>Mushroom soup</name>
+        <type>Soup base</type>
+        <price>7.5</price>
+	    <content>After boiling for 5 to 8 minute, the soup with rich fungus flavor and delicious taste can be served to the customer. (Wild fungus must be boiled for 5 minutes, and then the flavor can fully come out of the soup).
+According to scientific collocation, Boletus edulis, Boletus aereus and Chanterelle are cooked under high temperature. Then these are processed into powder, so that the nutrition and flavor of these wild funguses can be reserved.</content>
+    </item>
+    <item>
+	    <id>4</id>
+	    <category>0</category>
+	    <thumb>20121206115845383.jpg</thumb>
+	    <title>Sichuan spicy hot pot</title>
+        <name>Sichuan spicy soup</name>
+        <type>Soup base</type>
+        <price>7.0</price>
+	    <content>Vegetable or other food can be put in the pot after its boiling.
+The soup base contains  Sichuan beans and pepper fried by spice materials and vegetable oil, therefore is tastes mellow, and not too spicy. </content>
+    </item>
+    <item>
+	    <id>5</id>
+	    <category>0</category>
+	    <thumb>20121206010422472.jpg</thumb>
+	    <title>Double flavor hot pot</title>
+        <name>Double flavor hot pot</name>
+        <type>Soup base</type>
+        <price>8.0</price>
+	    <content>Vegetable or other food can be put in the pot after its boiling.
+Any two flavors can be  collocated together, so that you  can have more choices and more tastes.</content>
+    </item>
+    <item>
+	    <id>6</id>
+	    <category>2</category>
+	    <thumb>20121206111540572.jpg</thumb>
+	    <title>Black Angus beef tenderloin</title>
+        <name>Beef tenderloin</name>
+        <price>6.0</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>7</id>
+	    <category>2</category>
+	    <thumb>20121206111507726.jpg</thumb>
+	    <title>Mini sausages</title>
+        <price>3.95</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>8</id>
+	    <category>2</category>
+	    <thumb>20121206111335944.jpg</thumb>
+	    <title>Pork intestines</title>
+        <price>4.2</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>9</id>
+	    <category>2</category>
+	    <thumb>20121206111304690.jpg</thumb>
+	    <title>Black pork</title>
+        <price>4.0</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>10</id>
+	    <category>2</category>
+	    <thumb>20121206111215441.jpg</thumb>
+	    <title>Select beef</title>
+        <price>5.3</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>11</id>
+	    <category>2</category>
+	    <thumb>20121206111147723.jpg</thumb>
+	    <title>U.S.beef slices</title>
+        <price>5.5</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>12</id>
+	    <category>2</category>
+	    <thumb>20121206111055214.jpg</thumb>
+	    <title>Wagyu Beef</title>
+        <price>5.6</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>13</id>
+	    <category>2</category>
+	    <thumb>20121206111029805.jpg</thumb>
+	    <title>Luncheon meat</title>
+        <price>3.7</price>
+	    <content></content>
+    </item>
+    <item>
+        <id>14</id>
+        <category>2</category>
+        <thumb>20121206110909964.jpg</thumb>
+        <title>Crab meat sticks</title>
+        <price>4.8</price>
+        <content></content>
+    </item>
+    <item>
+        <id>15</id>
+        <category>2</category>
+        <thumb>20121206110836396.jpg</thumb>
+        <title>Mutton slices</title>
+        <price>4.7</price>
+        <content></content>
+    </item>
+    <item>
+        <id>16</id>
+        <category>2</category>
+        <thumb>20121206110752232.jpg</thumb>
+        <title>Mutton rib slices</title>
+        <price>4.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>17</id>
+        <category>2</category>
+        <thumb>20121206110635351.jpg</thumb>
+        <title>Pork kidney slice</title>
+        <price>3.3</price>
+        <content></content>
+    </item>
+    <item>
+        <id>18</id>
+        <category>2</category>
+        <thumb>20121206110352254.jpg</thumb>
+        <title>Pork liver</title>
+        <price>3.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>19</id>
+        <category>2</category>
+        <thumb>20121206110226624.jpg</thumb>
+        <title>Pork skin</title>
+        <price>3.2</price>
+        <content></content>
+    </item>
+    <item>
+        <id>20</id>
+        <category>2</category>
+        <thumb>20121206125158962.jpg</thumb>
+        <title>Handmade shrimp cakes</title>
+        <price>5.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>21</id>
+        <category>1</category>
+        <thumb>20121206042907449.jpg</thumb>
+        <title>Home-made tofu pudding</title>
+        <price>3.1</price>
+        <content>Put in after boiling, wait for 5 to 8 minute, it can be edible.Tofu pudding dip dish also should be served for the customer, so that the flavor can be enhanced.
+Using high quality soybean milk with traditional manual craft, the nutrition and fragrance of soybean is fully preserved. This is a classic dish in Sichuan style hotpot.</content>
+    </item>
+    <item>
+        <id>22</id>
+        <category>1</category>
+        <thumb>20121206042840822.jpg</thumb>
+        <title>Duck gizzards</title>
+        <price>4.2</price>
+        <content>Put in after boiling, wait for 2 to 3 minute, it can be edible.
+Duck gizzard is cut in slices. After boiled, it tastes crisp and soft, very delicous.
+</content>
+    </item>
+    <item>
+        <id>23</id>
+        <category>1</category>
+        <thumb>20121206042808770.jpg</thumb>
+        <title>Crispy meat</title>
+        <price>4.7</price>
+        <content>Put in after boiling, wait for 3 to 5 minute, then it can be edible.
+It is made of streaky pork, egg, starch and other ingredients. With bright yellow,it tastes soft mellow, fat but not greasy.</content>
+    </item>
+    <item>
+        <id>24</id>
+        <category>1</category>
+        <thumb>20121206042733282.jpg</thumb>
+        <title>Chicken slices</title>
+        <price>4.6</price>
+        <content>Best chicken legs with special ingredients are salted.
+It is tasty, nice color with lightly tawny.</content>
+    </item>
+    <item>
+        <id>25</id>
+        <category>1</category>
+        <thumb>20121206042711845.jpg</thumb>
+        <title>Fresh beef tripe</title>
+        <price>5.4</price>
+        <content>Put in after boiling,rinsing up and down for 15 to 30 seconds, then it is edible.
+Beef omasum is fully cleaned and peeled into slices, salted with union, ginger,cooking wine, paprika. It tastes crisp with intense union flavor. The most popular food among hotpot eater.</content>
+    </item>
+    <item>
+        <id>26</id>
+        <category>1</category>
+        <thumb>20121206042505367.jpg</thumb>
+        <title>Handmade noodles</title>
+        <price>3.8</price>
+        <content>The cook shows the handmade noodle performance in front of the customers. Put in the pot, boiling for 2 to 3 minutes, then the noodles is edible.
+Condiments, such as eggs and chicken essence are added. The powder is kneaded again and again, then it is fermented. The process technology combined with dancing elements are fully demonstrated in front of custonmers.</content>
+    </item>
+    <item>
+        <id>27</id>
+        <category>1</category>
+        <thumb>20130108030318862.jpg</thumb>
+        <title>Swine throat</title>
+        <price>5.6</price>
+        <content>Put in after boiling, wait for 1 to 2 minute, the pig throat can be edible.
+The pig throat is peeled off fascia, cut into slices. This is a very popular dish in spice hotpot.</content>
+    </item>
+    <item>
+        <id>28</id>
+        <category>3</category>
+        <thumb>20121206114823459.jpg</thumb>
+        <title>Golden needle mushrooms</title>
+        <price>2.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>29</id>
+        <category>3</category>
+        <thumb>20121206125442287.jpg</thumb>
+        <title>Black fungus</title>
+        <price>2.2</price>
+        <content></content>
+    </item>
+    <item>
+        <id>30</id>
+        <category>3</category>
+        <thumb>20121206125504450.jpg</thumb>
+        <title>Oyster mushrooms</title>
+        <price>3.2</price>
+        <content></content>
+    </item>
+    <item>
+        <id>31</id>
+        <category>3</category>
+        <thumb>20121206125525304.jpg</thumb>
+        <title>Shiitake mushrooms</title>
+        <price>3.3</price>
+        <content></content>
+    </item>
+    <item>
+        <id>32</id>
+        <category>3</category>
+        <thumb>20121206114615824.jpg</thumb>
+        <title>Beech mushrooms</title>
+        <price>3.2</price>
+        <content></content>
+    </item>
+    <item>
+        <id>33</id>
+        <category>3</category>
+        <thumb>20121206114554369.jpg</thumb>
+        <title>King oyster mushrooms</title>
+        <price>3.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>34</id>
+        <category>4</category>
+        <thumb>20121206125257157.jpg</thumb>
+        <title>White turnips</title>
+        <price>2.2</price>
+        <content></content>
+    </item>
+    <item>
+        <id>35</id>
+        <category>4</category>
+        <thumb>20121206113845483.jpg</thumb>
+        <title>Spinach</title>
+        <price>1.3</price>
+        <content></content>
+    </item>
+    <item>
+        <id>36</id>
+        <category>4</category>
+        <thumb>20121206125357810.jpg</thumb>
+        <title>Chinese cabbage</title>
+        <price>1.2</price>
+        <content></content>
+    </item>
+    <item>
+        <id>37</id>
+        <category>4</category>
+        <thumb>20121206113759935.jpg</thumb>
+        <title>Winter melon</title>
+        <price>2.6</price>
+        <content></content>
+    </item>
+    <item>
+        <id>38</id>
+        <category>4</category>
+        <thumb>20121206113736981.jpg</thumb>
+        <title>Vermicelli</title>
+        <price>2.0</price>
+        <content></content>
+    </item>
+    <item>
+        <id>39</id>
+        <category>4</category>
+        <thumb>20121206113713384.jpg</thumb>
+        <title>Kelp</title>
+        <price>2.25</price>
+        <content></content>
+    </item>
+    <item>
+        <id>40</id>
+        <category>4</category>
+        <thumb>20121206125713897.jpg</thumb>
+        <title>Sweet potatoes</title>
+        <price>2.8</price>
+        <content></content>
+    </item>
+    <item>
+        <id>41</id>
+        <category>4</category>
+        <thumb>20121206113617785.jpg</thumb>
+        <title>Sweet potato noodles</title>
+        <price>3.0</price>
+        <content></content>
+    </item>
+    <item>
+        <id>42</id>
+        <category>4</category>
+        <thumb>20121206113552362.jpg</thumb>
+        <title>Lotus root</title>
+        <price>2.3</price>
+        <content></content>
+    </item>
+    <item>
+        <id>43</id>
+        <category>4</category>
+        <thumb>20121206113530507.jpg</thumb>
+        <title>Celtuce</title>
+        <price>2.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>44</id>
+        <category>4</category>
+        <thumb>20121206113500759.jpg</thumb>
+        <title>Chinese yam</title>
+        <price>2.3</price>
+        <content></content>
+    </item>
+    <item>
+        <id>45</id>
+        <category>4</category>
+        <thumb>20130408105924106.jpg</thumb>
+        <title>Lettuce</title>
+        <price>1.7</price>
+        <content></content>
+    </item>
+    <item>
+        <id>46</id>
+        <category>4</category>
+        <thumb>20121206113411933.jpg</thumb>
+        <title>Sliced bamboo shoots</title>
+        <price>2.4</price>
+        <content></content>
+    </item>
+    <item>
+        <id>47</id>
+        <category>4</category>
+        <thumb>20121206113338739.jpg</thumb>
+        <title>Sweet corn</title>
+        <price>1.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>48</id>
+        <category>4</category>
+        <thumb>20121206113043494.jpg</thumb>
+        <title>Crown daisy</title>
+        <price>2.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>49</id>
+        <category>4</category>
+        <thumb>20121206113008196.jpg</thumb>
+        <title>Potato slices</title>
+        <price>2.2</price>
+        <content></content>
+    </item>
+    <item>
+        <id>50</id>
+        <category>5</category>
+        <thumb>20121206115656834.jpg</thumb>
+        <title>Frozen Tofu</title>
+        <price>2</price>
+        <content></content>
+    </item>
+    <item>
+        <id>51</id>
+        <category>5</category>
+        <thumb>20121206115637440.jpg</thumb>
+        <title>Sliced Tofu Skin</title>
+        <price>1.4</price>
+        <content></content>
+    </item>
+    <item>
+        <id>52</id>
+        <category>5</category>
+        <thumb>20121206010121248.jpg</thumb>
+        <title>Sliced bean curd sheets</title>
+        <price>1.6</price>
+        <content></content>
+    </item>
+    <item>
+        <id>53</id>
+        <category>5</category>
+        <thumb>20121206010138236.jpg</thumb>
+        <title>Fresh tofu</title>
+        <price>1.5</price>
+        <content></content>
+    </item>
+    <item>
+        <id>54</id>
+        <category>5</category>
+        <thumb>20121206115405248.jpg</thumb>
+        <title>Fried tofu skin</title>
+        <price>1.5</price>
+        <content></content>
+    </item>
+</menu>

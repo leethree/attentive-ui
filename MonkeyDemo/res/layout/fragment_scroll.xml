@@ -1,0 +1,15 @@
+<hk.hku.cs.srli.widget.HoverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never"
+    android:layout_margin="20dp" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dummy_text_long"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</hk.hku.cs.srli.widget.HoverScrollView>

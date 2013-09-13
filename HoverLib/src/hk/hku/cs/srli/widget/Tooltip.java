@@ -30,7 +30,7 @@ public class Tooltip extends FrameLayout {
         PARAMS.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
         PARAMS.format = PixelFormat.TRANSLUCENT;
-        PARAMS.windowAnimations = android.R.style.Animation_Toast;
+        PARAMS.windowAnimations = android.R.style.Animation_Dialog;
         PARAMS.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
         PARAMS.verticalMargin = 0;
         PARAMS.horizontalMargin = 0; 
@@ -94,8 +94,13 @@ public class Tooltip extends FrameLayout {
     }
     
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return false;
+    }
+    
+    @Override
     public boolean onHoverEvent(MotionEvent event) {
-        if (hover != null) {
+        if (hover != null && hover.get() != null) {
             hover.get().onTooltipHoverEvent(event);
             return true; // Stop event from propaganda.
         } else {

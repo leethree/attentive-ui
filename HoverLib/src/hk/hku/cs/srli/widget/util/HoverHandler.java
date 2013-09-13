@@ -1,13 +1,18 @@
 package hk.hku.cs.srli.widget.util;
 
+import android.content.Context;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 
+import hk.hku.cs.srli.widget.R;
 import hk.hku.cs.srli.widget.Tooltip;
 
 public class HoverHandler {
 
+    public static final int HOVER_TIMEOUT = 300;
+    public static final int LONGHOVER_TIMEOUT = 800;
+    
     private View view;
     private OnLongHoverListener onLongHoverListener;
     private OnHoverMoveListener onHoverMoveListener;
@@ -19,30 +24,49 @@ public class HoverHandler {
     private boolean viewEntered = false;
     private boolean tooltipEnabled = false;
     private boolean tooltipEntered = false;
-    private float hoverX;
-    private float hoverY;
+    private float hoverX = 0;
+    private float hoverY = 0;
     
     private boolean hasPerformedLongHover = false;
     private CheckForLongHover pendingCheckForLongHover = new CheckForLongHover();
     
+    private boolean enabled;
+    private int timeout;
+    
     public HoverHandler(View view) {
         this.view = view;
+        enabled = isHoverEnabled(view.getContext());
+        timeout = HOVER_TIMEOUT;
+    }
+    
+    public HoverHandler(View view, int timeout) {
+        this(view);
+        this.timeout = timeout;
+    }
+    
+    public static boolean isHoverEnabled(Context context) {
+        TypedValue a = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.hoverEnabled, a, true);
+        if (a.type == TypedValue.TYPE_INT_BOOLEAN) {
+            return a.data != 0;
+        } else {
+            return false;
+        }
     }
     
     public boolean onHoverEvent(MotionEvent event) {
+        // do nothing if disabled
+        if (!enabled) return false;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
                 viewEntered = true;
                 refreshInternalHoverState();
-                break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                viewEntered = false;
-                refreshInternalHoverState();
-                break;
+                return true;
             case MotionEvent.ACTION_HOVER_MOVE:
-                if (viewEntered) {
-                    hoverX = event.getRawX();
-                    hoverY = event.getRawY();
+                hoverX = event.getRawX();
+                hoverY = event.getRawY();
+                // trigger onHover events only if it's already hovered.
+                if (viewEntered && view.isHovered()) {
                     if (onHoverMoveListener != null) {
                         final int[] screenPos = new int[2];
                         getLocalCoordinate(screenPos);
@@ -50,6 +74,10 @@ public class HoverHandler {
                         onHoverMoveListener.onHoverMove(view, screenPos[0], screenPos[1]);
                     }
                 }
+                return true;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                viewEntered = false;
+                refreshInternalHoverState();
                 break;
         }
         return false;
@@ -65,6 +93,7 @@ public class HoverHandler {
     }
     
     public boolean onTooltipHoverEvent(MotionEvent event) {
+        if (!enabled) return false;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_HOVER_ENTER:
                 tooltipEntered = true;
@@ -76,6 +105,10 @@ public class HoverHandler {
                 break;
         }
         return false;
+    }
+    
+    public void setHoverTimeout(int timeout) {
+        this.timeout = timeout;
     }
     
     public void setOnLongHoverListener(OnLongHoverListener onLongHoverListener) {
@@ -115,8 +148,7 @@ public class HoverHandler {
     private void checkForExternalHoverChange(boolean hovering) {
         if (hovering != view.isHovered()) {
             // delay external hover change
-            view.postDelayed(new CheckForHoverChange(hovering),
-                    ViewConfiguration.getTapTimeout());
+            view.postDelayed(new CheckForHoverChange(hovering), timeout);
         }
     }
     
@@ -138,29 +170,33 @@ public class HoverHandler {
     private void checkForLongHover() {
         if (onLongHoverListener != null) {
             hasPerformedLongHover = false;
-
-            view.postDelayed(pendingCheckForLongHover,
-                    ViewConfiguration.getLongPressTimeout());
+            view.postDelayed(pendingCheckForLongHover, LONGHOVER_TIMEOUT);
         }
     }
     
     private class CheckForLongHover implements Runnable {
 
         public void run() {
-            if (view.isHovered() && !hasPerformedLongHover
+            if (view.isHovered()
+                    && !hasPerformedLongHover
                     && onLongHoverListener != null) {
                 final int[] screenPos = new int[2];
-                getLocalCoordinate(screenPos);
-                // fire long hover event
-                hasPerformedLongHover = 
-                        onLongHoverListener.onLongHover(view, screenPos[0], screenPos[1]);
+                if (getLocalCoordinate(screenPos)) {
+                    // fire long hover event
+                    hasPerformedLongHover = 
+                            onLongHoverListener.onLongHover(view, screenPos[0], screenPos[1]);
+                }
             }
         }
     }
     
-    private void getLocalCoordinate(int[] position) {
-        view.getLocationOnScreen(position);
-        position[0] = (int) hoverX - position[0];
-        position[1] = (int) hoverY - position[1];
+    private boolean getLocalCoordinate(int[] position) {
+        if (hoverX > 0 && hoverY > 0) {
+            view.getLocationOnScreen(position);
+            // bound by view rect
+            position[0] = Math.max(0, Math.min(view.getWidth(), (int) hoverX - position[0]));
+            position[1] = Math.max(0, Math.min(view.getHeight(), (int) hoverY - position[1]));
+            return true;
+        } else return false;
     }
 }

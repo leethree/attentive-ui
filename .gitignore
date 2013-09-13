@@ -45,3 +45,9 @@ local.properties
 
 # Python
 *.pyc
+
+# Image assets
+FactFinder/assets/
+
+# Log files
+*.log

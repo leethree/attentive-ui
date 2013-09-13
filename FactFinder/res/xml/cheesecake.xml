@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <category-name>
+        <id>0</id>
+        <name>Cheesecake</name>
+    </category-name>
+    <category-name>
+        <id>1</id>
+        <name>Speciality</name>
+    </category-name>
+    <category-name>
+        <id>2</id>
+        <name>Drink</name>
+    </category-name>
+    <item>
+	    <id>0</id>
+	    <category>0</category>
+	    <thumb>CCF--Original-Cheesecake-sl.jpg</thumb>
+	    <title>The Original</title>
+        <name>The Original Cheesecake</name>
+        <price>6.95</price>
+	    <content>The One that Started it All! Our Famous Creamy Cheesecake with a Graham Cracker Crust and Sour Cream Topping. </content>
+    </item>
+    <item>
+	    <id>1</id>
+	    <category>0</category>
+	    <thumb>menu_Cheesecake_Strawberry.jpg</thumb>
+	    <title>Fresh Strawberry</title>
+        <name>Strawberry Cheesecake</name>
+        <price>6.95</price>
+	    <content>The Original Topped with Glazed Fresh Strawberries. Our Most Popular Flavor for 30 Years! </content>
+    </item>
+    <item>
+	    <id>2</id>
+	    <category>0</category>
+	    <thumb>menu_Smores_Cheesecake.jpg</thumb>
+	    <title>Toasted Marshmallow S'mores Galore™</title>
+        <name>S'mores Cheesecake</name>
+        <price>7.25</price>
+	    <content>Hershey’s® Cheesecake topped with chocolate ganache. Finished with toasted housemade marshmallow, Honey Maid graham crackers and whipped cream. </content>
+    </item>
+    <item>
+	    <id>3</id>
+	    <category>0</category>
+	    <thumb>oreo.jpg</thumb>
+	    <title>OREO® Dream Extreme Cheesecake</title>
+        <name>OREO Cheesecake</name>
+        <price>7.25</price>
+	    <content>OREO® Cookies baked in our creamy Cheesecake with layers of fudge cake and OREO® Cookie mousse. Topped with a milk chocolate icing.
+25¢ from the sale of each slice will be donated to Feeding America, the nation’s leading domestic hunger relief charity.</content>
+    </item>
+    <item>
+	    <id>4</id>
+	    <category>0</category>
+	    <thumb>Hersheys_CC.jpg</thumb>
+	    <title>Hershey®'s Chocolate Bar Cheesecake</title>
+        <name>Hershey's Cheesecake</name>
+        <price>7.25</price>
+	    <content>Hershey®'s Cheesecake Between Moist Chocolate Cake with Creamy Chocolate Frosting and Chocolate Chips.</content>
+    </item>
+    <item>
+	    <id>5</id>
+	    <category>0</category>
+	    <thumb>stephanies_cheesecake.jpg</thumb>
+	    <title>Ultimate Red Velvet Cake Cheesecake™</title>
+        <name>Red Velvet Cheesecake</name>
+        <price>7.5</price>
+	    <content>Moist layers of Red Velvet Cake and our Original Cheesecake covered with our special Cheesecake Factory cream cheese frosting. </content>
+    </item>
+    <item>
+	    <id>6</id>
+	    <category>0</category>
+	    <thumb>Reeses.jpg</thumb>
+	    <title>Reese's® Peanut Butter Chocolate Cake Cheesecake</title>
+        <name>Reese's Cheesecake</name>
+        <price>7.5</price>
+	    <content>Chunks of Reese's® Peanut Butter Cups in our Original Cheesecake with Layers of Delicious Fudge Cake and Caramel.</content>
+    </item>
+    <item>
+	    <id>7</id>
+	    <category>0</category>
+	    <thumb>pina_colada.jpg</thumb>
+	    <title>Piña Colada Cake Cheesecake</title>
+        <name>Piña Colada Cheesecake</name>
+        <price>7.5</price>
+	    <content>A Seasonal Favorite - Moist White Cake Layered with Original Cheesecake, Pineapple, Coconut and Rum.</content>
+    </item>
+    <item>
+	    <id>8</id>
+	    <category>0</category>
+	    <thumb>CCF--30th-Anniversary-Choc-.jpg</thumb>
+	    <title>30th Anniversary Chocolate Cake Cheesecake</title>
+        <name>30th Anniv. Cheesecake</name>
+        <price>7.95</price>
+	    <content>Layers of Our Original Cheesecake, Fudge Cake and Chocolate Truffle Cream.</content>
+    </item>
+    <item>
+	    <id>9</id>
+	    <category>0</category>
+	    <thumb>menu_Cheesecake_GodivaChoco.jpg</thumb>
+	    <title>Godiva® Chocolate Cheesecake</title>
+        <name>Godiva Cheesecake</name>
+        <price>7.95</price>
+	    <content>Layers of Flourless Godiva Chocolate Cake, Godiva Chocolate Cheesecake and Chocolate Mousse.</content>
+    </item>
+    <item>
+	    <id>10</id>
+	    <category>0</category>
+	    <thumb>white_choc_menu.jpg</thumb>
+	    <title>White Chocolate Raspberry Truffle®</title>
+        <name>White Chocolate Cheesecake</name>
+        <price>7.95</price>
+	    <content>Creamy Cheesecake Swirled with White Chocolate and Raspberry.</content>
+    </item>
+    <item>
+	    <id>11</id>
+	    <category>1</category>
+	    <thumb>BlackoutCake.jpg</thumb>
+	    <title>Black - Out Cake</title>
+        <name>Blackout Cake</name>
+        <price>7.5</price>
+	    <content>Our Deepest, Richest Chocolate Cake with Chocolate Chips, Finished with Almonds. </content>
+    </item>
+    <item>
+	    <id>12</id>
+	    <category>1</category>
+	    <thumb>menu_Lemon_Cream_Torte.jpg</thumb>
+	    <title>Lemoncello Cream Torte™</title>
+        <name>Lemon Cream Torte</name>
+        <price>7.95</price>
+	    <content>Layers of Vanilla Cake and Lemon Mascarpone Cream Topped with Streusel and Served with Strawberries and Whipped Cream.</content>
+    </item>
+    <item>
+	    <id>13</id>
+	    <category>2</category>
+	    <thumb>menu_creamy_drinks.jpg</thumb>
+	    <title>Caribbean Cooler</title>
+        <name>Caribbean Cooler</name>
+        <type>Glass</type>
+        <price>6.25</price>
+	    <content>Mount Gay and Malibu Rums, Island Juices and Coconut all Swirled with Strawberries.</content>
+    </item>
+    <item>
+        <id>14</id>
+        <category>2</category>
+        <thumb>mojito.jpg</thumb>
+        <title>Mojito*</title>
+        <name>Mojito</name>
+        <type>Glass</type>
+        <price>6.5</price>
+        <content>Our Classic, with Cruzan Citrus Rum On the Rocks – A Cuban Favorite!
+*This Cocktail can be Prepared Skinny-Style with 150 Calories or Less</content>
+    </item>
+    <item>
+        <id>15</id>
+        <category>2</category>
+        <thumb>cosmo.jpg</thumb>
+        <title>Cosmopolitan*</title>
+        <name>Cosmopolitan</name>
+        <type>Glass</type>
+        <price>5.95</price>
+        <content>Skyy Citrus and Cointreau with a Splash of Cranberry Juice.
+*This Cocktail can be Prepared Skinny-Style with 150 Calories or Less</content>
+    </item>
+    <item>
+        <id>16</id>
+        <category>2</category>
+        <thumb>CCF-Asian-Pear-Martini--lo-.jpg</thumb>
+        <title>Asian Pear Martini</title>
+        <name>Asian Pear Martini</name>
+        <type>Glass</type>
+        <price>6.5</price>
+        <content>Absolut Vanilla Vodka, Pear, Sake and Passion Fruit.</content>
+    </item>
+    <item>
+        <id>17</id>
+        <category>1</category>
+        <thumb>CCF-SmallPlate-Stuffed-Mushrooms_1.jpg</thumb>
+        <title>Stuffed Mushrooms</title>
+        <name>Stuffed Mushrooms</name>
+        <price>6.95</price>
+        <content>Fontina and Parmesan Cheese, Garlic and Herbs in a Wine Sauce.</content>
+    </item>
+    <item>
+        <id>18</id>
+        <category>1</category>
+        <thumb>CCF-SmallPlate-Beet-Goat-Cheese-Salad.jpg</thumb>
+        <title>Beets with Goat Cheese*</title>
+        <name>Beets with Goat Cheese</name>
+        <price>5.95</price>
+        <content>Fresh Beets, Apples, Baby Arugula &amp; Pecans.
+*Featured on our SkinnyLicious™ Menu</content>
+    </item>
+    <item>
+        <id>19</id>
+        <category>1</category>
+        <thumb>Samosas.jpg</thumb>
+        <title>Chicken Samosas*</title>
+        <name>Chicken Samosas</name>
+        <price>5.95</price>
+        <content>Crispy Wrappers Filled with Spiced Chicken. Served with Cilantro Dipping Sauce.
+*Featured on our SkinnyLicious™ Menu</content>
+    </item>
+    <item>
+        <id>20</id>
+        <category>1</category>
+        <thumb>CCF-SmallPlate-Ahi-Tartare_1.jpg</thumb>
+        <title>Ahi Tartare*</title>
+        <name>Ahi Tartare</name>
+        <price>4.95</price>
+        <content>Raw Tuna with Avocado and Soy-Ginger Sesame Sauce
+*Featured on our SkinnyLicious™ Menu</content>
+    </item>
+    <item>
+        <id>21</id>
+        <category>1</category>
+        <thumb>CCF-SmallPlate-Margherita-Pizzette_1.jpg</thumb>
+        <title>Fresh Baked Flatbreads*</title>
+        <name>Fresh Baked Flatbreads</name>
+        <price>6.5</price>
+        <content>MARGHERITA
+Mozzarella, Tomato and Basil
+
+FRESH MUSHROOM
+Garlic and Fresh Herbs
+
+SAUSAGE AND RICOTTA
+Fontina, Parmesan and Romano Cheeses, Garlic Crumbs, and Herbs
+
+ROASTED PEAR AND BLUE CHEESE
+Pecans, Arugula and Caramelized Onions
+
+*Featured on our SkinnyLicious™ Menu</content>
+    </item>
+</menu>

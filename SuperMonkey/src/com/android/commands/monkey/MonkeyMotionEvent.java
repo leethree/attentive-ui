@@ -139,11 +139,9 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
      */
     private MotionEvent getEvent() {
         int pointerCount = mPointers.size();
-        //int[] pointerIds = new int[pointerCount];
         MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[pointerCount];
         MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[pointerCount];
         for (int i = 0; i < pointerCount; i++) {
-            //pointerIds[i] = mPointers.keyAt(i);
             pointerProperties[i] = new MotionEvent.PointerProperties();
             pointerProperties[i].id = mPointers.keyAt(i);
             pointerProperties[i].toolType = mToolType;

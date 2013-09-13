@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <category-name>
+        <id>0</id>
+        <name>Menu</name>
+    </category-name>
+    <item>
+	    <id>0</id>
+	    <category>0</category>
+	    <thumb>1600x1200x-9M1.jpg</thumb>
+	    <title>Double-Double® Burger Combo #1</title>
+        <name>Combo #1</name>
+        <type>Combo</type>
+        <price>6.45</price>
+	    <content>Double-Double® Burger
+            French Fries
+            Medium Drink</content>
+    </item>
+    <item>
+	    <id>1</id>
+	    <category>0</category>
+	    <thumb>1600x1200x-9M2.jpg</thumb>
+	    <title>Cheeseburger Combo #2</title>
+        <name>Combo #2</name>
+        <type>Combo</type>
+        <price>5.45</price>
+	    <content>Cheeseburger
+            French Fries
+            Medium Drink</content>
+    </item>
+    <item>
+        <id>2</id>
+        <category>0</category>
+        <thumb>1600x1200x-9M3.jpg</thumb>
+        <title>Hamburger Combo #3</title>
+        <name>Combo #3</name>
+        <type>Combo</type>
+        <price>5.15</price>
+        <content>Hamburger
+            French Fries
+            Medium Drink</content>
+    </item>
+    <item>
+	    <id>3</id>
+	    <category>0</category>
+	    <thumb>hamburger.jpg</thumb>
+	    <title>Hamburger</title>
+        <name>Hamburger</name>
+        <price>2.1</price>
+	    <content>Your standard burger, with sponge-dough bun, 2-ounce patty, lettuce, tomatoes, with or without onions, pickles, and spread.</content>
+    </item>
+    <item>
+	    <id>4</id>
+	    <category>0</category>
+	    <thumb>cheeseburger.jpg</thumb>
+	    <title>Cheeseburger</title>
+        <name>Cheeseburger</name>
+        <price>2.4</price>
+	    <content>Everything you'd get on the hamburger, but with a slice of American cheese thrown in for good measure.</content>
+    </item>
+    <item>
+	    <id>5</id>
+	    <category>0</category>
+	    <thumb>double-double.jpg</thumb>
+	    <title>Double-Double®</title>
+        <name>Double-Double</name>
+        <price>3.4</price>
+	    <content>Now throw on another patty and slice of cheese, either with or without onions.</content>
+    </item>
+    <item>
+	    <id>6</id>
+	    <category>0</category>
+	    <thumb>fries.jpg</thumb>
+	    <title>Fresh French Fries</title>
+        <name>Fries</name>
+        <price>1.5</price>
+	    <content>Order them well-done if you like your fries crispier and browner. Order them “light” if you prefer them closer to raw.</content>
+    </item>
+    <item>
+	    <id>7</id>
+	    <category>0</category>
+	    <thumb>shakes.jpg</thumb>
+	    <title>Milkshakes</title>
+        <name>Shakes</name>
+        <price>2.05</price>
+	    <content>That’s right milkshake fans, you can have In N Out’s shakes in large and xlarge sizes! It’s not written directly on the menu, but yes, it is available!</content>
+    </item>
+    <item>
+	    <id>8</id>
+	    <category>0</category>
+	    <thumb>drink.jpg</thumb>
+	    <title>Soft Drink</title>
+        <name>Soft Drink</name>
+        <type>Medium</type>
+        <price>1.55</price>
+	    <content>Refreshing selections include Coca-Cola Classic, Diet Coke, 7Up, Dr. Pepper, root bear, lemonade, Minute Maid Light Lemonade, iced tea, and coffee.</content>
+    </item>
+</menu>

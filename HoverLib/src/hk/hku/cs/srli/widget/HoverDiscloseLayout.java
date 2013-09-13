@@ -2,15 +2,18 @@
 package hk.hku.cs.srli.widget;
 
 import android.content.Context;
+import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.FrameLayout;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import hk.hku.cs.srli.widget.util.HoverHandler;
 
-public class HoverDiscloseLayout extends FrameLayout {
+public class HoverDiscloseLayout extends RelativeLayout {
 
     private HoverHandler hover;
+    private boolean dimmed;
     
     public HoverDiscloseLayout(Context context) {
         super(context);
@@ -28,30 +31,73 @@ public class HoverDiscloseLayout extends FrameLayout {
     }
 
     private void init() {
-        hover = new HoverHandler(this);
+        hover = new HoverHandler(this, HoverHandler.HOVER_TIMEOUT * 2);
+        if (!HoverHandler.isHoverEnabled(getContext())) {
+            // disable itself
+            setEnabled(false);
+        }
+        setBackgroundResource(R.drawable.transition_dim);
+        dimmed = false;
     }
     
     @Override
     protected void onFinishInflate() {
-        setAllChildrenVisibility(INVISIBLE);
+        if (isEnabled()) setAllChildrenVisibility(INVISIBLE);
         super.onFinishInflate();
     }
 
     @Override
     public void onHoverChanged(boolean hovered) {
-        super.onHoverChanged(hovered);
+        TransitionDrawable transition = (TransitionDrawable) getBackground();
+        // animate background transition
         if (hovered) {
+            if (dimmed) {
+                transition.reverseTransition(250);
+                dimmed = false;
+            }
+        } else {
+            transition.startTransition(500);
+            dimmed = true;
+        }
+        super.onHoverChanged(hovered);
+        if (isEnabled()) updateChildrenVisibility();
+    }
+    
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        hover.onHoverEvent(event);
+        // do not consume the event
+        return false;
+    }
+    
+    @Override
+    protected boolean dispatchHoverEvent(MotionEvent event) {
+        boolean ret = super.dispatchHoverEvent(event);
+        if (isEnabled()) updateChildrenVisibility();
+        return ret;
+    }
+    
+    private void updateChildrenVisibility() {
+        if (isHovered() || hasActiveChild()) {
             setAllChildrenVisibility(VISIBLE);
         } else {
             setAllChildrenVisibility(INVISIBLE);
         }
     }
     
-    @Override
-    public boolean onHoverEvent(MotionEvent event) {
-        return hover.onHoverEvent(event);
+    private boolean hasActiveChild() {
+        for(int i = 0; i < getChildCount(); ++i) {
+            boolean ret = false;
+            View child = getChildAt(i);
+            ret |= child.isHovered();
+            ret |= child.isPressed();
+            ret |= child.isSelected();
+            ret |= child.isFocused();
+            if (ret) return true;
+        }
+        return false;
     }
-    
+
     private void setAllChildrenVisibility(int visibility) {
         for(int i = 0; i < getChildCount(); ++i) {
             // TODO: maintain original state if child is already hidden. 

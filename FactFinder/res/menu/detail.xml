@@ -1,17 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_star"
-        android:icon="@android:drawable/ic_menu_share"
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_new"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/action_share"
-        android:titleCondensed="@string/action_share_short" />
+        android:title="Add to order"
+        android:titleCondensed="Add" />
     <item
-        android:id="@+id/action_open_in_browser"
-        android:icon="@android:drawable/ic_menu_set_as"
+        android:id="@+id/action_add_with_edit"
+        android:icon="@drawable/ic_add_to_queue"
+        android:orderInCategory="200"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/action_open"
-        android:titleCondensed="@string/action_open_short" />
+        android:title="Add multiple"
+        android:titleCondensed="Customize" />
 
 </menu>

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <category-name>
+        <id>0</id>
+        <name>Coffee / Espresso</name>
+    </category-name>
+    <category-name>
+        <id>1</id>
+        <name>Tea / Refresher</name>
+    </category-name>
+    <category-name>
+        <id>2</id>
+        <name>Frappuccino</name>
+    </category-name>
+    <category-name>
+        <id>3</id>
+        <name>Bakery</name>
+    </category-name>
+    <item>
+	    <id>0</id>
+	    <category>0</category>
+	    <thumb>20229527c1c240439ddbc81bf821d95e.jpg</thumb>
+	    <title>Caffè Latte</title>
+        <name>Caffè Latte</name>
+        <price>2.75</price>
+        <content>Rich, full-bodied espresso in steamed milk, lightly topped with foam.
+            This is the original coffeehouse classic. And like most classics, part of its appeal comes from its simplicity. A caffè latte is simply a shot or two of bold, tasty espresso with fresh, sweet steamed milk over it. Some prefer to add syrup or extra espresso to the recipe. Some maintain that it is entirely perfect as is.</content>
+    </item>
+    <item>
+	    <id>1</id>
+	    <category>0</category>
+	    <thumb>43c3301d81bd4ea4a9fec5beaf43a541.jpg</thumb>
+	    <title>Cappuccino</title>
+        <name>Cappuccino</name>
+        <price>2.75</price>
+	    <content>Espresso with steamed milk, topped with a deep layer of foam.
+        With less milk than a latte, cappuccino offers a stronger espresso flavor and a luxurious texture. To make it properly requires much skill and attentiveness. Arguably the most important part is frothing the foam to velvety perfection as the milk steams – something our baristas take great care to achieve. The milky moustache that clings to your upper lip is proof we’ve made yours right. And may we say, you wear it well.</content>
+    </item>
+    <item>
+	    <id>2</id>
+	    <category>0</category>
+	    <thumb>c250b8ffd5c7483c8aa10f790f93f18c.jpg</thumb>
+	    <title>Caffè Mocha</title>
+        <name>Caffè Mocha</name>
+        <price>3.25</price>
+	    <content>Espresso with bittersweet mocha sauce and steamed milk. Topped with sweetened whipped cream.
+        There’s no question chocolate and coffee are flavors that meant for each other. Both are rich and full of depth. Where one is creamy, the other is roasty. They complement each other perfectly. And when they come together under a fluffy cloud of sweetened whipped cream, you’ll wish their union would last forever.</content>
+    </item>
+    <item>
+	    <id>3</id>
+	    <category>0</category>
+	    <thumb>130690c11fe64de192cdf74bae6cb019.jpg</thumb>
+	    <title>Caramel Macchiato</title>
+        <name>Caramel Macchiato</name>
+        <price>3.55</price>
+	    <content>Freshly steamed milk with vanilla-flavored syrup, marked with espresso and finished with caramel sauce.
+        Scores of people are passionate devotees of this signature beverage. So bewitched are they, you’d think it was some kind of magical elixir. Well there’s no hocus pocus here. We’ll tell you exactly what goes into it: creamy vanilla-flavored syrup, freshly steamed milk with a topping of velvety-rich foam, an intense hit of our Espresso Roast, a finishing of buttery caramel drizzle … okay, we take it back. That does sounds like magic to us. (And it tastes even better.)</content>
+    </item>
+    <item>
+	    <id>4</id>
+	    <category>0</category>
+	    <thumb>9a31eb8e3806479ebcba3ad39c5024ec.jpg</thumb>
+	    <title>Espresso</title>
+        <name>Espresso</name>
+        <price>2.95</price>
+	    <content>Made with our own Espresso Roast.
+        Smooth and versatile Espresso Roast is the very heart and soul of Starbucks. Its rich flavor, lingering aroma and caramelly sweetness make it the perfect foundation for lattes, cappuccinos and all our espresso-based beverages. But you can also enjoy it all by itself – indeed, that might be the best way to discover its nuances.</content>
+    </item>
+    <item>
+	    <id>5</id>
+	    <category>0</category>
+	    <thumb>69dc4401f64d4419a8d78ca9b5200271.jpg</thumb>
+	    <title>Caffè Americano</title>
+        <name>Caffè Americano</name>
+        <price>2.45</price>
+	    <content>Rich, full-bodied espresso with hot water in true European style.
+        In Europe, coffee is essentially espresso – which, in America, isn’t very much coffee. To create a caffè americano – a coffee that satisfies the American preference for more sips in every cup – Europeans simply add hot water to their espresso. While the americano is similar in strength and taste to American-style brewed coffee, there are subtle differences achieved by pulling a fresh shot of espresso for the beverage base. The best way to discover these nuances, of course, is to try a cup yourself.</content>
+    </item>
+    <item>
+	    <id>6</id>
+	    <category>0</category>
+	    <thumb>7c99e18741184460b200919ed1341abd.jpg</thumb>
+	    <title>Iced Caffè Latte</title>
+        <name>Iced Caffè Latte</name>
+        <price>2.75</price>
+	    <content>Full-bodied espresso plus cold milk and poured over ice.
+        It’s summertime – but who’s to say you can’t enjoy your favorite coffee drink? There’s always a good reason to relax with rich, full-bodied espresso in cold milk poured over ice.</content>
+    </item>
+    <item>
+	    <id>7</id>
+	    <category>0</category>
+	    <thumb>2a632a1fe8594e91870299de773d64fa.jpg</thumb>
+	    <title>Iced Caffè Mocha</title>
+        <name>Iced Caffè Mocha</name>
+        <price>3.95</price>
+	    <content>Espresso combined with bittersweet mocha sauce and milk over ice. Topped with sweetened whipped cream.
+        What more could you want from a summertime treat? Espresso, bittersweet mocha sauce poured over ice and topped with rich, sweetened whipped cream. Delightful. The real question is what to call it – coffee or dessert?</content>
+    </item>
+    <item>
+	    <id>8</id>
+	    <category>0</category>
+	    <thumb>0e147d45a3154de1bae257b5bba67671.jpg</thumb>
+	    <title>Iced Caramel Macchiato</title>
+        <name>Iced Caramel Macchiato</name>
+        <price>3.55</price>
+	    <content>Espresso combined with vanilla-flavored syrup, milk and caramel sauce over ice.
+        A Starbucks classic, chilled for a classic summer’s day. To our signature espresso we add a creamy mix of vanilla syrup and cold milk poured over ice; it’s then topped with our proprietary buttery caramel sauce. Sweet!</content>
+    </item>
+    <item>
+	    <id>9</id>
+	    <category>0</category>
+	    <thumb>c399164ad0f94aecbe0e51a72324c9bc.jpg</thumb>
+	    <title>Iced Caffè Americano</title>
+        <name>Iced Caffè Americano</name>
+        <price>2.45</price>
+	    <content>Rich, full-bodied espresso combined with water and chilled with ice.
+        Our Iced Caffè Americano is similar in strength but different in flavor from our regular Iced Coffee (which is a little sweeter). This one is prepared by combining our signature espresso with water and pouring it over ice to chill. All the flavor of your favorite brew, minus the heat.</content>
+    </item>
+    <item>
+	    <id>10</id>
+	    <category>1</category>
+	    <thumb>5addd7ce7f1d4164952a524e82af181c.jpg</thumb>
+	    <title>Chai Tea Latte</title>
+        <name>Chai Tea Latte</name>
+        <price>1.45</price>
+	    <content>Spiced black tea blended with steamed milk.
+        The warm, aromatic flavors of chai tea have their roots in the ancient Ayurvedic tradition of India, where roadside tea merchants can be found preparing black tea with traditional healing spices like cardamom, cinnamon and black pepper. Featuring ingredients gathered from around the globe, our version of this beloved beverage is wonderfully sweet and spicy – and every bit as soothing.</content>
+    </item>
+    <item>
+	    <id>11</id>
+	    <category>1</category>
+	    <thumb>abfa31c00acf45c9a40bfadeaba5378b.jpg</thumb>
+	    <title>Green Tea Latte</title>
+        <name>Green Tea Latte</name>
+        <price>1.95</price>
+	    <content>Sweetened matcha green tea with steamed milk.
+        The Japanese tea ceremony emphasizes the virtues of humility, restraint and simplicity, its practice governed by a set of highly ritualized actions. But this smooth and creamy matcha-based beverage can be enjoyed any way you like. So by all means, slurp away if you want to.</content>
+    </item>
+    <item>
+	    <id>12</id>
+	    <category>1</category>
+	    <thumb>6d74db346ecf48fbb7289b35ddd0fc10.jpg</thumb>
+	    <title>Iced Chai Tea Latte</title>
+        <name>Iced Chai Tea Latte</name>
+        <price>1.95</price>
+	    <content>Black tea infused with cardamom, cinnamon, black pepper and star anise added to milk and ice.
+        Fresh, spicy, sweet and milky – just like the chai wallahs make it, only cooler. A spicy drink of black tea infused with cardamom, cinnamon, black pepper, star anise, milk and ice, one sip and you might just feel like you’ve been magically transported to India. In the middle of a snow storm.</content>
+    </item>
+    <item>
+	    <id>13</id>
+	    <category>1</category>
+	    <thumb>8b921db9b7e74d108996d726096a020a.jpg</thumb>
+	    <title>Iced Green Tea Latte</title>
+        <name>Iced Green Tea Latte</name>
+        <price>2.45</price>
+	    <content>Premium matcha green tea lightly sweetened and combined with milk and ice.
+        If there really is a Shangri-la, we’d be willing to bet this is what they serve there: a unique and stimulating blend of matcha green tea and milk, lightly sweetened and served over ice.</content>
+    </item>
+    <item>
+        <id>14</id>
+        <category>1</category>
+        <thumb>7e75a55630314d478f0b63865d271c39.jpg</thumb>
+        <title>China Green Tips Brewed Tea</title>
+        <name>China Green Tips Brewed Tea</name>
+        <price>1.95</price>
+        <content>A light and lingering green tea with a fine, fresh flavor.
+        Every spring, as it has been for thousands of years, the first flushes of high-grown Mao Feng teas are plucked and quickly steamed to preserve a creamy, vegetative taste that heralds the return of life after the cold winter. Some of these teas are lucky enough to become China Green Tips.</content>
+    </item>
+    <item>
+        <id>15</id>
+        <category>1</category>
+        <thumb>2213d89c75454269af97aa822c24e588.jpg</thumb>
+        <title>Full Leaf Chai Tea</title>
+        <name>Full Leaf Chai Tea</name>
+        <price>1.95</price>
+        <content>A satisfyingly rich blend of black teas and exotic spices.
+        To create your own version of Full Leaf Chai, you would accumulate many, many frequent flyer miles shuttling between Asia, Africa and Central America gathering rich black tea, sweet cinnamon, zingy ginger, spicy star anise and warm cardamom. Happily, the wonderful result would more than make up for a lot of bad airline food.</content>
+    </item>
+    <item>
+        <id>16</id>
+        <category>1</category>
+        <thumb>28129106cb1c40d38728d19180370780.png</thumb>
+        <title>Valencia Orange Starbucks Refreshers™ Beverage</title>
+        <name>Valencia Orange</name>
+        <price>3.75</price>
+        <content>Three varietals of orange combined with floral and fruity notes from orange peel, cardamom, jasmine and apricot lightly caffeinated with Green Coffee Extract, served over ice.
+        Making the most out of your long summer days sometimes means an afternoon pick-me-up. Here’s invigorating refreshment from three different types of oranges – Valencia, Clementine and a slice of Navel Orange – and Green Coffee Extract, which contains the natural caffeine of green unroasted coffee beans.</content>
+    </item>
+    <item>
+        <id>17</id>
+        <category>1</category>
+        <thumb>10ca59f648094240a32e3146b99bce6c.jpg</thumb>
+        <title>Very Berry Hibiscus Starbucks Refreshers™ Beverage</title>
+        <name>Very Berry Hibiscus</name>
+        <price>3.25</price>
+        <content>Real fruit juice and whole blackberries shaken with Green Coffee Extract for a boost of natural energy, served over ice.
+        Re-energize with a thirst quenching combination of tangy blackberry and hints of hibiscus. Shaken with whole blackberries and a boost of natural energy from Green Coffee Extract, our handcrafted Very Berry Hibiscus Starbucks Refreshers™ beverage is a low-calorie afternoon recharge that tastes nothing like coffee.</content>
+    </item>
+    <item>
+        <id>18</id>
+        <category>1</category>
+        <thumb>adea460659fd4efc8b24313c10981cc8.jpg</thumb>
+        <title>Cool Lime Starbucks Refreshers™ Beverage</title>
+        <name>Cool Lime</name>
+        <price>5.95</price>
+        <content>Real fruit juice, mint and a lime slice shaken with Green Coffee Extract for a boost of natural energy, served over ice.
+        Recharge your afternoon with a juicy, handcrafted drink. Cool Lime Starbucks Refreshers™ beverage is a lively blend of lime, citrus and hints of mint and cucumber, shaken with real lime slices. It’s a delicious, low-calorie pick-me-up delivering a natural boost of energy from Green Coffee Extract, but without the flavor of coffee.</content>
+    </item>
+    <item>
+        <id>19</id>
+        <category>2</category>
+        <thumb>9631da04974146de9a18a2162d789b39.jpg</thumb>
+        <title>Java Chip Frappuccino® Blended Beverage</title>
+        <name>Java Chip Frappuccino</name>
+        <price>4.25</price>
+        <content>Coffee with rich mocha-flavored sauce blended with milk, chocolaty chips and ice. Topped with sweetened whipped cream and chocolate-flavored drizzle.
+        We created this wondrously decadent beverage for those who love the taste of chocolate – and lots of it – with their iced coffee. Rich, chocolaty chips punctuate a cool, refreshing blend of coffee and mocha flavors. And in case that isn’t enough chocolaty goodness for you, we finish our sweetened whipped cream topping with a deliciously sweet chocolate-flavored drizzle.</content>
+    </item>
+    <item>
+        <id>20</id>
+        <category>2</category>
+        <thumb>adafb6a71b0845a488d725ad2153cf6b.jpg</thumb>
+        <title>Mocha Frappuccino® Blended Beverage</title>
+        <name>Mocha Frappuccino</name>
+        <price>3.75</price>
+        <content>Coffee with rich mocha-flavored sauce blended with milk and ice. Topped with sweetened whipped cream.
+        If making the most of sunny weather is a priority for you in the summer, this delicious, decadent beverage should come to mind. It's sweet, creamy and cold – just the way a good summer treat should be. And it serves up the rich, satisfying taste of chocolate and coffee. Pure indulgence for pure enjoyment.</content>
+    </item>
+    <item>
+        <id>21</id>
+        <category>2</category>
+        <thumb>ed223419ec30443d983ffa981739ca0c.jpg</thumb>
+        <title>Caramel Frappuccino® Blended Beverage</title>
+        <name>Caramel Frappuccino</name>
+        <price>3.5</price>
+        <content>Coffee blended with caramel syrup, milk and ice. Topped with whipped cream and caramel sauce.
+        This delectable treat is hands down our most popular Frappuccino® blended beverage. And it’s not hard to see why. The coffee is bold but easy-drinking. The caramel lends a distinct buttery sweetness. The fluffy swirl of whipped cream adds just the right touch of decadence. That’s tough to beat by any measure.</content>
+    </item>
+    <item>
+        <id>22</id>
+        <category>2</category>
+        <thumb>823f21593fad43769e2817bb72f53d74.jpg</thumb>
+        <title>Espresso Frappuccino® Blended Beverage</title>
+        <name>Espresso Frappuccino</name>
+        <price>3.25</price>
+        <content>Coffee with espresso, blended with milk and ice.
+        Much like our original Coffee Frappuccino® blended beverage, this delectable indulgence is a refreshing blend of our dark-roasted coffee, milk and ice. However the added shot of our rich and smooth Espresso Roast creates a bolder coffee flavor that espresso lovers get really excited about.</content>
+    </item>
+    <item>
+        <id>23</id>
+        <category>2</category>
+        <thumb>cf9ef118d0bb46f5aad97fce6db4dfdc.jpg</thumb>
+        <title>Coffee Frappuccino® Blended Beverage</title>
+        <name>Coffee Frappuccino</name>
+        <price>2.95</price>
+        <content>Coffee blended with milk and ice.
+        This is our original Frappuccino® blended beverage – the one that reinvented summertime coffee for millions of coffee lovers around the world. It sparked immediate accolades and lasting devotion. Because as with any true original, the delicious taste of this refreshingly cool coffee really stands the test of time.</content>
+    </item>
+    <item>
+        <id>24</id>
+        <category>2</category>
+        <thumb>24900da970d34dd3ac98d696f3d450fd.jpg</thumb>
+        <title>Mocha Cookie Crumble Frappuccino® Blended Beverage</title>
+        <name>Mocha Cookie Frappuccino</name>
+        <price>3.75</price>
+        <content>Coffee blended with mocha sauce, vanilla syrup, chocolaty chips, milk and ice, and topped with chocolaty whipped cream and chocolate cookie crumbles.
+        Milk and cookies meets chocolate and coffee for the drink you’re too grown-up to admit that you really want. No need to dunk. We suggest alternating between sweet spoonfuls of crumbly cookie topping over chocolaty whip and smooth slurps of mocha mingled with Frappuccino chips – and maybe an occasional happy dance in between.</content>
+    </item>
+    <item>
+        <id>25</id>
+        <category>3</category>
+        <thumb>76635e365eff407e957b7fd029af93c3.jpg</thumb>
+        <title>Blueberry Scone</title>
+        <name>Blueberry Scone</name>
+        <price>2.25</price>
+        <content>A moist scone studded with blueberries and topped with sugar crystals.
+        Scones and other “quick breads” trace their origin to Britain. And although this delicious offering – loaded with plump, sweet blueberries – is unlikely to turn you into a royalist, it will certainly give you a new appreciation for English baking traditions.</content>
+    </item>
+    <item>
+        <id>26</id>
+        <category>3</category>
+        <thumb>9a156e4db43046d884db3bb5a2d73ffe.jpg</thumb>
+        <title>Butter Croissant</title>
+        <name>Butter Croissant</name>
+        <price>2.75</price>
+        <content>A true European-style classic croissant.
+        What makes this buttery puff pastry so deliciously flaky? Premium ingredients and a diligent commitment to a special recipe. Our croissants are made by layering yeast dough with butter and rolling and folding as many as 147 times. &lt;i&gt;C’est magnifique!&lt;/i&gt;</content>
+    </item>
+    <item>
+        <id>27</id>
+        <category>3</category>
+        <thumb>cdc26c82472541d2af3c0ce5bc9dd92e.jpg</thumb>
+        <title>Cheese Danish</title>
+        <name>Cheese Danish</name>
+        <price>2.45</price>
+        <content>A flaky pastry folded around a generous serving of cream cheese filling.
+        Looking for something light and flaky, but with a little more to it than your unadorned pastry? Then reach for this rich, flaky pastry with a generous serving of real cream cheese – the perfect way to start the day, or a fine mid-afternoon boost.</content>
+    </item>
+    <item>
+        <id>28</id>
+        <category>3</category>
+        <thumb>ea1e1896155a40b2b2f9d7c007c0c0e2.jpg</thumb>
+        <title>Chocolate Chunk Cookie</title>
+        <name>Chocolate Chunk Cookie</name>
+        <price>2.65</price>
+        <content>A large buttery, chewy cookie loaded with premium chocolate chunks.
+        Imagine big chunks of chocolate folded into wheat flour, sugar and butter and baked to perfection, so that the large, buttery chunks of cookie will melt in your mouth. Now wipe your mouth. You’re salivating on your keyboard.</content>
+    </item>
+    <item>
+        <id>29</id>
+        <category>3</category>
+        <thumb>1a49fccff1cc4d4e9073aad4a969c294.jpg</thumb>
+        <title>Cinnamon Roll</title>
+        <name>Cinnamon Roll</name>
+        <price>1.75</price>
+        <content>Pastry rolled with cinnamon and sugar and topped with cream cheese icing.
+        Kitchens throughout history have been known to draw even the deepest sleeper out of bed with the wafting aroma of piping hot cinnamon rolls. And why not? Soft, warm pastry rolled with a sweet and sticky mixture of cinnamon and sugar, ours topped with decadent cream cheese icing. Better than a dream, we think.</content>
+    </item>
+    <item>
+        <id>30</id>
+        <category>3</category>
+        <thumb>a807e1cc5f984b79affc36d24e06dfa0.jpg</thumb>
+        <title>Starbucks® Classic Coffee Cake</title>
+        <name>Classic Coffee Cake</name>
+        <price>1.95</price>
+        <content>A moist cake swirled with a layer of cinnamon streusel.
+        It takes a lot to qualify as “Classic Coffee Cake” at Starbucks. Only the softest, moistest, most scrumptious cake is served alongside our premium roasts.  Each slice has a layer of cinnamon streusel swirled within it and a crumble top that deliciously balances sweet cinnamon spice with crunchy goodness. If it stands next to our coffee, you can be sure it’s unbelievably good.</content>
+    </item>
+    <item>
+        <id>31</id>
+        <category>3</category>
+        <thumb>351bd17e0110484fb0a390a5536c51ed.jpg</thumb>
+        <title>Double Chocolate Brownie</title>
+        <name>Double Chocolate Brownie</name>
+        <price>3.25</price>
+        <content>A classic brownie made with premium chocolate and cocoa.
+        We admit, perfecting the recipe for this ridiculously fine brownie became an obsession for us. Who knew there could be so many subtle variations in texture, sweetness and chocolaty goodness? After 137 tries, we’re confident this is the one. With a texture perched delicately between cakey and fudgy, it’s absolutely, positively, the best brownie you can imagine.</content>
+    </item>
+</menu>

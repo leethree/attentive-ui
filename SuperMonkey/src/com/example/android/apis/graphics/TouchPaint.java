@@ -247,6 +247,7 @@ public class TouchPaint extends Activity {
             super(c);
             setFocusable(true);
             setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+            setBackgroundColor(BACKGROUND_COLOR);
 
             mPaint = new Paint();
             mPaint.setColor(BACKGROUND_COLOR);
@@ -456,7 +457,6 @@ public class TouchPaint extends Activity {
                         break;
 
                     case Line:
-                        // mPaint.setColor(COLORS[mColorIndex]);
                         mPaint.setColor(Color.YELLOW);
                         mPaint.setAlpha(100);
                         mPaint.setStyle(Paint.Style.STROKE);
