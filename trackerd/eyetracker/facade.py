@@ -93,7 +93,7 @@ class EyeTrackerFacade(object):
             return False
 
         self._tracker = eyetracker
-        print "   --- Connected!"
+        print "Eye tracker connected!"
 
         self._report_event('connected')
         return False

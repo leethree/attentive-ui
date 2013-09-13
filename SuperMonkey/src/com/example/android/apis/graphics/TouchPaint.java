@@ -457,7 +457,6 @@ public class TouchPaint extends Activity {
                         break;
 
                     case Line:
-                        // mPaint.setColor(COLORS[mColorIndex]);
                         mPaint.setColor(Color.YELLOW);
                         mPaint.setAlpha(100);
                         mPaint.setStyle(Paint.Style.STROKE);

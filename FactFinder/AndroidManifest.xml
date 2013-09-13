@@ -42,7 +42,7 @@
         <activity
             android:name="hk.hku.cs.srli.factfinder.ConfigActivity"
             android:label="@string/title_activity_test"
-			android:theme="@android:style/Theme.Holo">
+            android:theme="@android:style/Theme.Holo">
         </activity>
     </application>
 

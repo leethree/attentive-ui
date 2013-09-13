@@ -82,7 +82,6 @@ class FeedProcessor(object):
         elif self._entered: # start saccade
             self._moving_avg_x.clear()
             self._moving_avg_y.clear()
-            # self._send_command('exit', self._lastx, self._lasty)
             self._entered = False
 
 
@@ -90,7 +89,6 @@ class FeedProcessor(object):
         if self._output_method is not None:
             self._output_method('hover %s %d %d' % (
                                 command, x * self._width, y * self._height))
-        # print '%s %d %d' % (command, x * self._width, y * self._height)
 
 
 class Switchboard(object):

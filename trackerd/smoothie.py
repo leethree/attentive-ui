@@ -196,7 +196,6 @@ class DispersionDetector(FixationDetector):
                 saccade = True
 
         self._set_saccade(saccade)
-        # print x, y, saccade
 
 
 def get_data():
