@@ -4,14 +4,14 @@
         android:id="@+id/action_add"
         android:icon="@drawable/ic_new"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="ifRoom|withText"
         android:title="Add to order"
         android:titleCondensed="Add" />
     <item
         android:id="@+id/action_add_with_edit"
         android:icon="@drawable/ic_add_to_queue"
         android:orderInCategory="200"
-        android:showAsAction="ifRoom"
+        android:showAsAction="ifRoom|withText"
         android:title="Add multiple"
         android:titleCondensed="Customize" />
 

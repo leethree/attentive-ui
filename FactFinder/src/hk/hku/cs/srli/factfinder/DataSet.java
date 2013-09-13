@@ -41,7 +41,7 @@ public class DataSet {
     
     public static class DataItem {
         public int id;
-        public int category;
+        private int category;
         public String thumb;
         public String title; // full name
         public String name; // short name
@@ -61,6 +61,7 @@ public class DataSet {
     
     public static String formatMoney(int price) {
         if (price != 0)
+            // convert from cents to dollars
             return "$" + sDf.format(price * 0.01);
         else
             return "free";
@@ -93,6 +94,7 @@ public class DataSet {
         return mCatMap.valueAt(index);
     }
     
+    // reversed query
     public Category getCategoryFromItem(DataItem item) {
         return mCatMap.get(item.category);
     }
@@ -102,6 +104,7 @@ public class DataSet {
     }
     
     private void parseData(XmlPullParser parser) throws XmlPullParserException, IOException {
+        // TODO: refactor this mess
         int eventType = parser.getEventType();
         DataItem item = null;
         String tag = null;
@@ -120,6 +123,7 @@ public class DataSet {
                  tag = parser.getName();
                  if (tag.equals("item")) {
                      // assign a random number
+                     // TODO: use real data
                      item.nlikes = mRandom.nextInt(80);
                      // add item to category.
                      mCatMap.get(item.category).items.append(item.id, item);

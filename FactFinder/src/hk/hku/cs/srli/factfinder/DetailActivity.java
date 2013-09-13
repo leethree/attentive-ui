@@ -36,7 +36,7 @@ public class DetailActivity extends SherlockActivity
         // get intent data
         Bundle b = getIntent().getExtras();
  
-        // Selected data item id
+        // selected data item id and category
         int id = b.getInt("id");
         int section = b.getInt("section");
         
@@ -50,11 +50,12 @@ public class DetailActivity extends SherlockActivity
         
         TextView text = (TextView) findViewById(R.id.content);
         if (mFact.content != null && mFact.content.length() > 0) {
-            // replace line breaks
+            // workaround to replace line breaks
             String content = mFact.content
                     .replace("\n\n", "<br><br>").replace("\n", "<br><br>");
             text.setText(Html.fromHtml(content));
         } else {
+            // the content is empty
             text.setText("");
             text.setVisibility(View.GONE);
         }
@@ -88,6 +89,7 @@ public class DetailActivity extends SherlockActivity
             public void onClick(View v) {
                 ActionBar ab = getSupportActionBar();
                 if (ab.isShowing()) {
+                    // hide Action Bar
                     ab.hide();
                     image.setContentDescription(getString(R.string.hint_fullscreen_exit));
                 } else {
@@ -112,6 +114,7 @@ public class DetailActivity extends SherlockActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_with_edit:
+                // show "add multiple" dialog
                 mDialog.show(getFragmentManager(), "dialog");
                 return true;
             case R.id.action_add:

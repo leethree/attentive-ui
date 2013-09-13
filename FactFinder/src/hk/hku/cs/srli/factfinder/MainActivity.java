@@ -31,28 +31,28 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     private HoverFrame mOrderFrame;
     private SlidingPaneLayout mSlidingPane;
     
+    // flag indicating ViewPager pages are being switched
     private boolean mPageSwitching = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // set theme of the app
         int theme = FFApp.getApp(this).getFFTheme();
         if (theme != 0) setTheme(theme);
         setContentView(R.layout.activity_main);
 
-        // Set up the action bar.
+        // Set up the action bar tabs
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         mWrapper = (HoverFrame) findViewById(R.id.wrapper);
-
         mPagerFrame = (HoverFrame) findViewById(R.id.pager_frame);
         mOrderFrame = (HoverFrame) findViewById(R.id.order_frame);
         mSlidingPane = (SlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
         mSlidingPane.openPane();
         
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the app.
+        // Create the adapter that will return a fragment for each category
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
         if (mSectionsPagerAdapter.getCount() < 5) {
@@ -61,7 +61,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             view.setPaddingRelative(0, 0, 55, 0);
         }
         
-        // Set up the ViewPager with the sections adapter.
+        // Set up the ViewPager with the adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -72,6 +72,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             @Override
             public void onPageSelected(int position) {
                 if (!mPageSwitching) {
+                    // use the flag to prevent event from bouncing between ViewPager and tabs 
                     mPageSwitching = true;
                     actionBar.setSelectedNavigationItem(position);
                     mPageSwitching = false;
@@ -96,18 +97,15 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             
             @Override
             public void onPanelOpened(View panel) {
-                // show edge effect on the right edge
+                // workaround to show edge effect when the right edge of
+                // order frame is outside of the screen.
                 mWrapper.setEnabled(true);
                 mOrderFrame.setHorizontalScrollable(false, true);
             }
         });
 
-        // For each of the sections in the app, add a tab to the action bar.
+        // For each of the category, add a tab to the action bar.
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
@@ -135,10 +133,12 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // do nothing
     }
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // do nothing
     }
     
     private void updateHoverEdge() {
@@ -165,6 +165,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_info) {
+            // show "about" dialog
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setMessage(R.string.dialog_info_message)
                     .setTitle(R.string.dialog_info_title).create();
@@ -175,7 +176,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             Intent i = new Intent(this, ConfigActivity.class);
             // new task
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            // start test
+            // start configuration screen
             startActivity(i);
             return true;
         }

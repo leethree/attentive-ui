@@ -28,6 +28,7 @@ public class OrderFragment extends Fragment {
     private Order mOrder;
     private OrderAdapter mAdapter;
     
+    // flag indicating an item is being removed
     private boolean removing = false;
     
     @Override
@@ -47,6 +48,7 @@ public class OrderFragment extends Fragment {
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(getView().findViewById(R.id.textEmpty));
         
+        // helper to remove item by swipe
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
                         mListView,
@@ -93,6 +95,7 @@ public class OrderFragment extends Fragment {
             
             @Override
             public void onClick(View v) {
+                // show confirmation dialog 
                 new AlertDialog.Builder(getActivity())
                     .setTitle("Confirm order")
                     .setMessage("You have ordered " + mAdapter.getCount() + " items. " + 
@@ -118,7 +121,6 @@ public class OrderFragment extends Fragment {
                     }).show();
             }
         });
-        
         refreshOrder();
     }
 
@@ -127,6 +129,7 @@ public class OrderFragment extends Fragment {
         if (mOrder.getSum() > 0) {
             sum.setText("Total: " + DataSet.formatMoney(mOrder.getSum()));
         } else {
+            // show nothing when order total is zero
             sum.setText("");
         }
         

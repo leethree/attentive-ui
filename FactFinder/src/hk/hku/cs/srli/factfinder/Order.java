@@ -51,6 +51,7 @@ public class Order {
     }
     
     public void submit() {
+        // because there is nowhere to submit order, just clear it.
         clear();
     }
     

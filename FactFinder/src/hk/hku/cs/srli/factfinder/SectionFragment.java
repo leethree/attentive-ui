@@ -42,16 +42,16 @@ public class SectionFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         GridView gridview = (GridView) getView().findViewById(R.id.grid_view);
-        ImageAdapter adapter = new ImageAdapter(getActivity(), mSectionNumber);
+        GridItemAdapter adapter = new GridItemAdapter(getActivity(), mSectionNumber);
         gridview.setAdapter(adapter);
     }
     
-    public static class ImageAdapter extends BaseAdapter {
+    public static class GridItemAdapter extends BaseAdapter {
         private Context mContext;
         private int mSection;
         private SparseArray<DataItem> mFacts;
 
-        public ImageAdapter(Context c, int section) {
+        public GridItemAdapter(Context c, int section) {
             mContext = c;
             mSection = section;
             mFacts = FFApp.getData(c).getCategoryAt(section).getItems();
