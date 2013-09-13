@@ -127,14 +127,6 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
                             .setTabListener(this));
         }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // enter low profile mode
-        getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-    }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,7 +185,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             return true;
         } else if (item.getItemId() == R.id.action_config) {
             FFApp.getOrder(this).clear();
-            Intent i = new Intent(this, TestActivity.class);
+            Intent i = new Intent(this, ConfigActivity.class);
             // new task
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             // start test

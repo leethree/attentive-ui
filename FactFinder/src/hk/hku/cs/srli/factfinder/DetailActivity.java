@@ -100,14 +100,6 @@ public class DetailActivity extends SherlockActivity
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // enter low profile mode
-        getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

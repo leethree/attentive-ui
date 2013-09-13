@@ -40,7 +40,7 @@
                 android:value="hk.hku.cs.srli.factfinder.MainActivity" />
         </activity>
         <activity
-            android:name="hk.hku.cs.srli.factfinder.TestActivity"
+            android:name="hk.hku.cs.srli.factfinder.ConfigActivity"
             android:label="@string/title_activity_test"
 			android:theme="@android:style/Theme.Holo">
         </activity>

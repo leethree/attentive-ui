@@ -12,9 +12,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-public class TestActivity extends Activity
+public class ConfigActivity extends Activity
         implements View.OnClickListener, NumberPicker.OnValueChangeListener, OnCheckedChangeListener {
-
     
     private static int sDataset = 0;
     private static boolean sHover = false;
@@ -25,7 +24,7 @@ public class TestActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_config);
         
         npd = (NumberPicker) findViewById(R.id.number_picker_d);
         npd.setMinValue(0);
