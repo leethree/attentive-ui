@@ -170,7 +170,6 @@ public class HoverHandler {
     private void checkForLongHover() {
         if (onLongHoverListener != null) {
             hasPerformedLongHover = false;
-
             view.postDelayed(pendingCheckForLongHover, LONGHOVER_TIMEOUT);
         }
     }

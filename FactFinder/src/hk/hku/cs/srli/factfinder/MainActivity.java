@@ -40,7 +40,8 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     ViewPager mViewPager;
     
     private HoverFrame mWrapper;
-    private HoverFrame mRightFrame;
+    private HoverFrame mPagerFrame;
+    private HoverFrame mOrderFrame;
     private FFSlidingPaneLayout mSlidingPane;
     
     private boolean mPageSwitching = false;
@@ -57,12 +58,11 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         mWrapper = (HoverFrame) findViewById(R.id.wrapper);
-        mWrapper.setEnabled(false);
-        //mInvisibleButton = (Button) findViewById(R.id.invisibleButton);
-        mRightFrame = (HoverFrame) findViewById(R.id.right_pane);
+
+        mPagerFrame = (HoverFrame) findViewById(R.id.pager_frame);
+        mOrderFrame = (HoverFrame) findViewById(R.id.order_frame);
         mSlidingPane = (FFSlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
         mSlidingPane.openPane();
-        //mSlidingPane.setTouchOnChildren(true);
         
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.
@@ -93,7 +93,6 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (mSlidingPane.isOpen()) return;
                 if (positionOffset > 0) {
                     // in middle of scrolling
                     updateHoverEdge(true, true);
@@ -105,14 +104,14 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             @Override
             public void onPanelClosed(View panel) {
                 mWrapper.setEnabled(false);
-                updateHoverEdge();
+                mOrderFrame.setHorizontalScrollable(true, false);
             }
             
             @Override
             public void onPanelOpened(View panel) {
+                // show edge effect on the right edge
                 mWrapper.setEnabled(true);
-                // user can only slide from right
-                updateHoverEdge(false, true);
+                mOrderFrame.setHorizontalScrollable(false, true);
             }
         });
 
@@ -181,7 +180,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     }
     
     private void updateHoverEdge(boolean leftScrollable, boolean rightScrollable) {
-        mRightFrame.setHorizontalScrollable(leftScrollable, rightScrollable);
+        mPagerFrame.setHorizontalScrollable(leftScrollable, rightScrollable);
     }
     
     @Override
