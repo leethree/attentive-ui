@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import hk.hku.cs.srli.widget.HoverButton;
-import hk.hku.cs.srli.widget.util.HoverHandler;
 
 public class PriceButton extends HoverButton {
 
@@ -28,7 +27,6 @@ public class PriceButton extends HoverButton {
     }
 
     private void init() {
-        //super.getHoverHandler().setHoverTimeout(HoverHandler.HOVER_TIMEOUT);
     }
     
     @Override

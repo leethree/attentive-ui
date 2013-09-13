@@ -85,7 +85,6 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
             @Override
             public void onPageSelected(int position) {
                 if (!mPageSwitching) {
-                    FFApp.logImportant("Main UI", "Scroll to page at: " + position);
                     mPageSwitching = true;
                     actionBar.setSelectedNavigationItem(position);
                     mPageSwitching = false;
@@ -105,14 +104,12 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         mSlidingPane.setPanelSlideListener(new SlidingPaneLayout.SimplePanelSlideListener() {
             @Override
             public void onPanelClosed(View panel) {
-                FFApp.log("Main UI", "Close left panel.");
                 mWrapper.setEnabled(false);
                 updateHoverEdge();
             }
             
             @Override
             public void onPanelOpened(View panel) {
-                FFApp.log("Main UI", "Open left panel.");
                 mWrapper.setEnabled(true);
                 // user can only slide from right
                 updateHoverEdge(false, true);
@@ -135,16 +132,9 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     @Override
     protected void onResume() {
         super.onResume();
-        FFApp.log("Main", "Resume.");
         // enter low profile mode
         getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-    }
-    
-    @Override
-    protected void onPause() {
-        FFApp.log("Main", "Pause.");
-        super.onPause();
     }
     
     @Override
@@ -158,7 +148,6 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         if (!mPageSwitching) {
             mPageSwitching = true;
-            FFApp.log("Main UI", "Click ActionBar tab at: " + tab.getPosition());
             // When the given tab is selected, switch to the corresponding page in
             // the ViewPager.
             mViewPager.setCurrentItem(tab.getPosition());
@@ -172,7 +161,6 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        FFApp.log("Main UI", "Reselect ActionBar tab at: " + tab.getPosition());
     }
     
     private void updateHoverEdge() {
@@ -199,30 +187,21 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_info) {
-            FFApp.log("Main UI", "Click 'info' menu item.");
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setMessage(R.string.dialog_info_message)
                     .setTitle(R.string.dialog_info_title).create();
             dialog.show();
             return true;
         } else if (item.getItemId() == R.id.action_config) {
-            FFApp.log("Main UI", "Click 'cancel' menu item.");
             FFApp.getOrder(this).clear();
             Intent i = new Intent(this, TestActivity.class);
             // new task
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             // start test
             startActivity(i);
-            FFApp.log("Nav", "Exit main screen.");
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    
-    @Override
-    public void onBackPressed() {
-        FFApp.log("Nav", "Click system 'back' button.");
-        super.onBackPressed();
     }
 
     /**

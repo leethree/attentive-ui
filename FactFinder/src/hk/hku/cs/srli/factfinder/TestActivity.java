@@ -66,7 +66,6 @@ public class TestActivity extends Activity
 
     @Override
     public void onClick(View v) {
-        FFApp.log("Test", "Trial starting: D" + sDataset + " H" + sHover);
         // change configuration
         FFApp.getApp(this).changeConfig(sDataset, sHover);
         Intent i = new Intent(this, MainActivity.class);

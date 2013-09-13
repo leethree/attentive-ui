@@ -3,7 +3,6 @@ package hk.hku.cs.srli.factfinder;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +52,6 @@ public class FFApp extends Application {
         mOrder.reset();
         mData = new DataSet(this, TESTS.get(dataset));
         mTheme = hover ? APP_THEME : APP_THEME_NO_HOVER;
-        sLogPrefix = "D" + dataset + " H" + hover;
     }
     
     // Utility method to get a instance.
@@ -71,15 +69,5 @@ public class FFApp extends Application {
     
     public static Order getOrder(Context context) {
         return getApp(context).mOrder;
-    }
-    
-    public static String sLogPrefix = "";
-    
-    public static void log(String tag, String msg) {
-        Log.i("FFApp.Log", sLogPrefix + " [" + tag + "] " + msg);
-    }
-    
-    public static void logImportant(String tag, String msg) {
-        Log.w("FFApp.Log", sLogPrefix + " [" + tag + "] " + msg);
     }
 }

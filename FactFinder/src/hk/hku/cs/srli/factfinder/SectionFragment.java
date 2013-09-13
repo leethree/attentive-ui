@@ -97,12 +97,10 @@ public class SectionFragment extends Fragment {
     
                 @Override
                 public void onClick(View v, int position) {
-                    FFApp.log("Main UI", "Click grid item: section " + mSection + " position " + position);
                     Intent i = new Intent(mContext, DetailActivity.class);
                     i.putExtra("id", (int) getItemId(position)).putExtra("section", mSection);
                     // launch detailed view
                     mContext.startActivity(i);
-                    FFApp.log("Nav", "Open detail screen."); 
                 }
             });
             
@@ -120,7 +118,6 @@ public class SectionFragment extends Fragment {
                 
                 @Override
                 public void onClick(View v, int position) {
-                    FFApp.logImportant("Main UI", "Click quick add button: section " + mSection + " position " + position);
                     FFApp.getOrder(mContext).add(getItem(position));
                 }
             });
