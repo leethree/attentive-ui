@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Welcome to the test!"
+        android:text="FoodFinder configurations"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -24,43 +24,44 @@
         android:text="" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:divider="?android:attr/dividerVertical"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:showDividers="middle" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="50dp"
-            android:text="P"
+            android:layout_margin="10dp"
+            android:text="Dataset"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <NumberPicker
-            android:id="@+id/number_picker_p"
+            android:id="@+id/number_picker_d"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="50dp"
-            android:text="T"
+            android:layout_margin="10dp"
+            android:text="Attentive"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <NumberPicker
-            android:id="@+id/number_picker_t"
+        <Switch
+            android:id="@+id/switch_h"
+            style="android:switchStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/start_button"
-            android:layout_width="200dp"
-            android:layout_height="100dp"
-            android:layout_marginLeft="100dp"
-            android:text="Start test" />
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="50dp"
+            android:text="OK" />
     </LinearLayout>
 
 </RelativeLayout>

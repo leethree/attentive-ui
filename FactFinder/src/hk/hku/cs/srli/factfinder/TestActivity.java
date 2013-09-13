@@ -4,7 +4,10 @@ package hk.hku.cs.srli.factfinder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.app.Activity;
 import android.content.Intent;
@@ -14,28 +17,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestActivity extends Activity
-        implements View.OnClickListener, NumberPicker.OnValueChangeListener {
+        implements View.OnClickListener, NumberPicker.OnValueChangeListener, OnCheckedChangeListener {
 
     private static final int REQ_TEST = 25534;
     private static final int APP_THEME = R.style.AppTheme;
     private static final int APP_THEME_NO_HOVER = R.style.AppTheme_NoHover;
     private static final List<Integer> TESTS = new ArrayList<Integer>(4);
-    private static final int PRACTICE = R.xml.duck; // practice data set
+    //private static final int PRACTICE = R.xml.duck; // practice data set
     
     static {
+        TESTS.add(R.xml.duck);
         TESTS.add(R.xml.burger);
         TESTS.add(R.xml.cheesecake);
         TESTS.add(R.xml.coffee);
         TESTS.add(R.xml.hotpot);
     }
     
-    private static int sParticipant = 1;
-    private static int sTrial = 0;
+    //private static int sParticipant = 1;
+    //private static int sTrial = 0;
+    private static int sDataset = 0;
+    private static int sHover = 0;
     
     private static long timer;
     
-    private NumberPicker npp;
-    private NumberPicker npt;
+    private NumberPicker npd;
+    private Switch sh;
     private TextView status;
     
     @Override
@@ -43,17 +49,14 @@ public class TestActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         
-        npp = (NumberPicker) findViewById(R.id.number_picker_p);
-        npp.setMinValue(1);
-        npp.setMaxValue(20);
-        npp.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        npp.setOnValueChangedListener(this);
+        npd = (NumberPicker) findViewById(R.id.number_picker_d);
+        npd.setMinValue(0);
+        npd.setMaxValue(TESTS.size() - 1);
+        npd.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        npd.setOnValueChangedListener(this);
         
-        npt = (NumberPicker) findViewById(R.id.number_picker_t);
-        npt.setMinValue(0);
-        npt.setMaxValue(TESTS.size() * 2);
-        npt.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        npt.setOnValueChangedListener(this);
+        sh = (Switch) findViewById(R.id.switch_h);
+        sh.setOnCheckedChangeListener(this);
         
         Button start = (Button) findViewById(R.id.start_button);
         start.setOnClickListener(this);
@@ -62,15 +65,15 @@ public class TestActivity extends Activity
         
         // restore data
         SharedPreferences settings = getSharedPreferences("FF_Test", 0);
-        sParticipant = settings.getInt("nparticipant", sParticipant);
-        sTrial = settings.getInt("ntrial", sTrial);
+        sDataset = settings.getInt("ndataset", sDataset);
+        sHover = settings.getInt("nhover", sHover);
     }
     
     @Override
     protected void onResume() {
         super.onResume();
-        npp.setValue(sParticipant);
-        npt.setValue(sTrial);
+        npd.setValue(sDataset);
+        sh.setChecked(sHover != 0);
         prepareTest();
     }
     
@@ -81,14 +84,14 @@ public class TestActivity extends Activity
         // save data
         SharedPreferences settings = getSharedPreferences("FF_Test", 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putInt("nparticipant", sParticipant);
-        editor.putInt("ntrial", sTrial);
+        editor.putInt("ndataset", sDataset);
+        editor.putInt("nhover", sHover);
         editor.commit();
     }
 
     @Override
     public void onClick(View v) {
-        FFApp.log("Test", "Trial starting: P" + sParticipant + " T" + sTrial +
+        FFApp.log("Test", "Trial starting: D" + sDataset + " H" + sHover +
                 " with config: "+ status.getText());
         Intent i = new Intent(this, MainActivity.class);
         // clear activity stack
@@ -100,8 +103,13 @@ public class TestActivity extends Activity
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        sParticipant = npp.getValue();
-        sTrial = npt.getValue();
+        sDataset = npd.getValue();
+        prepareTest();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        sHover = sh.isChecked() ? 1 : 0;
         prepareTest();
     }
     
@@ -112,7 +120,7 @@ public class TestActivity extends Activity
         if (requestCode == REQ_TEST) {
             FFApp.log("Test", "Trial duration: " + duration * 0.001 + " s.");
             if (resultCode == Activity.RESULT_OK) {
-                sTrial = sTrial % (TESTS.size() * 2) + 1;  // next trial
+                sHover = 1 - sHover;  // next trial
                 FFApp.log("Test", "Trial ended OK.");
             } else {
                 // trial not ended successfully
@@ -123,21 +131,12 @@ public class TestActivity extends Activity
     }
     
     private void prepareTest() {
-        if (sTrial <= 0) {
-            // practice session
-            FFApp.getApp(this).changeDataSet(PRACTICE);
-            boolean hover = (sParticipant - 1) % 2 == 0;
-            FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
-            status.setText("practice h" + (hover ? 1 : 0));
-            FFApp.sLogPrefix = "P" + sParticipant + " Practice";
-        } else {
-            // test sessions
-            int data = (sTrial - 1) % TESTS.size();
-            boolean hover = (sParticipant - 1) % 4 > 1 ^ ((sTrial - 1) / TESTS.size()) % 2 == 0;
-            FFApp.getApp(this).changeDataSet(TESTS.get(data));
-            FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
-            status.setText("d" + data + " h" + (hover ? 1 : 0));
-            FFApp.sLogPrefix = "P" + sParticipant + " T" + sTrial;
-        }
+        // test sessions
+        int data = sDataset;
+        boolean hover = sHover != 0;
+        FFApp.getApp(this).changeDataSet(TESTS.get(data));
+        FFApp.getApp(this).setFFTheme(hover ? APP_THEME : APP_THEME_NO_HOVER);
+        status.setText("d" + data + " h" + (hover ? 1 : 0));
+        FFApp.sLogPrefix = "D" + sDataset + " H" + sHover;
     }
 }
