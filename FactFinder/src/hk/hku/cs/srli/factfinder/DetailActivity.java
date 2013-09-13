@@ -9,7 +9,6 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -30,14 +29,17 @@ public class DetailActivity extends SherlockActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int theme = FFApp.getApp(this).getFFTheme();
+        if (theme != 0) setTheme(theme);
         setContentView(R.layout.activity_detail);
         
         // get intent data
         Bundle b = getIntent().getExtras();
  
-        // Selected data item id
+        // selected data item id and category
         int id = b.getInt("id");
         int section = b.getInt("section");
+        
         mFact = FFApp.getData(this).getItem(section, id);
         mDialog = FFDialog.newInstance(section, id);
         mDialog.setListener(this);
@@ -48,11 +50,12 @@ public class DetailActivity extends SherlockActivity
         
         TextView text = (TextView) findViewById(R.id.content);
         if (mFact.content != null && mFact.content.length() > 0) {
-            // replace line breaks
+            // workaround to replace line breaks
             String content = mFact.content
                     .replace("\n\n", "<br><br>").replace("\n", "<br><br>");
             text.setText(Html.fromHtml(content));
         } else {
+            // the content is empty
             text.setText("");
             text.setVisibility(View.GONE);
         }
@@ -86,6 +89,7 @@ public class DetailActivity extends SherlockActivity
             public void onClick(View v) {
                 ActionBar ab = getSupportActionBar();
                 if (ab.isShowing()) {
+                    // hide Action Bar
                     ab.hide();
                     image.setContentDescription(getString(R.string.hint_fullscreen_exit));
                 } else {
@@ -97,15 +101,6 @@ public class DetailActivity extends SherlockActivity
 
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        
-        // enter low profile mode
-        getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
     }
 
     @Override
@@ -119,11 +114,13 @@ public class DetailActivity extends SherlockActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_with_edit:
+                // show "add multiple" dialog
                 mDialog.show(getFragmentManager(), "dialog");
                 return true;
             case R.id.action_add:
                 addToOrder(mFact, 1);
-                // continue below and return to home
+                navigateBack();
+                return true;
             case android.R.id.home:
                 navigateBack();
                 return true;
@@ -148,7 +145,6 @@ public class DetailActivity extends SherlockActivity
             FFApp.getOrder(DetailActivity.this).add(mFact);
             --number;
         }
-        Toast.makeText(DetailActivity.this, "Added to order", Toast.LENGTH_SHORT).show();
     }
 
     private void navigateBack() {

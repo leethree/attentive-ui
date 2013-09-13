@@ -8,25 +8,17 @@
 	app:rightEdgeGlow="true"
 	app:rightEdgeColor="@color/scrollable_edge" >
 
-	<hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout
-	    
+	<android.support.v4.widget.SlidingPaneLayout
 	    android:id="@+id/slidingPaneLayout"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    tools:context=".MainActivity" >
-	      
-	    <fragment
-	        android:name="hk.hku.cs.srli.factfinder.OrderFragment"
-	        android:id="@+id/left_pane"
-	        android:layout_width="400dp"
-	        android:layout_height="match_parent"
-	        android:layout_gravity="left" />
 	
 	    <hk.hku.cs.srli.widget.HoverFrame
-	        android:id="@+id/right_pane"
+	        android:id="@+id/pager_frame"
 	       	android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:layout_marginLeft="200dp"
+			android:layout_marginRight="200dp"
 			app:leftEdgeGlow="true"
 			app:rightEdgeGlow="true"
 			app:leftEdgeColor="@color/overscroll_edge"
@@ -38,5 +30,24 @@
 			    android:layout_height="match_parent" />
 			
 		</hk.hku.cs.srli.widget.HoverFrame>
-	</hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout>
+		
+	    <hk.hku.cs.srli.widget.HoverFrame
+	        android:id="@+id/order_frame"
+	       	android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_gravity="right"
+			android:layout_marginLeft="600dp" 
+			app:leftEdgeGlow="true"
+			app:rightEdgeGlow="true"
+			app:leftEdgeColor="@color/overscroll_edge"
+			app:rightEdgeColor="@color/scrollable_edge" >
+			
+		    <fragment
+			        android:name="hk.hku.cs.srli.factfinder.OrderFragment"
+			        android:id="@+id/order_pane"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent" />
+		    
+	    </hk.hku.cs.srli.widget.HoverFrame>
+	</android.support.v4.widget.SlidingPaneLayout>
 </hk.hku.cs.srli.widget.HoverFrame>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <category-name>
+        <id>0</id>
+        <name>Peking Duck</name>
+    </category-name>
+    <category-name>
+        <id>1</id>
+        <name>Other</name>
+    </category-name>
+    <item>
+	    <id>0</id>
+	    <category>0</category>
+	    <thumb>IMG_0490.jpg</thumb>
+	    <title>Peking Roast Duck Set</title>
+        <name>Roast Duck Set</name>
+        <type>Set</type>
+        <price>78</price>
+	    <content>Including whole Quanjude Peking Duck, Pancakes, Scallions, Cucumbers, Sweet Sauce and Duck Soup.
+	    Research shows that Quanjude Peking Duck contains 16% to 25% protein and only 7.5% fat, most of which is unsaturated and low carbon fatty acid that aids digestion and the absorption of vitamins by the body. Duck fat compared with other animal fat contains lower cholesterol levels. </content>
+    </item>
+    <item>
+	    <id>1</id>
+	    <category>0</category>
+	    <thumb>IMG_0490.jpg</thumb>
+	    <title>Peking Roast Duck Set (Half)</title>
+        <name>Half Roast Duck Set</name>
+        <type>Set</type>
+        <price>40</price>
+	    <content>Including a half Quanjude Peking Duck, Pancakes, Scallions, Cucumbers, Sweet Sauce and Duck Soup.
+	    Research shows that Quanjude Peking Duck contains 16% to 25% protein and only 7.5% fat, most of which is unsaturated and low carbon fatty acid that aids digestion and the absorption of vitamins by the body. Duck fat compared with other animal fat contains lower cholesterol levels. </content>
+    </item>
+    <item>
+	    <id>2</id>
+	    <category>1</category>
+	    <thumb>IMG_0552.jpg</thumb>
+	    <title>Sliced Beef with Mandarin Sauce</title>
+        <name>Sliced Beef</name>
+        <price>38</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>3</id>
+	    <category>1</category>
+	    <thumb>IMG_0482.jpg</thumb>
+	    <title>Stir-fried Diced Chicken with Walnut in Barbequed Sauce </title>
+        <name>Diced Chicken with Walnut</name>
+        <price>28</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>4</id>
+	    <category>0</category>
+	    <thumb>IMG_0466.jpg</thumb>
+	    <title>Bamboo Pith and Duck Tongue Soup</title>
+        <name>Duck Tongue Soup</name>
+        <price>8</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>5</id>
+	    <category>1</category>
+	    <thumb>IMG_0523.jpg</thumb>
+	    <title>Crispy Deep-fried Bean Curd</title>
+        <name>Crispy Bean Curd</name>
+        <price>18</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>6</id>
+	    <category>1</category>
+	    <thumb>IMG_0469.jpg</thumb>
+	    <title>Assorted Seafood and Pumpkin Soup</title>
+        <name>Seafood and Pumpkin Soup</name>
+        <price>8</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>7</id>
+	    <category>0</category>
+	    <thumb>IMG_0520.jpg</thumb>
+	    <title>Stewed and Seasoned Duck Breast, Duck Webs</title>
+        <name>Assorted Duck Meat</name>
+        <price>28</price>
+	    <content>Stewed and Seasoned Duck Breast, Duck Webs and Baling Fungus with Rice Wine Sauce</content>
+    </item>
+    <item>
+	    <id>8</id>
+	    <category>1</category>
+	    <thumb>IMG_0546.jpg</thumb>
+	    <title>Kung Po Scallops</title>
+        <name>Kung Po Scallops</name>
+        <price>39.5</price>
+	    <content>Stir-fried scallops with Nuts and Dry Chilli</content>
+    </item>
+    <item>
+	    <id>9</id>
+	    <category>0</category>
+	    <thumb>IMG_0556.jpg</thumb>
+	    <title>Stir-fried Prawn and Duck Tongue with Nuts</title>
+        <name>Prawn and Duck Tongue</name>
+        <price>39.5</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>10</id>
+	    <category>1</category>
+	    <thumb>IMG_0530.jpg</thumb>
+	    <title>Braised Sea Cucumber</title>
+        <name>Braised Sea Cucumber</name>
+        <price>38</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>11</id>
+	    <category>1</category>
+	    <thumb>IMG_0514.jpg</thumb>
+	    <title>Lightly Fried Prawn with Egg</title>
+        <name>Prawn with Egg</name>
+        <price>39.5</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>12</id>
+	    <category>0</category>
+	    <thumb>IMG_0534.jpg</thumb>
+	    <title>Deep Fried Duck Meat Roll </title>
+        <name>Duck Meat Roll </name>
+        <price>15</price>
+	    <content></content>
+    </item>
+    <item>
+	    <id>13</id>
+	    <category>0</category>
+	    <thumb>IMG_0539.jpg</thumb>
+	    <title>Stir-fried Abalone with Duck Breasts</title>
+        <name>Abalone with Duck Breasts</name>
+        <price>48</price>
+	    <content></content>
+    </item>
+    <item>
+        <id>14</id>
+        <category>1</category>
+        <thumb>IMG_0564.jpg</thumb>
+        <title>Stir-fried Prawns with Szechuan Chilli Sauce</title>
+        <name>Stir-fried Prawns</name>
+        <price>39.5</price>
+        <content></content>
+    </item>
+</menu>

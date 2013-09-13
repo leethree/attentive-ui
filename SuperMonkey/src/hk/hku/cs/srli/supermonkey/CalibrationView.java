@@ -35,6 +35,13 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
         listener = null;
     }
     
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        dot.setX(w / 2);
+        dot.setY(h / 4);
+    }
+
     public void setListener(Animator.AnimatorListener listener) {
         this.listener = listener;
     }
@@ -54,7 +61,7 @@ public class CalibrationView extends View implements ValueAnimator.AnimatorUpdat
     
     public void expandPoint() {
         Log.v("CalibrationView", "expandPoint");
-        startAnimation(animatedResize(dot.DEFAULT_R), 500);
+        startAnimation(animatedResize(dot.DEFAULT_R), 1000);
     }
     
     public void hidePoint() {

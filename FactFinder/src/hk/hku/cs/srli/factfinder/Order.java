@@ -5,13 +5,14 @@ import android.widget.BaseAdapter;
 
 import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
 
     private final List<DataItem> mItems;
-    private BaseAdapter mAdapter;
+    private WeakReference<BaseAdapter> mAdapter;
     
     public Order(Context context) {
         mItems = new ArrayList<DataItem>();
@@ -23,12 +24,12 @@ public class Order {
     }
     
     public void setAdapter(BaseAdapter adapter) {
-        this.mAdapter = adapter;
+        this.mAdapter = new WeakReference<BaseAdapter>(adapter);
     }
     
     public void add(DataItem item) {
         mItems.add(item);
-        mAdapter.notifyDataSetChanged();
+        notifyAdapter();
     }
     
     public int getSum() {
@@ -39,8 +40,23 @@ public class Order {
         return sum;
     }
     
-    public void submit() {
+    public void reset() {
+        clear();
+        mAdapter = null;
+    }
+    
+    public void clear() {
         mItems.clear();
-        mAdapter.notifyDataSetChanged();
+        notifyAdapter();
+    }
+    
+    public void submit() {
+        // because there is nowhere to submit order, just clear it.
+        clear();
+    }
+    
+    private void notifyAdapter() {
+        if (mAdapter != null && mAdapter.get() != null)
+            mAdapter.get().notifyDataSetChanged();
     }
 }

@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -43,16 +42,16 @@ public class SectionFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         GridView gridview = (GridView) getView().findViewById(R.id.grid_view);
-        ImageAdapter adapter = new ImageAdapter(getActivity(), mSectionNumber);
+        GridItemAdapter adapter = new GridItemAdapter(getActivity(), mSectionNumber);
         gridview.setAdapter(adapter);
     }
     
-    public static class ImageAdapter extends BaseAdapter {
+    public static class GridItemAdapter extends BaseAdapter {
         private Context mContext;
         private int mSection;
         private SparseArray<DataItem> mFacts;
 
-        public ImageAdapter(Context c, int section) {
+        public GridItemAdapter(Context c, int section) {
             mContext = c;
             mSection = section;
             mFacts = FFApp.getData(c).getCategoryAt(section).getItems();
@@ -78,11 +77,13 @@ public class SectionFragment extends Fragment {
             if (convertView == null) {  // if it's not recycled, inflate it.
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_item, parent, false);
             }
+            DataItem item = getItem(position);
+            
             ImageView imageView = (ImageView) convertView.findViewById(R.id.item_image_view);
             
             // find image from assets
             try {
-                String thumb = getItem(position).thumb;
+                String thumb = item.thumb;
                 if (thumb != null && thumb.length() > 0) {
                     imageView.setImageDrawable(
                             Drawable.createFromResourceStream(mContext.getResources(), null, 
@@ -104,16 +105,20 @@ public class SectionFragment extends Fragment {
             });
             
             TextView text = (TextView) convertView.findViewById(R.id.item_text_view);
-            text.setText(getItem(position).title);
+            text.setText(item.title);
             
-            Button price = (Button) convertView.findViewById(R.id.item_text_price);
-            price.setText(DataSet.formatMoney(getItem(position).price));
+            Button price = (Button) convertView.findViewById(R.id.item_button_price);
+            
+            if (item.type != null && item.type.length() > 0)
+                price.setText(item.type + ": " + DataSet.formatMoney(item.price));
+            else
+                price.setText(DataSet.formatMoney(item.price));
+            
             price.setOnClickListener(new ItemClickListenerAdapter(position) {
                 
                 @Override
                 public void onClick(View v, int position) {
                     FFApp.getOrder(mContext).add(getItem(position));
-                    Toast.makeText(mContext, "Added to order", Toast.LENGTH_SHORT).show();
                 }
             });
 

@@ -339,8 +339,8 @@ public class EdgeEffect {
         mGlowAlphaStart = mGlowAlpha;
         mGlowScaleYStart = mGlowScaleY;
         
-        mEdgeAlphaFinish = PULL_EDGE_BEGIN;
-        mEdgeScaleYFinish = HELD_EDGE_SCALE_Y;
+        mEdgeAlphaFinish = 1.0f;
+        mEdgeScaleYFinish = 0.8f;
         mGlowAlphaFinish = 0.6f;
         mGlowScaleYFinish = 2.f;
     }

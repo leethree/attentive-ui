@@ -2,6 +2,7 @@
 package hk.hku.cs.srli.widget;
 
 import android.content.Context;
+import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,6 +13,7 @@ import hk.hku.cs.srli.widget.util.HoverHandler;
 public class HoverDiscloseLayout extends RelativeLayout {
 
     private HoverHandler hover;
+    private boolean dimmed;
     
     public HoverDiscloseLayout(Context context) {
         super(context);
@@ -29,11 +31,13 @@ public class HoverDiscloseLayout extends RelativeLayout {
     }
 
     private void init() {
-        hover = new HoverHandler(this);
+        hover = new HoverHandler(this, HoverHandler.HOVER_TIMEOUT * 2);
         if (!HoverHandler.isHoverEnabled(getContext())) {
             // disable itself
             setEnabled(false);
         }
+        setBackgroundResource(R.drawable.transition_dim);
+        dimmed = false;
     }
     
     @Override
@@ -44,6 +48,17 @@ public class HoverDiscloseLayout extends RelativeLayout {
 
     @Override
     public void onHoverChanged(boolean hovered) {
+        TransitionDrawable transition = (TransitionDrawable) getBackground();
+        // animate background transition
+        if (hovered) {
+            if (dimmed) {
+                transition.reverseTransition(250);
+                dimmed = false;
+            }
+        } else {
+            transition.startTransition(500);
+            dimmed = true;
+        }
         super.onHoverChanged(hovered);
         if (isEnabled()) updateChildrenVisibility();
     }

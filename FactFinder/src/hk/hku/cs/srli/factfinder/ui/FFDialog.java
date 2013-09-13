@@ -51,7 +51,7 @@ public class FFDialog extends DialogFragment {
         
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(mFact.name).setView(view)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         FFDialog.this.dismiss();
                     }
@@ -61,5 +61,4 @@ public class FFDialog extends DialogFragment {
 
         return builder.create();
     }
-    
 }

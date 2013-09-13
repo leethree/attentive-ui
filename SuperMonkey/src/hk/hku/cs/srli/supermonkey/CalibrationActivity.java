@@ -127,6 +127,7 @@ public class CalibrationActivity extends Activity {
 
         @Override
         public void handleStopped() {
+            choreographer.abort();
             finish();
         }
 
@@ -134,6 +135,7 @@ public class CalibrationActivity extends Activity {
         public void handleError(String message) {
             Toast.makeText(CalibrationActivity.this, 
                            "Error: " + message, Toast.LENGTH_LONG).show();
+            choreographer.abort();
             finish();
         }
     }
@@ -143,6 +145,7 @@ public class CalibrationActivity extends Activity {
         private Deque<Movement> sequence;
         
         private boolean looping;
+        private boolean abort;
         
         public Choreographer() {
             sequence = new ArrayDeque<Movement>();
@@ -151,11 +154,14 @@ public class CalibrationActivity extends Activity {
         public void startDance() {
             prepareSequence();
             looping = false;
+            abort = false;
             nextMove();
         }
         
         public void nextMove() {
-            if (sequence.peek() != null) {
+            if (abort) {
+                return;
+            } else if (sequence.peek() != null) {
                 sequence.poll().move();
             } else {
                 // Finish when there's no more movement in the sequence.
@@ -167,6 +173,10 @@ public class CalibrationActivity extends Activity {
             this.looping = looping;
         }
         
+        public void abort() {
+            abort = true;
+        }
+        
         @Override
         public void onAnimationEnd(Animator animation) {
             this.nextMove();
@@ -174,15 +184,15 @@ public class CalibrationActivity extends Activity {
         
         private void prepareSequence() {
             sequence.clear();
-            addPoint(0.1f, 0.1f);
-            addPoint(0.5f, 0.1f);
-            addPoint(0.9f, 0.1f);
-            addPoint(0.9f, 0.5f);
-            addPoint(0.5f, 0.5f);
-            addPoint(0.1f, 0.5f);
             addPoint(0.1f, 0.9f);
             addPoint(0.5f, 0.9f);
             addPoint(0.9f, 0.9f);
+            addPoint(0.9f, 0.5f);
+            addPoint(0.5f, 0.5f);
+            addPoint(0.1f, 0.5f);
+            addPoint(0.1f, 0.1f);
+            addPoint(0.5f, 0.1f);
+            addPoint(0.9f, 0.1f);
             // Hide the point when animation is finished.
             sequence.add(new Movement() {
                 @Override

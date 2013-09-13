@@ -48,3 +48,6 @@ local.properties
 
 # Image assets
 FactFinder/assets/
+
+# Log files
+*.log

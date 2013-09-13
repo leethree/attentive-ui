@@ -6,6 +6,8 @@ import android.view.MotionEvent;
 
 import hk.hku.cs.srli.widget.HoverButton;
 
+// This subclass is used for workaround as children of HoverDiscloseLayout
+// to properly manage the visibility of itself.
 public class PriceButton extends HoverButton {
 
     private boolean touched = false;
@@ -27,15 +29,14 @@ public class PriceButton extends HoverButton {
     }
 
     private void init() {
-        // nothing to do here
     }
     
     @Override
     public void setVisibility(int visibility) {
-        // ignore if it's touched or hovered.
-        if (touched || isHovered()) {
-            pendingVisibility = visibility;
-        } else {
+        // save the visibility so it can be used later
+        pendingVisibility = visibility;
+        // change visibility now only if it's not touched nor hovered.
+        if (!touched && !isHovered()) {
             super.setVisibility(visibility);
         }
     }
@@ -46,6 +47,7 @@ public class PriceButton extends HoverButton {
         if (action == MotionEvent.ACTION_UP
                 || action == MotionEvent.ACTION_CANCEL) {
             touched = false;
+            // try to restore visibility when touch is off
             setVisibility(pendingVisibility);
         } else {
             touched = true;

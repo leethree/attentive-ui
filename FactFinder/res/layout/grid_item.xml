@@ -1,52 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:padding="6dp" >
 
     <hk.hku.cs.srli.widget.HoverImageButton
         android:id="@+id/item_image_view"
         android:layout_width="match_parent"
-        android:layout_height="235dp"
+        android:layout_height="220dp"
         android:background="?android:attr/selectableItemBackground"
         android:cropToPadding="true"
-        android:padding="@dimen/grid_gutter"
+        android:padding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/placeholder" />
+    
+    <RelativeLayout
+		android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="6dp" >
+        <TextView
+            android:id="@+id/item_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/darkbg"
+            android:padding="10dp"
+            android:gravity="center_vertical"
+            android:text="Item Title"
+            android:maxLines="2"
+            android:textColor="@android:color/primary_text_dark" />
+    </RelativeLayout>
 
     <hk.hku.cs.srli.widget.HoverDiscloseLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/grid_gutter" >
+        android:animateLayoutChanges="true"
+        android:layout_margin="6dp" >
         
         <hk.hku.cs.srli.factfinder.ui.PriceButton
-            android:id="@+id/item_text_price"
+            android:id="@+id/item_button_price"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/item_text_view"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
+            android:gravity="right|center_vertical"
             android:background="@drawable/price_button_bg"
-            android:contentDescription="Tap to add"
+            android:contentDescription="Add to order"
             android:padding="@dimen/grid_gutter"
             android:text="$0.00"
             android:textColor="@android:color/primary_text_dark" />
-        
-        <TextView
-            android:id="@id/item_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/item_text_price"
-            
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:background="@color/darkbg"
-            android:padding="@dimen/grid_gutter"
-            android:gravity="center_vertical"
-            android:text="TextView"
-            android:maxLines="2"
-            android:textColor="@android:color/primary_text_dark" />
-        
+
     </hk.hku.cs.srli.widget.HoverDiscloseLayout>
 
 </FrameLayout>

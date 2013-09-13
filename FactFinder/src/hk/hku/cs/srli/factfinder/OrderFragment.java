@@ -1,8 +1,10 @@
 
 package hk.hku.cs.srli.factfinder;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,17 +24,17 @@ import hk.hku.cs.srli.factfinder.DataSet.DataItem;
 
 public class OrderFragment extends Fragment {
 
-    private boolean mCollapsed = true;
     private ListView mListView;
-    private Button mInvisibleButton;
     private Order mOrder;
     private OrderAdapter mAdapter;
+    
+    // flag indicating an item is being removed
+    private boolean removing = false;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
         mListView = (ListView) rootView.findViewById(R.id.orderListView);
-        mInvisibleButton = (Button) rootView.findViewById(R.id.invisibleButton);
         return rootView;
     }
     
@@ -46,6 +48,7 @@ public class OrderFragment extends Fragment {
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(getView().findViewById(R.id.textEmpty));
         
+        // helper to remove item by swipe
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
                         mListView,
@@ -56,12 +59,13 @@ public class OrderFragment extends Fragment {
                                 for (int position : reverseSortedPositions) {
                                     mAdapter.remove(mAdapter.getItem(position));
                                 }
+                                removing = true;
                                 mAdapter.notifyDataSetChanged();
                             }
                             
                             @Override
                             public boolean canDismiss(int position) {
-                                return !mCollapsed;
+                                return true;
                             }
                         });
         mListView.setOnTouchListener(touchListener);
@@ -71,8 +75,19 @@ public class OrderFragment extends Fragment {
             
             @Override
             public void onChanged() {
+                if (!removing) {
+                    // when new item is added to order (instead of removing)
+                    mListView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // scroll list to bottom
+                            mListView.smoothScrollToPosition(mAdapter.getCount() - 1);
+                        }
+                    });
+                    removing = false;
+                }
                 refreshOrder();
-            } 
+            }
         });
         
         Button submitButton = (Button) getView().findViewById(R.id.buttonOrder);
@@ -80,26 +95,33 @@ public class OrderFragment extends Fragment {
             
             @Override
             public void onClick(View v) {
-                mOrder.submit();
-                Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
+                // show confirmation dialog 
+                new AlertDialog.Builder(getActivity())
+                    .setTitle("Confirm order")
+                    .setMessage("You have ordered " + mAdapter.getCount() + " items. " + 
+                            "Total: " + DataSet.formatMoney(mOrder.getSum()) + ".")
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mOrder.submit();
+                            // inform the user by toast
+                            Toast.makeText(getActivity(), "Order submitted.", Toast.LENGTH_LONG).show();
+                        }
+                    }).setNeutralButton("Clear", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mOrder.clear();
+                            dialog.dismiss();
+                        }
+                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
             }
         });
-        
         refreshOrder();
-    }
-    
-    public void setOnClickListener(View.OnClickListener listener) {
-        mInvisibleButton.setOnClickListener(listener);
-    }
-    
-    public void setCollapsed(boolean collapsed) {
-        if (collapsed) {
-            mCollapsed = true;
-            mInvisibleButton.setVisibility(View.VISIBLE);
-        } else {
-            mCollapsed = false;
-            mInvisibleButton.setVisibility(View.INVISIBLE);
-        }
     }
 
     private void refreshOrder() {
@@ -107,6 +129,7 @@ public class OrderFragment extends Fragment {
         if (mOrder.getSum() > 0) {
             sum.setText("Total: " + DataSet.formatMoney(mOrder.getSum()));
         } else {
+            // show nothing when order total is zero
             sum.setText("");
         }
         

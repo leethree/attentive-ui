@@ -66,7 +66,7 @@ public class EdgeEffectHelper implements OnHoverMoveListener {
     public void onHoverMove(View v, int x, int y) {
         final float ratioX = (float) x / view.getWidth();
         final float ratioY = (float) y / view.getHeight();
-        final float factor = 0.6f;
+        final float factor = 0.8f;
         
         if (leftEdgeGlow) leftEdge.onDrift(ratioX * factor);
         if (rightEdgeGlow) rightEdge.onDrift((1 - ratioX) * factor);

@@ -7,10 +7,11 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_info" />
     <item
-        android:id="@+id/action_setting"
+        android:id="@+id/action_config"
         android:icon="@drawable/ic_settings"
         android:orderInCategory="200"
-        android:showAsAction="ifRoom" 
-        android:title="Settings" />
+        android:showAsAction="ifRoom"
+        android:titleCondensed="Config" 
+        android:title="Configurations" />
 
 </menu>

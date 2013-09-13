@@ -8,7 +8,7 @@
 	    <id>0</id>
 	    <category>0</category>
 	    <thumb>1600x1200x-9M1.jpg</thumb>
-	    <title>Double-Double® Burger Combo</title>
+	    <title>Double-Double® Burger Combo #1</title>
         <name>Combo #1</name>
         <type>Combo</type>
         <price>6.45</price>
@@ -20,7 +20,7 @@
 	    <id>1</id>
 	    <category>0</category>
 	    <thumb>1600x1200x-9M2.jpg</thumb>
-	    <title>Cheeseburger Combo</title>
+	    <title>Cheeseburger Combo #2</title>
         <name>Combo #2</name>
         <type>Combo</type>
         <price>5.45</price>
@@ -32,7 +32,7 @@
         <id>2</id>
         <category>0</category>
         <thumb>1600x1200x-9M3.jpg</thumb>
-        <title>Hamburger Combo</title>
+        <title>Hamburger Combo #3</title>
         <name>Combo #3</name>
         <type>Combo</type>
         <price>5.15</price>
@@ -44,9 +44,8 @@
 	    <id>3</id>
 	    <category>0</category>
 	    <thumb>hamburger.jpg</thumb>
-	    <title>Hamberger</title>
-        <name>Hamberger</name>
-        <type>À la carte</type>
+	    <title>Hamburger</title>
+        <name>Hamburger</name>
         <price>2.1</price>
 	    <content>Your standard burger, with sponge-dough bun, 2-ounce patty, lettuce, tomatoes, with or without onions, pickles, and spread.</content>
     </item>
