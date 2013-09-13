@@ -17,32 +17,19 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-import hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout;
 import hk.hku.cs.srli.widget.HoverFrame;
 
 import java.util.Locale;
 
 public class MainActivity extends SherlockActivity implements ActionBar.TabListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-     * will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
     
     private HoverFrame mWrapper;
     private HoverFrame mPagerFrame;
     private HoverFrame mOrderFrame;
-    private FFSlidingPaneLayout mSlidingPane;
+    private SlidingPaneLayout mSlidingPane;
     
     private boolean mPageSwitching = false;
 
@@ -61,7 +48,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
         mPagerFrame = (HoverFrame) findViewById(R.id.pager_frame);
         mOrderFrame = (HoverFrame) findViewById(R.id.order_frame);
-        mSlidingPane = (FFSlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
+        mSlidingPane = (SlidingPaneLayout) findViewById(R.id.slidingPaneLayout);
         mSlidingPane.openPane();
         
         // Create the adapter that will return a fragment for each of the three

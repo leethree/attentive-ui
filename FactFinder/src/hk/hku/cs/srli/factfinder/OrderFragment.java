@@ -28,6 +28,8 @@ public class OrderFragment extends Fragment {
     private Order mOrder;
     private OrderAdapter mAdapter;
     
+    private boolean removing = false;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
@@ -55,6 +57,7 @@ public class OrderFragment extends Fragment {
                                 for (int position : reverseSortedPositions) {
                                     mAdapter.remove(mAdapter.getItem(position));
                                 }
+                                removing = true;
                                 mAdapter.notifyDataSetChanged();
                             }
                             
@@ -70,6 +73,17 @@ public class OrderFragment extends Fragment {
             
             @Override
             public void onChanged() {
+                if (!removing) {
+                    // when new item is added to order (instead of removing)
+                    mListView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // scroll list to bottom
+                            mListView.smoothScrollToPosition(mAdapter.getCount() - 1);
+                        }
+                    });
+                    removing = false;
+                }
                 refreshOrder();
             }
         });

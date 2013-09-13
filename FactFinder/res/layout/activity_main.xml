@@ -8,7 +8,7 @@
 	app:rightEdgeGlow="true"
 	app:rightEdgeColor="@color/scrollable_edge" >
 
-	<hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout
+	<android.support.v4.widget.SlidingPaneLayout
 	    android:id="@+id/slidingPaneLayout"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
@@ -49,5 +49,5 @@
 			        android:layout_height="match_parent" />
 		    
 	    </hk.hku.cs.srli.widget.HoverFrame>
-	</hk.hku.cs.srli.factfinder.ui.FFSlidingPaneLayout>
+	</android.support.v4.widget.SlidingPaneLayout>
 </hk.hku.cs.srli.widget.HoverFrame>
