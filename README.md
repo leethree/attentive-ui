@@ -96,3 +96,21 @@ The applications also include source code files from [Android Open-Source Projec
 For more detailed and in-depth information regarding this project, please refer to my thesis _Attentive Gestural Interface on Touch Screens_ (to be appear at [The HKU Scholars Hub](http://hub.hku.hk/advanced-search?field1=title&thesis=1)).
 
 Last updated: 13 Sep 2013.
+
+## License
+
+```
+Copyright 2013 Sirui Li
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
