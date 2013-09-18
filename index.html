@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Attentive-ui by leethree</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Attentive-ui</h1>
+          <h2>A research project on attentive UI for Android devices.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/leethree/attentive-ui/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/leethree/attentive-ui/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/leethree/attentive-ui" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p>by <strong>Li Sirui</strong>, Department of Computer Science, The University of Hong Kong.</p>
+
+<h2>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>The system is the implementation of Attentive Gestural User Interfaces, which make use of eye input data from eye trackers to augment touch-screen interfaces.</p>
+
+<p><strong>Supermonkey</strong>, <strong>trackerd</strong> are core components of the system. The folder <strong>scripts</strong> includes tool scripts of the system. <strong>MonkeyDemo</strong> and <strong>FactFinder</strong> are applications running on the system. <strong>HoverLib</strong> is an interface library used by the applications.</p>
+
+<p>The system is developed and tested using Tobii X1 Light Eye Tracker and ASUS Nexus 7 (2012) Android tablet.</p>
+
+<h2>
+<a name="trackerd" class="anchor" href="#trackerd"><span class="octicon octicon-link"></span></a>trackerd</h2>
+
+<p>Daemon for eye trackers. It works as a service that provides network interfaces for controlling the eye tracker as well as the ability to send eye-tracking data over the network.</p>
+
+<h4>
+<a name="runtime-environment" class="anchor" href="#runtime-environment"><span class="octicon octicon-link"></span></a>Runtime environment:</h4>
+
+<ul>
+<li>Windows</li>
+<li>Python 2.6</li>
+<li>Tobii SDK 3.0 RC1 (now known as <a href="http://www.tobii.com/en/eye-tracking-research/global/products/software/tobii-analytics-software-development-kit/">Tobii Analytics SDK</a>) for Win32</li>
+<li>A Tobii eye tracker that is supported by the above SDK </li>
+</ul><h4>
+<a name="run" class="anchor" href="#run"><span class="octicon octicon-link"></span></a>Run:</h4>
+
+<div class="highlight highlight-console"><pre><span class="go">python trackerd.py</span>
+</pre></div>
+
+<h4>
+<a name="network" class="anchor" href="#network"><span class="octicon octicon-link"></span></a>Network:</h4>
+
+<p>Listens to port 10800, connects to Monkey via port 1080.</p>
+
+<h2>
+<a name="supermonkey" class="anchor" href="#supermonkey"><span class="octicon octicon-link"></span></a>SuperMonkey</h2>
+
+<p>A client for trackerd, which controls the eye tracker on the host PC from Android device. It is a regular Android app that connects to trackerd via TCP sockets and provides an easy-to-use graphical interface for users.</p>
+
+<p>A modified version of <a href="http://developer.android.com/tools/help/monkey.html"><em>UI/Application Exerciser Monkey</em> by Android</a> is bundled with SuperMonkey.</p>
+
+<h4>
+<a name="runtime-environment-1" class="anchor" href="#runtime-environment-1"><span class="octicon octicon-link"></span></a>Runtime environment:</h4>
+
+<ul>
+<li>
+<em>Rooted</em> Android 4.2</li>
+</ul><h4>
+<a name="development-environment" class="anchor" href="#development-environment"><span class="octicon octicon-link"></span></a>Development environment:</h4>
+
+<ul>
+<li>Android SDK 14+</li>
+<li>Android SDK Platform with internal classes (please refer to <a href="http://devmaze.wordpress.com/2011/01/18/using-com-android-internal-part-1-introduction/">this</a>)</li>
+</ul><h4>
+<a name="install-monkey" class="anchor" href="#install-monkey"><span class="octicon octicon-link"></span></a>Install monkey:</h4>
+
+<ol>
+<li>Install SuperMonkey just as a normal app. </li>
+<li>Put file <code>scripts/supermonkey.sh</code> into <code>/data/</code> on Android file system</li>
+<li>Correct its permissions.</li>
+</ol><p>Please see <code>scripts/install_monkey.bat</code> for details.</p>
+
+<h4>
+<a name="run-monkey" class="anchor" href="#run-monkey"><span class="octicon octicon-link"></span></a>Run monkey:</h4>
+
+<ol>
+<li>Connect Android device with USB Debugging.</li>
+<li>Set up port forwarding with ADB:
+<code>
+adb forward tcp:1080 tcp:1080
+</code>
+</li>
+<li>Run monkey from Android shell:</li>
+</ol><div class="highlight highlight-bash"><pre>sh /data/supermonkey.sh --port 1080 --ignore-crashes
+</pre></div>
+
+<p>Then you can start trackerd and SuperMonkey app. Please see <code>scripts/monkey.bat</code> for details.</p>
+
+<h4>
+<a name="network-1" class="anchor" href="#network-1"><span class="octicon octicon-link"></span></a>Network:</h4>
+
+<p>Monkey listens to port 1080 on the Android system.
+Supermonkey connects to trackerd via port 10800.</p>
+
+<h2>
+<a name="hoverlib-monkeydemo-and-factfinder" class="anchor" href="#hoverlib-monkeydemo-and-factfinder"><span class="octicon octicon-link"></span></a>HoverLib, MonkeyDemo, and FactFinder</h2>
+
+<p><strong>HoverLib</strong>: Library project of Android interface components that supports attentive input.</p>
+
+<p><strong>MonkeyDemo</strong>: Demo application for the above interface components.</p>
+
+<p><strong>FactFinder</strong>: Renamed as "FoodFinder" in its interface, sample application that makes use of the components.</p>
+
+<p>Note: The interfaces are optimised for 7-inch screen with 1280×800-pixels resolution in landscape mode. Slight changes to layout might be needed on other configurations.</p>
+
+<h4>
+<a name="runtime-environment-2" class="anchor" href="#runtime-environment-2"><span class="octicon octicon-link"></span></a>Runtime environment:</h4>
+
+<ul>
+<li>Android 4.2</li>
+</ul><h4>
+<a name="development-environment-1" class="anchor" href="#development-environment-1"><span class="octicon octicon-link"></span></a>Development environment:</h4>
+
+<ul>
+<li>Android SDK 16+</li>
+<li>Android support library v4 and v13</li>
+<li>
+<a href="http://actionbarsherlock.com/">ActionBarSherlock</a> 4.4.0 with a tiny bit of modification</li>
+</ul><p>You can find the modified ActionBarSherlock <a href="https://github.com/leethree/ActionBarSherlock/tree/hover">here</a>.</p>
+
+<p>The applications also include source code files from <a href="http://source.android.com/">Android Open-Source Project</a> (AOSP) and <a href="https://github.com/romannurik/Android-SwipeToDismiss">Android swipe-to-dismiss mini-library</a> by Roman Nurik.</p>
+
+<hr><p>For more detailed and in-depth information regarding this project, please refer to my thesis <em>Attentive Gestural Interface on Touch Screens</em> (to be appear at <a href="http://hub.hku.hk/advanced-search?field1=title&amp;thesis=1">The HKU Scholars Hub</a>).</p>
+
+<p>Last updated: 13 Sep 2013.</p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<pre><code>Copyright 2013 Sirui Li
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+</code></pre>
+        </section>
+
+        <footer>
+          Attentive-ui is maintained by <a href="https://github.com/leethree">leethree</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
