@@ -1,4 +1,4 @@
-attentive-ui
+Attentive-UI
 ============
 
 Research project on attentive UI for Android devices.
@@ -93,9 +93,9 @@ The applications also include source code files from [Android Open-Source Projec
 
 ----------
 
-For more detailed and in-depth information regarding this project, please refer to my thesis _Attentive Gestural Interface on Touch Screens_ (to be appear at [The HKU Scholars Hub](http://hub.hku.hk/advanced-search?field1=title&thesis=1)).
+For more detailed and in-depth information regarding this project, please refer to my thesis _Attentive Gestural Interface on Touch Screens_ ([download from The HKU Scholars Hub](http://hub.hku.hk/bib/B50900080)).
 
-Last updated: 13 Sep 2013.
+Last updated: 1 Dec 2013.
 
 ## License
 
